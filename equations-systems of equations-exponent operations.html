@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlgebraLab — Master Systems of Equations</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #141828;
+    --surface2: #1c2235;
+    --border: #2a3050;
+    --text: #e8eaf6;
+    --muted: #7986cb;
+    --cyan: #00e5ff;
+    --yellow: #ffd740;
+    --pink: #ff6090;
+    --green: #69f0ae;
+    --orange: #ff9100;
+    --purple: #b388ff;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(13,15,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--cyan);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--yellow); }
+  .nav-links {
+    display: flex; gap: 0.25rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .nav-links a:hover { color: var(--cyan); background: rgba(0,229,255,0.08); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridPan 20s linear infinite;
+  }
+  @keyframes gridPan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(50px); }
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 760px; }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--cyan);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 {
+    color: var(--cyan);
+    text-shadow: 0 0 40px rgba(0,229,255,0.4);
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.35); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .floating-eq {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    opacity: 0.12;
+    animation: floatUp 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0%, 100% { transform: translateY(0) rotate(-2deg); opacity: 0.08; }
+    50% { transform: translateY(-20px) rotate(2deg); opacity: 0.16; }
+  }
+
+  /* MODULE CARDS */
+  .modules-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    max-width: 500px;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+  .module-card.cyan::before { background: var(--cyan); }
+  .module-card.yellow::before { background: var(--yellow); }
+  .module-card.pink::before { background: var(--pink); }
+  .module-card.green::before { background: var(--green); }
+  .module-card.purple::before { background: var(--purple); }
+  .module-card.orange::before { background: var(--orange); }
+  .module-card:hover { transform: translateY(-4px); border-color: #3a4060; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .module-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .module-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .module-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
+  .module-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .module-card.cyan .module-tag { background: rgba(0,229,255,0.12); color: var(--cyan); }
+  .module-card.yellow .module-tag { background: rgba(255,215,64,0.12); color: var(--yellow); }
+  .module-card.pink .module-tag { background: rgba(255,96,144,0.12); color: var(--pink); }
+  .module-card.green .module-tag { background: rgba(105,240,174,0.12); color: var(--green); }
+  .module-card.purple .module-tag { background: rgba(179,136,255,0.12); color: var(--purple); }
+  .module-card.orange .module-tag { background: rgba(255,145,0,0.12); color: var(--orange); }
+
+  /* LESSON SECTIONS */
+  .lesson-section {
+    padding: 5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+  }
+  .lesson-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .lesson-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  /* EXPLANATION BOXES */
+  .explain-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .explain-box h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+  .explain-box.cyan { border-left: 3px solid var(--cyan); }
+  .explain-box.cyan h4 { color: var(--cyan); }
+  .explain-box.yellow { border-left: 3px solid var(--yellow); }
+  .explain-box.yellow h4 { color: var(--yellow); }
+  .explain-box.green { border-left: 3px solid var(--green); }
+  .explain-box.green h4 { color: var(--green); }
+  .explain-box.pink { border-left: 3px solid var(--pink); }
+  .explain-box.pink h4 { color: var(--pink); }
+  .explain-box.purple { border-left: 3px solid var(--purple); }
+  .explain-box.purple h4 { color: var(--purple); }
+  .explain-box.orange { border-left: 3px solid var(--orange); }
+  .explain-box.orange h4 { color: var(--orange); }
+  .explain-box p { color: #b0bcd8; line-height: 1.8; font-size: 0.96rem; font-weight: 300; }
+  .explain-box p + p { margin-top: 0.75rem; }
+
+  /* MATH DISPLAY */
+  .math-line {
+    font-family: var(--mono);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .math-line .annotation {
+    color: var(--muted);
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 4px;
+    font-family: var(--sans);
+  }
+  .math-highlight { color: var(--cyan); font-weight: 700; }
+  .math-highlight.yellow { color: var(--yellow); }
+  .math-highlight.pink { color: var(--pink); }
+  .math-highlight.green { color: var(--green); }
+  .math-highlight.orange { color: var(--orange); }
+  .math-highlight.purple { color: var(--purple); }
+  .math-equals { color: var(--muted); }
+  .math-step {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin: 0.5rem 0;
+  }
+  .step-num {
+    min-width: 28px; height: 28px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--cyan);
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+  .step-num.yellow { background: rgba(255,215,64,0.1); border-color: rgba(255,215,64,0.3); color: var(--yellow); }
+  .step-num.green { background: rgba(105,240,174,0.1); border-color: rgba(105,240,174,0.3); color: var(--green); }
+  .step-num.pink { background: rgba(255,96,144,0.1); border-color: rgba(255,96,144,0.3); color: var(--pink); }
+  .step-content { flex: 1; }
+  .step-content p { color: #b0bcd8; font-size: 0.9rem; line-height: 1.7; font-weight: 300; }
+  .step-content .math-line { font-size: 0.95rem; }
+
+  /* VISUAL TERM BUILDER */
+  .term-visual {
+    display: flex; align-items: center; gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  .term-block {
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .term-block:hover { transform: scale(1.05); }
+  .term-block.x { background: rgba(0,229,255,0.15); border: 2px solid rgba(0,229,255,0.4); color: var(--cyan); }
+  .term-block.y { background: rgba(255,215,64,0.15); border: 2px solid rgba(255,215,64,0.4); color: var(--yellow); }
+  .term-block.const { background: rgba(105,240,174,0.15); border: 2px solid rgba(105,240,174,0.4); color: var(--green); }
+  .term-block.op { background: transparent; border: none; color: var(--muted); font-size: 1.2rem; padding: 0 4px; }
+  .term-block.result { background: rgba(179,136,255,0.15); border: 2px solid rgba(179,136,255,0.4); color: var(--purple); }
+
+  /* INTERACTIVE PRACTICE */
+  .practice-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .practice-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .practice-header h3 { font-size: 1rem; font-weight: 700; }
+  .practice-score {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .practice-score span { color: var(--green); font-weight: 700; }
+  .problem-display {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    text-align: center;
+    min-height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5rem;
+  }
+  .problem-display .problem-text { color: var(--text); }
+  .problem-display .problem-hint { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); }
+  .answer-row {
+    display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+  }
+  .answer-input {
+    flex: 1; min-width: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus { border-color: var(--cyan); }
+  .answer-input.correct { border-color: var(--green); background: rgba(105,240,174,0.05); }
+  .answer-input.wrong { border-color: var(--pink); background: rgba(255,96,144,0.05); }
+  .btn-check {
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-check:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-next {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-next:hover { color: var(--text); border-color: #4a5070; }
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.25); color: var(--green); }
+  .feedback-box.wrong { background: rgba(255,96,144,0.08); border: 1px solid rgba(255,96,144,0.25); color: var(--pink); }
+  .feedback-box .solution { color: var(--text); margin-top: 0.5rem; font-family: var(--mono); }
+
+  /* STEP-BY-STEP SOLVER */
+  .solver-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .solver-input-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .solver-input-row { grid-template-columns: 1fr; } }
+  .solver-field label {
+    display: block; font-size: 0.75rem; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .solver-field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .solver-field input:focus { border-color: var(--cyan); }
+  .solver-field input::placeholder { color: #3a4060; }
+  .btn-solve {
+    background: linear-gradient(135deg, var(--cyan), #0097a7);
+    color: #fff;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+  .btn-solve:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,229,255,0.25); }
+  .solution-steps {
+    margin-top: 1.5rem;
+    display: none;
+  }
+  .solution-steps.show { display: block; }
+  .solution-step {
+    display: flex; gap: 1rem; margin-bottom: 1rem;
+    animation: stepIn 0.4s ease forwards;
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  @keyframes stepIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .step-label {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    white-space: nowrap;
+    height: fit-content;
+    min-width: 70px;
+    text-align: center;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--text); }
+  .step-math {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    color: var(--yellow);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .step-note { font-size: 0.8rem; color: var(--muted); margin-top: 4px; font-weight: 300; }
+
+  /* EXPONENT RULES TABLE */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .rule-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+  .rule-card:hover { border-color: #3a4060; transform: translateY(-2px); }
+  .rule-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.75rem;
+  }
+  .rule-formula {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+    padding: 10px;
+    background: var(--surface2);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .rule-example {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .rule-example span { color: var(--text); }
+
+  /* VISUAL NUMBER LINE */
+  .number-line-container {
+    overflow-x: auto;
+    padding: 1rem 0;
+    margin: 1rem 0;
+  }
+  .number-line {
+    position: relative;
+    height: 60px;
+    min-width: 600px;
+    display: flex; align-items: center;
+  }
+  .nl-track {
+    position: absolute;
+    height: 2px;
+    background: var(--border);
+    left: 0; right: 0;
+    top: 50%;
+  }
+  .nl-tick {
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .nl-line { width: 1px; height: 12px; background: var(--border); }
+  .nl-num { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+  .nl-arrow {
+    position: absolute;
+    top: 50%;
+    height: 6px;
+    border-radius: 3px;
+    transform: translateY(-50%);
+    display: flex; align-items: center;
+  }
+  .nl-arrow-label {
+    position: absolute;
+    top: -20px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* TABS */
+  .tab-bar {
+    display: flex; gap: 4px;
+    background: var(--surface2);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 8px 18px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* PROGRESS BAR */
+  .progress-bar-container {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 1rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* COMPARISON TABLE */
+  .comp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.88rem;
+    margin: 1rem 0;
+  }
+  .comp-table th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  .comp-table th:first-child { border-radius: 8px 0 0 0; }
+  .comp-table th:last-child { border-radius: 0 8px 0 0; }
+  .comp-table td {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  .comp-table tr:hover td { background: var(--surface); }
+  .comp-table .concept { color: var(--muted); font-family: var(--sans); font-size: 0.82rem; }
+  .comp-table .formula { color: var(--yellow); }
+  .comp-table .example { color: var(--cyan); }
+
+  /* QUIZ SECTION */
+  .quiz-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .quiz-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.5; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  @media (max-width: 500px) { .quiz-options { grid-template-columns: 1fr; } }
+  .quiz-option {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.04); }
+  .quiz-option.selected.correct { border-color: var(--green); background: rgba(105,240,174,0.08); color: var(--green); }
+  .quiz-option.selected.wrong { border-color: var(--pink); background: rgba(255,96,144,0.08); color: var(--pink); }
+  .quiz-option.reveal.correct { border-color: var(--green); background: rgba(105,240,174,0.06); color: var(--green); }
+  .quiz-feedback {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.25); color: var(--green); }
+  .quiz-feedback.wrong { background: rgba(255,96,144,0.08); border: 1px solid rgba(255,96,144,0.25); color: var(--pink); }
+  .quiz-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; align-items: center; }
+  .quiz-counter { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+
+  /* GLOSSARY */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .glossary-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .glossary-card .term {
+    font-weight: 700; font-size: 0.95rem;
+    color: var(--cyan); margin-bottom: 0.5rem;
+  }
+  .glossary-card .def { color: var(--muted); font-size: 0.85rem; line-height: 1.6; font-weight: 300; }
+  .glossary-card .example-line {
+    font-family: var(--mono); font-size: 0.82rem;
+    color: var(--yellow); margin-top: 0.5rem;
+    background: var(--surface);
+    padding: 6px 10px; border-radius: 5px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  footer span { color: var(--cyan); }
+
+  /* CHEATSHEET PANEL */
+  .cheat-panel {
+    position: fixed;
+    right: -320px;
+    top: 60px; bottom: 0;
+    width: 320px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 90;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    padding: 1.5rem;
+  }
+  .cheat-panel.open { right: 0; }
+  .cheat-toggle {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 91;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(179,136,255,0.35);
+    transition: all 0.2s;
+  }
+  .cheat-toggle:hover { transform: translateY(-2px); }
+  .cheat-panel h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 1rem; color: var(--purple); }
+  .cheat-rule {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+  }
+  .cheat-rule .cr-name { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .cheat-rule .cr-formula { font-family: var(--mono); color: var(--yellow); font-size: 0.85rem; }
+
+  /* TOOLTIP */
+  .tooltip-wrap { position: relative; display: inline; }
+  .tooltip-wrap abbr {
+    text-decoration: underline dotted var(--muted);
+    cursor: help;
+    color: inherit;
+  }
+  .tooltip-text {
+    display: none;
+    position: absolute;
+    bottom: 125%; left: 50%; transform: translateX(-50%);
+    background: #2a3050;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    color: var(--text);
+    white-space: nowrap;
+    z-index: 50;
+    font-family: var(--sans);
+    font-weight: 400;
+  }
+  .tooltip-wrap:hover .tooltip-text { display: block; }
+
+  /* ANIMATION UTILITIES */
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CHEAT SHEET PANEL -->
+<div class="cheat-panel" id="cheatPanel">
+  <h3>📋 Quick Reference</h3>
+  <div class="cheat-rule">
+    <div class="cr-name">Combining Like Terms</div>
+    <div class="cr-formula">ax + bx = (a+b)x</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Distributive Property</div>
+    <div class="cr-formula">a(b + c) = ab + ac</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Product Rule (Exponents)</div>
+    <div class="cr-formula">x^a · x^b = x^(a+b)</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Quotient Rule (Exponents)</div>
+    <div class="cr-formula">x^a / x^b = x^(a-b)</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Power Rule (Exponents)</div>
+    <div class="cr-formula">(x^a)^b = x^(a·b)</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Zero Exponent</div>
+    <div class="cr-formula">x^0 = 1 (x ≠ 0)</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Negative Exponent</div>
+    <div class="cr-formula">x^(-n) = 1/x^n</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Substitution Method</div>
+    <div class="cr-formula">Solve for one var,<br>plug into other eq</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">Elimination Method</div>
+    <div class="cr-formula">Add/subtract eqs<br>to cancel a variable</div>
+  </div>
+  <div class="cheat-rule">
+    <div class="cr-name">FOIL (Binomials)</div>
+    <div class="cr-formula">(a+b)(c+d) =<br>ac + ad + bc + bd</div>
+  </div>
+</div>
+<button class="cheat-toggle" onclick="toggleCheat()">📖 Cheat Sheet</button>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo">Algebra<span>Lab</span></div>
+  <ul class="nav-links">
+    <li><a href="#like-terms">Like Terms</a></li>
+    <li><a href="#operations">Operations</a></li>
+    <li><a href="#exponents">Exponents</a></li>
+    <li><a href="#systems">Systems</a></li>
+    <li><a href="#solver">Solver</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <!-- Floating equations -->
+  <span class="floating-eq" style="top:15%;left:8%;animation-delay:0s">2x + 3y = 7</span>
+  <span class="floating-eq" style="top:25%;right:10%;animation-delay:1.5s">x² · x³ = x⁵</span>
+  <span class="floating-eq" style="top:70%;left:5%;animation-delay:3s">4x - 2x = 2x</span>
+  <span class="floating-eq" style="top:60%;right:8%;animation-delay:0.8s">y = 2x + 1</span>
+  <span class="floating-eq" style="top:80%;left:20%;animation-delay:2s">5y ÷ 5 = y</span>
+  <span class="floating-eq" style="top:10%;right:25%;animation-delay:4s">a⁰ = 1</span>
+
+  <div class="hero-content">
+    <div class="hero-badge">Interactive Math Learning</div>
+    <h1>
+      <span class="line1">Master Algebra &</span><br>
+      <span class="line2">Systems of Equations</span>
+    </h1>
+    <p>From combining like terms to solving multi-variable systems — learn step by step with visual explanations, interactive practice, and instant feedback.</p>
+    <div class="hero-btns">
+      <a href="#like-terms" class="btn-primary">Start Learning →</a>
+      <a href="#solver" class="btn-secondary">System Solver</a>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE OVERVIEW -->
+<section class="modules-section">
+  <div class="section-label">What You'll Learn</div>
+  <div class="section-title">Six Core Topics</div>
+  <p class="section-sub">Click any module to jump right in. Each one builds on the last.</p>
+  <div class="modules-grid">
+    <div class="module-card cyan" onclick="location.href='#like-terms'">
+      <span class="module-icon">🧩</span>
+      <h3>Combining Like Terms</h3>
+      <p>Learn to identify and merge terms with the same variables and exponents. The foundational skill for all algebra.</p>
+      <span class="module-tag">BEGINNER</span>
+    </div>
+    <div class="module-card yellow" onclick="location.href='#operations'">
+      <span class="module-icon">⚙️</span>
+      <h3>Adding & Subtracting Equations</h3>
+      <p>Perform operations on entire equations while keeping them balanced. Master the addition and subtraction of polynomial expressions.</p>
+      <span class="module-tag">BEGINNER</span>
+    </div>
+    <div class="module-card pink" onclick="location.href='#multiply-divide'">
+      <span class="module-icon">✖️</span>
+      <h3>Multiplying & Dividing</h3>
+      <p>Scale equations, distribute coefficients, cancel terms, and work with FOIL for binomials.</p>
+      <span class="module-tag">INTERMEDIATE</span>
+    </div>
+    <div class="module-card green" onclick="location.href='#exponents'">
+      <span class="module-icon">💥</span>
+      <h3>Exponent Operations</h3>
+      <p>All the exponent rules — product, quotient, power, zero, negative, and fractional exponents with worked examples.</p>
+      <span class="module-tag">INTERMEDIATE</span>
+    </div>
+    <div class="module-card purple" onclick="location.href='#systems'">
+      <span class="module-icon">🔀</span>
+      <h3>Systems of Equations</h3>
+      <p>Solve for two unknowns using substitution, elimination, and graphical interpretation. With practice problems.</p>
+      <span class="module-tag">ADVANCED</span>
+    </div>
+    <div class="module-card orange" onclick="location.href='#solver'">
+      <span class="module-icon">🤖</span>
+      <h3>Interactive Solver</h3>
+      <p>Enter any 2×2 linear system and see every step of the solution process worked out for you in real time.</p>
+      <span class="module-tag">TOOL</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LESSON 1: LIKE TERMS ===== -->
+<section class="lesson-section" id="like-terms">
+  <div class="lesson-header">
+    <span class="lesson-num">LESSON 01</span>
+  </div>
+  <div class="section-label">Foundation</div>
+  <div class="section-title">Combining Like Terms</div>
+  <p class="section-sub">Before you can solve equations, you must understand what a "term" is and how to simplify expressions.</p>
+
+  <div class="explain-box cyan">
+    <h4>📖 What is a Term?</h4>
+    <p>A <strong>term</strong> is a single number, variable, or product of numbers and variables. Terms are separated by + and − signs.</p>
+    <p>Examples: <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono)">3x</code>, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono)">-5y²</code>, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono)">7</code>, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono)">2xy</code></p>
+    <p>The number in front of a variable is called the <strong>coefficient</strong>. In <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono)">3x</code>, the coefficient is 3.</p>
+  </div>
+
+  <div class="explain-box yellow">
+    <h4>🔍 What Are "Like Terms"?</h4>
+    <p><strong>Like terms</strong> have the EXACT same variable(s) raised to the EXACT same power(s). Only the coefficient can differ.</p>
+    <p>✅ Like: <code style="font-family:var(--mono)">3x</code> and <code style="font-family:var(--mono)">7x</code> — both have just x to the 1st power</p>
+    <p>✅ Like: <code style="font-family:var(--mono)">4y²</code> and <code style="font-family:var(--mono)">-2y²</code> — both have y squared</p>
+    <p>❌ Unlike: <code style="font-family:var(--mono)">3x</code> and <code style="font-family:var(--mono)">3y</code> — different variables</p>
+    <p>❌ Unlike: <code style="font-family:var(--mono)">5x</code> and <code style="font-family:var(--mono)">5x²</code> — same variable but different powers</p>
+  </div>
+
+  <!-- Visual Like Terms Identifier -->
+  <div class="explain-box" style="border-left:3px solid var(--purple)">
+    <h4 style="color:var(--purple)">👀 Visual — Identifying Like Terms</h4>
+    <p>In the expression below, hover over each term to see what type it is:</p>
+    <div class="term-visual" style="margin-top:1.25rem;font-size:1.1rem">
+      <div class="term-block x" title="x-term (coefficient: 5)">5x</div>
+      <div class="term-block op">+</div>
+      <div class="term-block const" title="constant term">3</div>
+      <div class="term-block op">−</div>
+      <div class="term-block x" title="x-term (coefficient: -2) — LIKE with 5x!">2x</div>
+      <div class="term-block op">+</div>
+      <div class="term-block y" title="y-term — NOT like with x-terms">4y</div>
+      <div class="term-block op">−</div>
+      <div class="term-block const" title="constant term — LIKE with the 3!">1</div>
+    </div>
+    <p style="margin-top:1rem">Groups: <span style="color:var(--cyan)">5x, −2x</span> are like terms. <span style="color:var(--green)">3, −1</span> are like terms. <span style="color:var(--yellow)">4y</span> stands alone.</p>
+  </div>
+
+  <div class="explain-box green">
+    <h4>⚡ The Rule: Adding Like Terms</h4>
+    <p>To combine like terms, <strong>add or subtract their coefficients</strong> and keep the variable part the same.</p>
+  </div>
+
+  <!-- Step by step: 2x - 5x -->
+  <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Example 1: Simplify <span style="font-family:var(--mono);color:var(--cyan)">2x − 5x</span></h3>
+  <div class="math-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p>Identify the terms. Both are x-terms (like terms!).</p>
+      <div class="math-line">
+        <span class="math-highlight">2</span>x <span class="math-equals">−</span> <span class="math-highlight pink">5</span>x
+        <span class="annotation">coefficient 2 and coefficient 5, both attached to x</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p>Subtract the coefficients: 2 − 5 = <strong>−3</strong></p>
+      <div class="math-line">
+        (2 − 5)x <span style="color:var(--muted)">→</span> <span class="math-highlight green">−3</span>x
+        <span class="annotation">The variable x stays exactly the same</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-line" style="border-color:var(--cyan);text-align:center;font-size:1.2rem">
+    2x − 5x = <span class="math-highlight green">−3x</span>
+    <span class="annotation" style="text-align:center">Final Answer</span>
+  </div>
+
+  <!-- More examples -->
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Example 2: Simplify <span style="font-family:var(--mono);color:var(--yellow)">7x + 3y − 4x + 2y − 1</span></h3>
+  <div class="math-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p>Group like terms together using color coding:</p>
+      <div class="math-line">
+        <span class="math-highlight">7x</span> + <span class="math-highlight yellow">3y</span> − <span class="math-highlight">4x</span> + <span class="math-highlight yellow">2y</span> − <span class="math-highlight green">1</span>
+        <span class="annotation">Cyan = x-terms, Yellow = y-terms, Green = constants</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p>Rearrange (you can always reorder addition/subtraction):</p>
+      <div class="math-line">
+        (<span class="math-highlight">7x</span> − <span class="math-highlight">4x</span>) + (<span class="math-highlight yellow">3y</span> + <span class="math-highlight yellow">2y</span>) − <span class="math-highlight green">1</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <p>Combine each group: 7−4=3, 3+2=5</p>
+      <div class="math-line">
+        <span class="math-highlight">3x</span> + <span class="math-highlight yellow">5y</span> − <span class="math-highlight green">1</span>
+        <span class="annotation">✅ Fully simplified — no more like terms to combine</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Example 3: Simplify <span style="font-family:var(--mono);color:var(--pink)">3x² + 2x − x² + 5x − 4</span></h3>
+  <div class="math-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p>Notice: <code style="font-family:var(--mono)">x²</code> and <code style="font-family:var(--mono)">x</code> are NOT like terms (different powers!)</p>
+      <div class="math-line">
+        <span class="math-highlight pink">3x²</span> + <span class="math-highlight">2x</span> − <span class="math-highlight pink">x²</span> + <span class="math-highlight">5x</span> − <span class="math-highlight green">4</span>
+        <span class="annotation">Pink = x² terms, Cyan = x terms, Green = constants</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p>Group and combine: (3−1)x² + (2+5)x − 4</p>
+      <div class="math-line">
+        <span class="math-highlight pink">2x²</span> + <span class="math-highlight">7x</span> − <span class="math-highlight green">4</span>
+        <span class="annotation">Final answer: three unlike groups remain</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRACTICE: Like Terms -->
+  <div class="practice-container">
+    <div class="practice-header">
+      <h3>🎯 Practice — Combining Like Terms</h3>
+      <div class="practice-score">Score: <span id="lt-score">0</span> / <span id="lt-total">0</span></div>
+    </div>
+    <div class="problem-display" id="lt-problem">
+      <div class="problem-text" id="lt-problem-text">Loading...</div>
+      <div class="problem-hint" id="lt-problem-hint"></div>
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="lt-answer" placeholder="Type your answer (e.g. 3x or -2y+5)" onkeydown="if(event.key==='Enter')checkLT()">
+      <button class="btn-check" onclick="checkLT()">Check</button>
+      <button class="btn-next" onclick="nextLT()">Next →</button>
+    </div>
+    <div class="feedback-box" id="lt-feedback"></div>
+    <div class="progress-bar-container" style="margin-top:1rem">
+      <div class="progress-bar" id="lt-progress" style="width:0%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LESSON 2: ADDING/SUBTRACTING EQUATIONS ===== -->
+<section class="lesson-section" id="operations">
+  <div class="lesson-header">
+    <span class="lesson-num">LESSON 02</span>
+  </div>
+  <div class="section-label">Core Operations</div>
+  <div class="section-title">Adding & Subtracting Equations</div>
+  <p class="section-sub">When you operate on an equation, you must do the same thing to both sides to keep the balance.</p>
+
+  <div class="explain-box cyan">
+    <h4>⚖️ The Golden Rule of Equations</h4>
+    <p>An equation is like a <strong>perfectly balanced scale</strong>. Whatever you do to the left side, you MUST do the same to the right side. This keeps the equation true.</p>
+    <p>If <code style="font-family:var(--mono)">x + 3 = 7</code>, and you subtract 3 from the left, you subtract 3 from the right too: <code style="font-family:var(--mono)">x = 7 − 3 = 4</code></p>
+  </div>
+
+  <!-- Adding equations example -->
+  <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Adding Polynomial Expressions</h3>
+  <div class="explain-box yellow">
+    <h4>🧠 Concept</h4>
+    <p>To <strong>add</strong> two expressions: remove parentheses and combine like terms. The sign of each term stays the same when adding.</p>
+  </div>
+
+  <h3 style="margin:1rem 0 0.75rem;font-size:1rem">Example: Add <span style="font-family:var(--mono);color:var(--cyan)">(3x + 2y − 1) + (5x − 4y + 3)</span></h3>
+  <div class="math-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p>Drop the parentheses (adding keeps all signs the same):</p>
+      <div class="math-line">3x + 2y − 1 + 5x − 4y + 3</div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p>Group like terms:</p>
+      <div class="math-line">(<span class="math-highlight">3x + 5x</span>) + (<span class="math-highlight yellow">2y − 4y</span>) + (<span class="math-highlight green">−1 + 3</span>)</div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <p>Combine each group:</p>
+      <div class="math-line"><span class="math-highlight">8x</span> + (<span class="math-highlight yellow">−2y</span>) + <span class="math-highlight green">2</span> = <span style="color:var(--purple)">8x − 2y + 2</span></div>
+    </div>
+  </div>
+
+  <!-- Subtracting expressions -->
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Subtracting Polynomial Expressions</h3>
+  <div class="explain-box pink">
+    <h4>⚠️ Caution: Distributing the Negative Sign</h4>
+    <p>When you <strong>subtract</strong> an expression, the minus sign distributes to EVERY term inside the parentheses. This is a very common source of errors!</p>
+    <p>Think of it as multiplying the entire expression by −1.</p>
+  </div>
+
+  <h3 style="margin:1rem 0 0.75rem;font-size:1rem">Example: Subtract <span style="font-family:var(--mono);color:var(--pink)">(3x + 2y − 1) − (5x − 4y + 3)</span></h3>
+  <div class="math-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p>Distribute the negative to EVERY term in the second group:</p>
+      <div class="math-line">3x + 2y − 1 <span class="math-highlight pink">−5x +4y −3</span>
+        <span class="annotation">Every sign in the second parenthesis FLIPPED: +5x→-5x, -4y→+4y, +3→-3</span>
+      </div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p>Group like terms:</p>
+      <div class="math-line">(<span class="math-highlight">3x − 5x</span>) + (<span class="math-highlight yellow">2y + 4y</span>) + (<span class="math-highlight green">−1 − 3</span>)</div>
+    </div>
+  </div>
+  <div class="math-step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <p>Combine: (3−5)=−2, (2+4)=6, (−1−3)=−4</p>
+      <div class="math-line"><span style="color:var(--purple)">−2x + 6y − 4</span></div>
+    </div>
+  </div>
+
+  <!-- Solving simple equations -->
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Solving a One-Variable Equation by Adding/Subtracting</h3>
+  <div class="explain-box green">
+    <h4>🎯 Goal: Isolate the Variable</h4>
+    <p>To solve for x, get x alone on one side. Use <strong>inverse operations</strong> — undo addition with subtraction, and vice versa.</p>
+  </div>
+
+  <h3 style="margin:1rem 0 0.75rem;font-size:1rem">Example: Solve <span style="font-family:var(--mono);color:var(--green)">x + 8 = 15</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>We want x alone. x has +8 added to it. Undo that by subtracting 8 from BOTH sides.</p><div class="math-line">x + 8 − <span class="math-highlight green">8</span> = 15 − <span class="math-highlight green">8</span></div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Simplify both sides: +8 and −8 cancel out</p><div class="math-line">x = <span class="math-highlight green">7</span></div></div></div>
+
+  <h3 style="margin:1.5rem 0 0.75rem;font-size:1rem">Example: Solve <span style="font-family:var(--mono);color:var(--cyan)">2x − 4 = x + 9</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Get all x-terms on the left: subtract x from both sides</p><div class="math-line">2x − x − 4 = 9 → <span class="math-highlight">x</span> − 4 = 9</div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Add 4 to both sides to isolate x</p><div class="math-line">x = 9 + 4 = <span class="math-highlight green">13</span></div></div></div>
+</section>
+
+<!-- ===== LESSON 3: MULTIPLY/DIVIDE ===== -->
+<section class="lesson-section" id="multiply-divide">
+  <div class="lesson-header"><span class="lesson-num">LESSON 03</span></div>
+  <div class="section-label">Core Operations</div>
+  <div class="section-title">Multiplying & Dividing Equations</div>
+  <p class="section-sub">Scale terms, distribute coefficients, and master FOIL for multiplying two binomials.</p>
+
+  <div class="explain-box pink">
+    <h4>✖️ Multiplying a Term by a Coefficient</h4>
+    <p>When you multiply a term by a number, multiply the coefficient. The variable and its exponent stay the same — unless you're multiplying variables.</p>
+    <p>Example: <code style="font-family:var(--mono)">3 · (4x) = 12x</code> &nbsp;|&nbsp; <code style="font-family:var(--mono)">−2 · (7y) = −14y</code></p>
+  </div>
+
+  <div class="explain-box orange">
+    <h4>📤 The Distributive Property — Multiplying into Parentheses</h4>
+    <p>When a number or term multiplies an expression in parentheses, it must multiply <strong>every single term</strong> inside.</p>
+    <p style="margin-top:0.5rem"><code style="font-family:var(--mono)">a(b + c) = ab + ac</code></p>
+  </div>
+
+  <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Example: Expand <span style="font-family:var(--mono);color:var(--orange)">3(2x − 4y + 5)</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Multiply 3 by each term inside:</p><div class="math-line">3·<span class="math-highlight orange">2x</span> + 3·<span class="math-highlight orange">(−4y)</span> + 3·<span class="math-highlight orange">5</span></div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Simplify each multiplication:</p><div class="math-line"><span class="math-highlight orange">6x − 12y + 15</span></div></div></div>
+
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Solving by Multiplication/Division</h3>
+  <div class="explain-box pink">
+    <h4>🔑 Isolating x with × and ÷</h4>
+    <p>If x is multiplied by a number, divide both sides by that number to isolate x. If x is divided by a number, multiply both sides by it.</p>
+  </div>
+  <h3 style="margin:1rem 0 0.75rem;font-size:1rem">Example: Solve <span style="font-family:var(--mono);color:var(--pink)">5x = 35</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>x is multiplied by 5. Divide BOTH sides by 5:</p><div class="math-line">5x ÷ 5 = 35 ÷ 5 → x = <span class="math-highlight green">7</span></div></div></div>
+
+  <h3 style="margin:1.5rem 0 0.75rem;font-size:1rem">Example: Solve <span style="font-family:var(--mono);color:var(--pink)">x/4 = 9</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>x is divided by 4. Multiply BOTH sides by 4:</p><div class="math-line">(x/4) × 4 = 9 × 4 → x = <span class="math-highlight green">36</span></div></div></div>
+
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Multi-Step Example: Solve <span style="font-family:var(--mono);color:var(--orange)">3x + 6 = 21</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Subtract 6 from both sides first:</p><div class="math-line">3x = 21 − 6 = 15</div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Divide both sides by 3:</p><div class="math-line">x = 15 ÷ 3 = <span class="math-highlight green">5</span></div></div></div>
+
+  <!-- FOIL -->
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">🌀 FOIL Method — Multiplying Two Binomials</h3>
+  <div class="explain-box purple">
+    <h4>📚 What is FOIL?</h4>
+    <p>FOIL is a memory tool for expanding (a + b)(c + d):</p>
+    <p><strong>F</strong>irst: multiply the first terms of each binomial</p>
+    <p><strong>O</strong>uter: multiply the outer terms</p>
+    <p><strong>I</strong>nner: multiply the inner terms</p>
+    <p><strong>L</strong>ast: multiply the last terms</p>
+    <p>Then combine any like terms.</p>
+  </div>
+  <h3 style="margin:1rem 0 0.75rem;font-size:1rem">Example: Expand <span style="font-family:var(--mono);color:var(--purple)">(x + 3)(x − 2)</span></h3>
+  <div class="math-step"><div class="step-num">F</div><div class="step-content"><p><strong>First</strong> × First: x · x = <span style="color:var(--cyan);font-family:var(--mono)">x²</span></p></div></div>
+  <div class="math-step"><div class="step-num" style="background:rgba(255,215,64,0.1);border-color:rgba(255,215,64,0.3);color:var(--yellow)">O</div><div class="step-content"><p><strong>Outer</strong>: x · (−2) = <span style="color:var(--yellow);font-family:var(--mono)">−2x</span></p></div></div>
+  <div class="math-step"><div class="step-num" style="background:rgba(255,96,144,0.1);border-color:rgba(255,96,144,0.3);color:var(--pink)">I</div><div class="step-content"><p><strong>Inner</strong>: 3 · x = <span style="color:var(--pink);font-family:var(--mono)">3x</span></p></div></div>
+  <div class="math-step"><div class="step-num" style="background:rgba(105,240,174,0.1);border-color:rgba(105,240,174,0.3);color:var(--green)">L</div><div class="step-content"><p><strong>Last</strong> × Last: 3 · (−2) = <span style="color:var(--green);font-family:var(--mono)">−6</span></p></div></div>
+  <div class="math-step"><div class="step-num">+</div><div class="step-content"><p>Combine like terms (−2x + 3x = x):</p><div class="math-line"><span style="color:var(--cyan)">x²</span> <span style="color:var(--yellow)">−2x</span> <span style="color:var(--pink)">+3x</span> <span style="color:var(--green)">−6</span> = <span class="math-highlight purple">x² + x − 6</span></div></div></div>
+</section>
+
+<!-- ===== LESSON 4: EXPONENTS ===== -->
+<section class="lesson-section" id="exponents">
+  <div class="lesson-header"><span class="lesson-num">LESSON 04</span></div>
+  <div class="section-label">Power Operations</div>
+  <div class="section-title">Exponent Rules</div>
+  <p class="section-sub">Exponents appear in nearly every algebra topic. These seven rules cover everything you need.</p>
+
+  <div class="explain-box green">
+    <h4>🔢 What Is an Exponent?</h4>
+    <p>An exponent tells you how many times to multiply a number by itself. In <strong>x³</strong>, the 3 is the exponent and x is the base: x³ = x · x · x.</p>
+    <p>The expression <strong>2⁴ = 2 · 2 · 2 · 2 = 16</strong></p>
+  </div>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--cyan)">1. Product Rule</div>
+      <div class="rule-formula"><span class="math-highlight">x^a · x^b = x^(a+b)</span></div>
+      <div class="rule-example">When multiplying same base, <strong>add</strong> exponents.<br>Example: <span>x² · x³ = x⁵</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--yellow)">2. Quotient Rule</div>
+      <div class="rule-formula"><span class="math-highlight yellow">x^a ÷ x^b = x^(a-b)</span></div>
+      <div class="rule-example">When dividing same base, <strong>subtract</strong> exponents.<br>Example: <span>x⁵ ÷ x² = x³</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--pink)">3. Power Rule</div>
+      <div class="rule-formula"><span class="math-highlight pink">(x^a)^b = x^(a·b)</span></div>
+      <div class="rule-example">Raising a power to a power, <strong>multiply</strong> exponents.<br>Example: <span>(x³)² = x⁶</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--green)">4. Power of a Product</div>
+      <div class="rule-formula"><span class="math-highlight green">(xy)^n = x^n · y^n</span></div>
+      <div class="rule-example">Distribute exponent to <strong>each factor</strong>.<br>Example: <span>(2x)³ = 8x³</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--purple)">5. Zero Exponent</div>
+      <div class="rule-formula"><span class="math-highlight purple">x^0 = 1 &nbsp;(x ≠ 0)</span></div>
+      <div class="rule-example">Any nonzero base to the zero power equals 1.<br>Example: <span>7⁰ = 1, (abc)⁰ = 1</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-name" style="color:var(--orange)">6. Negative Exponent</div>
+      <div class="rule-formula"><span class="math-highlight orange">x^(-n) = 1/x^n</span></div>
+      <div class="rule-example">Flip to denominator to make positive.<br>Example: <span>x⁻² = 1/x²</span></div>
+    </div>
+    <div class="rule-card" style="grid-column: span 1">
+      <div class="rule-name" style="color:var(--cyan)">7. Fractional Exponent</div>
+      <div class="rule-formula"><span class="math-highlight">x^(1/n) = ⁿ√x</span></div>
+      <div class="rule-example">A fraction exponent is a root.<br>Example: <span>x^(1/2) = √x &nbsp;|&nbsp; 8^(1/3) = 2</span></div>
+    </div>
+  </div>
+
+  <!-- Exponent worked example -->
+  <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Worked Example: Simplify <span style="font-family:var(--mono);color:var(--green)">x³ · x² / x⁴</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Apply Product Rule to numerator: x³ · x² = x^(3+2)</p><div class="math-line">x^5 / x^4</div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Apply Quotient Rule: x^5 / x^4 = x^(5-4)</p><div class="math-line">x^1 = <span class="math-highlight green">x</span></div></div></div>
+
+  <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Worked Example: Simplify <span style="font-family:var(--mono);color:var(--cyan)">(2x²y³)³</span></h3>
+  <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Apply Power of a Product: cube each factor</p><div class="math-line">2³ · (x²)³ · (y³)³</div></div></div>
+  <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Apply Power Rule: multiply exponents. 2³=8</p><div class="math-line">8 · x^(2·3) · y^(3·3) = <span class="math-highlight">8x⁶y⁹</span></div></div></div>
+
+  <!-- Exponent practice -->
+  <div class="practice-container">
+    <div class="practice-header">
+      <h3>🎯 Practice — Exponent Rules</h3>
+      <div class="practice-score">Score: <span id="exp-score">0</span> / <span id="exp-total">0</span></div>
+    </div>
+    <div class="problem-display" id="exp-problem">
+      <div class="problem-text" id="exp-problem-text">Loading...</div>
+      <div class="problem-hint" id="exp-problem-hint"></div>
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="exp-answer" placeholder="e.g. x^5 or 8x^6" onkeydown="if(event.key==='Enter')checkExp()">
+      <button class="btn-check" onclick="checkExp()">Check</button>
+      <button class="btn-next" onclick="nextExp()">Next →</button>
+    </div>
+    <div class="feedback-box" id="exp-feedback"></div>
+  </div>
+</section>
+
+<!-- ===== LESSON 5: SYSTEMS OF EQUATIONS ===== -->
+<section class="lesson-section" id="systems">
+  <div class="lesson-header"><span class="lesson-num">LESSON 05</span></div>
+  <div class="section-label">Advanced</div>
+  <div class="section-title">Systems of Equations</div>
+  <p class="section-sub">A system of equations is two or more equations with the same variables. Solving means finding values that satisfy ALL equations at once.</p>
+
+  <div class="explain-box purple">
+    <h4>🤔 What Does "Solving a System" Mean?</h4>
+    <p>Imagine two linear equations each describing a line on a graph. The solution is the <strong>point where the two lines intersect</strong> — the one (x, y) pair that makes BOTH equations true simultaneously.</p>
+    <p>There can be: one solution (lines cross), no solution (parallel lines), or infinite solutions (same line).</p>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('substitution')">Substitution Method</button>
+    <button class="tab-btn" onclick="switchTab('elimination')">Elimination Method</button>
+    <button class="tab-btn" onclick="switchTab('word-problems')">Word Problems</button>
+  </div>
+
+  <!-- SUBSTITUTION -->
+  <div class="tab-content active" id="tab-substitution">
+    <div class="explain-box cyan">
+      <h4>🔄 Substitution Method — The Idea</h4>
+      <p>Solve one equation for one variable, then <strong>plug that expression into the other equation</strong>. This reduces it from 2 variables to 1 variable, which you can then solve easily.</p>
+      <p><strong>Best when:</strong> one equation already has a variable isolated (like y = …), or it's easy to isolate one.</p>
+    </div>
+
+    <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Example: Solve the system
+      <div style="font-family:var(--mono);color:var(--cyan);margin:0.5rem 0;font-size:1rem">y = 2x + 1</div>
+      <div style="font-family:var(--mono);color:var(--cyan);font-size:1rem">3x + y = 16</div>
+    </h3>
+    <div class="math-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <p>The first equation already gives us y = 2x + 1. Substitute this into the second equation wherever we see y:</p>
+        <div class="math-line">3x + <span class="math-highlight">(2x + 1)</span> = 16<span class="annotation">We replaced y with (2x+1)</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <p>Expand and combine like terms:</p>
+        <div class="math-line">3x + 2x + 1 = 16 → 5x + 1 = 16</div>
+      </div>
+    </div>
+    <div class="math-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <p>Subtract 1 from both sides:</p>
+        <div class="math-line">5x = 15 → x = <span class="math-highlight green">3</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <p>Substitute x = 3 back into y = 2x + 1:</p>
+        <div class="math-line">y = 2(<span class="math-highlight green">3</span>) + 1 = 6 + 1 = <span class="math-highlight yellow">7</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <div class="step-num">✓</div>
+      <div class="step-content">
+        <p>Verify: Does (3, 7) satisfy BOTH equations?</p>
+        <div class="math-line">y = 2x+1: 7 = 2(3)+1 = 7 ✅<span class="annotation">And: 3(3)+7 = 9+7 = 16 ✅ Solution: x=3, y=7</span></div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Example 2: Solve
+      <div style="font-family:var(--mono);color:var(--purple);margin:0.5rem 0;font-size:1rem">2x + y = 10</div>
+      <div style="font-family:var(--mono);color:var(--purple);font-size:1rem">x − y = 2</div>
+    </h3>
+    <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>From the 2nd equation, isolate x: x = y + 2</p></div></div>
+    <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Substitute into equation 1:</p><div class="math-line">2(y + 2) + y = 10 → 2y + 4 + y = 10 → 3y = 6 → y = <span class="math-highlight green">2</span></div></div></div>
+    <div class="math-step"><div class="step-num">3</div><div class="step-content"><p>x = y + 2 = 2 + 2 = <span class="math-highlight yellow">4</span>. &nbsp;Answer: (4, 2) ✅</p></div></div>
+  </div>
+
+  <!-- ELIMINATION -->
+  <div class="tab-content" id="tab-elimination">
+    <div class="explain-box yellow">
+      <h4>➕ Elimination Method — The Idea</h4>
+      <p>Add or subtract the two equations to <strong>eliminate one variable entirely</strong>. Sometimes you first multiply one or both equations so that coefficients match (and cancel).</p>
+      <p><strong>Best when:</strong> coefficients of one variable are already equal or easily made equal.</p>
+    </div>
+
+    <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Example: Solve
+      <div style="font-family:var(--mono);color:var(--yellow);margin:0.5rem 0;font-size:1rem">3x + 2y = 12 &nbsp;— Equation ①</div>
+      <div style="font-family:var(--mono);color:var(--yellow);font-size:1rem">x − 2y = 4 &nbsp;&nbsp;&nbsp;— Equation ②</div>
+    </h3>
+    <div class="math-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <p>Notice: equation ① has +2y and equation ② has −2y. If we ADD them, the y terms cancel!</p>
+        <div class="math-line">
+          &nbsp;&nbsp;3x + 2y = 12<br>
+          <span style="color:var(--muted)">+</span> x − 2y = 4<br>
+          <span style="border-top:1px solid var(--border);display:block;padding-top:4px">4x &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 16</span>
+          <span class="annotation">The 2y and -2y cancel perfectly</span>
+        </div>
+      </div>
+    </div>
+    <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Solve for x: 4x = 16 → x = <span class="math-highlight green">4</span></p></div></div>
+    <div class="math-step"><div class="step-num">3</div><div class="step-content"><p>Substitute x=4 into equation ②: 4 − 2y = 4 → −2y = 0 → y = <span class="math-highlight yellow">0</span></p></div></div>
+    <div class="math-step"><div class="step-num">✓</div><div class="step-content"><p>Check: 3(4)+2(0)=12 ✅ and 4−2(0)=4 ✅ &nbsp; Answer: (4, 0)</p></div></div>
+
+    <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Example with Multiplication: Solve
+      <div style="font-family:var(--mono);color:var(--orange);margin:0.5rem 0;font-size:1rem">2x + 3y = 7 &nbsp;— Equation ①</div>
+      <div style="font-family:var(--mono);color:var(--orange);font-size:1rem">4x − y = 9 &nbsp;&nbsp;— Equation ②</div>
+    </h3>
+    <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Multiply Equation ② by 3 to match the y-coefficient:</p><div class="math-line">3 × (4x − y = 9) → 12x − 3y = 27</div></div></div>
+    <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Add to Equation ①: 3y and −3y cancel</p><div class="math-line">2x + 3y = 7<br>+ 12x − 3y = 27<br><span style="border-top:1px solid var(--border);display:block;padding-top:4px">14x = 34 → x = <span class="math-highlight green">17/7 ≈ 2.43</span></span></div></div></div>
+    <div class="math-step"><div class="step-num">3</div><div class="step-content"><p>Substitute back to find y: 2(17/7) + 3y = 7 → 3y = 7 − 34/7 = 15/7 → y = <span class="math-highlight yellow">5/7</span></p></div></div>
+  </div>
+
+  <!-- WORD PROBLEMS -->
+  <div class="tab-content" id="tab-word-problems">
+    <div class="explain-box orange">
+      <h4>📖 Turning Word Problems into Systems</h4>
+      <p>Real-world problems often give you two relationships. Define your variables, write two equations, then solve the system.</p>
+      <p><strong>Steps:</strong> 1) Define variables. 2) Write equation for each relationship. 3) Solve with substitution or elimination.</p>
+    </div>
+
+    <h3 style="margin:1.5rem 0 1rem;font-size:1.1rem">Problem: Tickets</h3>
+    <div class="explain-box" style="border-left:3px solid var(--muted)">
+      <h4 style="color:var(--text)">📝 The Problem</h4>
+      <p style="color:var(--text)">Adult tickets cost $8 and child tickets cost $5. A total of 100 tickets were sold for $620. How many of each type were sold?</p>
+    </div>
+    <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Define variables: Let a = adult tickets, c = child tickets</p></div></div>
+    <div class="math-step"><div class="step-num">2</div><div class="step-content"><p>Write 2 equations from the 2 facts:</p><div class="math-line">a + c = 100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(total tickets)<br>8a + 5c = 620 &nbsp;&nbsp;(total money)</div></div></div>
+    <div class="math-step"><div class="step-num">3</div><div class="step-content"><p>Solve using substitution: a = 100 − c → 8(100−c) + 5c = 620</p><div class="math-line">800 − 8c + 5c = 620 → −3c = −180 → c = <span class="math-highlight green">60</span></div></div></div>
+    <div class="math-step"><div class="step-num">4</div><div class="step-content"><p>a = 100 − 60 = <span class="math-highlight yellow">40</span>. &nbsp; Answer: 40 adult tickets, 60 child tickets</p></div></div>
+
+    <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Problem: Speed</h3>
+    <div class="explain-box" style="border-left:3px solid var(--muted)">
+      <h4 style="color:var(--text)">📝 The Problem</h4>
+      <p style="color:var(--text)">Two trains leave stations 390 miles apart and travel toward each other. Train A goes 70 mph and Train B goes 60 mph. In how many hours do they meet?</p>
+    </div>
+    <div class="math-step"><div class="step-num">1</div><div class="step-content"><p>Let t = time in hours. Combined speed = 70 + 60 = 130 mph. Distance = rate × time:</p><div class="math-line">130t = 390 → t = <span class="math-highlight green">3</span> hours</div></div></div>
+  </div>
+
+  <!-- Systems practice -->
+  <div class="practice-container" style="margin-top:2rem">
+    <div class="practice-header">
+      <h3>🎯 Practice — Systems of Equations</h3>
+      <div class="practice-score">Score: <span id="sys-score">0</span> / <span id="sys-total">0</span></div>
+    </div>
+    <div class="problem-display" id="sys-problem">
+      <div class="problem-text" id="sys-problem-text">Click "New Problem" to start!</div>
+      <div class="problem-hint" id="sys-problem-hint"></div>
+    </div>
+    <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px">
+        <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:4px">x =</label>
+        <input type="text" class="answer-input" id="sys-x" placeholder="value of x" style="width:100%">
+      </div>
+      <div style="flex:1;min-width:140px">
+        <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:4px">y =</label>
+        <input type="text" class="answer-input" id="sys-y" placeholder="value of y" style="width:100%">
+      </div>
+    </div>
+    <div class="answer-row">
+      <button class="btn-check" onclick="checkSys()">Check Answer</button>
+      <button class="btn-next" onclick="nextSys()">New Problem →</button>
+    </div>
+    <div class="feedback-box" id="sys-feedback"></div>
+  </div>
+</section>
+
+<!-- ===== INTERACTIVE SOLVER ===== -->
+<section class="lesson-section" id="solver">
+  <div class="section-label">Interactive Tool</div>
+  <div class="section-title">Step-by-Step System Solver</div>
+  <p class="section-sub">Enter any 2×2 linear system and see every step worked out. Use ax + by = c format.</p>
+
+  <div class="solver-section">
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem">Enter coefficients a, b, c for each equation in the form <code style="font-family:var(--mono)">ax + by = c</code></p>
+
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:0.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;font-weight:700">Equation 1</div>
+      <div class="solver-input-row">
+        <div class="solver-field"><label>a₁ (coefficient of x)</label><input id="a1" type="number" placeholder="e.g. 2" value="2"></div>
+        <div class="solver-field"><label>b₁ (coefficient of y)</label><input id="b1" type="number" placeholder="e.g. 1" value="1"></div>
+      </div>
+      <div class="solver-field"><label>c₁ (right-hand side)</label><input id="c1" type="number" placeholder="e.g. 10" value="10" style="max-width:300px"></div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:0.75rem;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;font-weight:700">Equation 2</div>
+      <div class="solver-input-row">
+        <div class="solver-field"><label>a₂ (coefficient of x)</label><input id="a2" type="number" placeholder="e.g. 1" value="1"></div>
+        <div class="solver-field"><label>b₂ (coefficient of y)</label><input id="b2" type="number" placeholder="e.g. -1" value="-1"></div>
+      </div>
+      <div class="solver-field"><label>c₂ (right-hand side)</label><input id="c2" type="number" placeholder="e.g. 2" value="2" style="max-width:300px"></div>
+    </div>
+
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+      <button class="btn-solve" onclick="solveSystem()">🔢 Solve Step by Step</button>
+      <div id="solver-preview" style="font-family:var(--mono);font-size:0.9rem;color:var(--muted)">2x + y = 10 &nbsp;|&nbsp; x − y = 2</div>
+    </div>
+
+    <div class="solution-steps" id="solution-steps"></div>
+  </div>
+</section>
+
+<!-- ===== QUIZ SECTION ===== -->
+<section class="lesson-section" id="quiz">
+  <div class="section-label">Test Your Knowledge</div>
+  <div class="section-title">Comprehensive Quiz</div>
+  <p class="section-sub">20 questions across all topics. Get instant feedback on each answer.</p>
+
+  <div class="quiz-container">
+    <div class="quiz-question" id="quiz-question">Loading quiz...</div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div class="quiz-nav">
+      <div class="quiz-counter" id="quiz-counter">Question 1 / 20</div>
+      <button class="btn-next" id="quiz-next-btn" onclick="nextQuiz()" style="display:none">Next Question →</button>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="quiz-progress" style="width:5%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GLOSSARY ===== -->
+<section class="lesson-section" id="glossary">
+  <div class="section-label">Reference</div>
+  <div class="section-title">Glossary of Terms</div>
+  <p class="section-sub">Quick definitions for every key concept in this course.</p>
+
+  <div class="glossary-grid">
+    <div class="glossary-card"><div class="term">Variable</div><div class="def">A symbol (usually a letter like x or y) that represents an unknown number you're trying to find.</div><div class="example-line">x + 5 = 12 → x is the variable</div></div>
+    <div class="glossary-card"><div class="term">Coefficient</div><div class="def">The number multiplied by a variable in a term. It tells you how many of that variable you have.</div><div class="example-line">In 7x, the coefficient is 7</div></div>
+    <div class="glossary-card"><div class="term">Constant</div><div class="def">A fixed number in an expression — it has no variable attached to it and never changes.</div><div class="example-line">In 3x + 5, the constant is 5</div></div>
+    <div class="glossary-card"><div class="term">Like Terms</div><div class="def">Terms that have exactly the same variable(s) with exactly the same exponent(s). Only their coefficients may differ.</div><div class="example-line">4x² and -7x² are like terms</div></div>
+    <div class="glossary-card"><div class="term">Expression</div><div class="def">A mathematical phrase with numbers, variables, and operations — but NO equals sign. Cannot be "solved."</div><div class="example-line">3x² + 2x - 1</div></div>
+    <div class="glossary-card"><div class="term">Equation</div><div class="def">A mathematical statement with an equals sign, asserting two expressions are equal. Can be solved.</div><div class="example-line">3x + 2 = 14</div></div>
+    <div class="glossary-card"><div class="term">System of Equations</div><div class="def">Two or more equations with the same variables. Solving means finding values that satisfy ALL equations simultaneously.</div><div class="example-line">y = x+1 and x+y = 5</div></div>
+    <div class="glossary-card"><div class="term">Exponent</div><div class="def">A small number written above and to the right of a base, indicating how many times to multiply the base by itself.</div><div class="example-line">x³ = x·x·x</div></div>
+    <div class="glossary-card"><div class="term">Base</div><div class="def">In an expression with an exponent, the base is the number or variable being raised to a power.</div><div class="example-line">In 5⁴, the base is 5</div></div>
+    <div class="glossary-card"><div class="term">Polynomial</div><div class="def">An expression with one or more terms, each being a variable raised to a non-negative integer exponent.</div><div class="example-line">4x³ - 2x² + x - 7</div></div>
+    <div class="glossary-card"><div class="term">Binomial</div><div class="def">A polynomial with exactly two terms.</div><div class="example-line">(x + 3) or (2y - 5)</div></div>
+    <div class="glossary-card"><div class="term">Substitution</div><div class="def">A method of solving systems where you express one variable in terms of another and plug it into the other equation.</div><div class="example-line">y=2x → plug into x+y=9</div></div>
+    <div class="glossary-card"><div class="term">Elimination</div><div class="def">A method of solving systems by adding or subtracting equations to eliminate one variable.</div><div class="example-line">Add +2y and -2y to cancel y</div></div>
+    <div class="glossary-card"><div class="term">Distributive Property</div><div class="def">A rule stating that a(b+c) = ab + ac. You multiply the outside factor by each term inside the parentheses.</div><div class="example-line">3(x+4) = 3x + 12</div></div>
+    <div class="glossary-card"><div class="term">FOIL</div><div class="def">First, Outer, Inner, Last — a method for multiplying two binomials by ensuring every term of one multiplies every term of the other.</div><div class="example-line">(x+2)(x+3) = x²+5x+6</div></div>
+    <div class="glossary-card"><div class="term">Solution</div><div class="def">The value(s) of the variable(s) that make an equation (or all equations in a system) true.</div><div class="example-line">x=3, y=7 is a solution</div></div>
+  </div>
+</section>
+
+<footer>
+  <p>Built for your cousin and everyone learning algebra 💙 &nbsp;|&nbsp; <span>AlgebraLab</span> — Interactive Math Learning</p>
+  <p style="margin-top:0.5rem">Tip: Use the <span>📖 Cheat Sheet</span> button anytime for quick formulas!</p>
+</footer>
+
+<script>
+// ===================== CHEAT SHEET =====================
+function toggleCheat() {
+  const p = document.getElementById('cheatPanel');
+  const b = document.querySelector('.cheat-toggle');
+  p.classList.toggle('open');
+  b.textContent = p.classList.contains('open') ? '✕ Close' : '📖 Cheat Sheet';
+}
+
+// ===================== TABS =====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===================== SOLVER PREVIEW =====================
+function updatePreview() {
+  const a1=document.getElementById('a1').value||'0';
+  const b1=document.getElementById('b1').value||'0';
+  const c1=document.getElementById('c1').value||'0';
+  const a2=document.getElementById('a2').value||'0';
+  const b2=document.getElementById('b2').value||'0';
+  const c2=document.getElementById('c2').value||'0';
+  const fmt = (v,v2,sign) => {
+    const n=parseFloat(v); const sign2 = parseFloat(v2)<0?'':'+';
+    return `${n}x ${sign2}${v2}y = ${sign}`;
+  };
+  document.getElementById('solver-preview').textContent =
+    `${a1}x + ${b1}y = ${c1}  |  ${a2}x + ${b2}y = ${c2}`;
+}
+['a1','b1','c1','a2','b2','c2'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
+
+function fmtNum(n) {
+  if (Number.isInteger(n)) return String(n);
+  const frac = toFraction(n);
+  return frac || n.toFixed(2);
+}
+function toFraction(n, maxDen=100) {
+  if (Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
+  for (let den = 2; den <= maxDen; den++) {
+    const num = Math.round(n * den);
+    if (Math.abs(num/den - n) < 1e-9) return `${num}/${den}`;
+  }
+  return null;
+}
+
+function solveSystem() {
+  const a1=parseFloat(document.getElementById('a1').value);
+  const b1=parseFloat(document.getElementById('b1').value);
+  const c1=parseFloat(document.getElementById('c1').value);
+  const a2=parseFloat(document.getElementById('a2').value);
+  const b2=parseFloat(document.getElementById('b2').value);
+  const c2=parseFloat(document.getElementById('c2').value);
+
+  const stepsEl = document.getElementById('solution-steps');
+  stepsEl.innerHTML = '';
+  stepsEl.classList.add('show');
+
+  const det = a1*b2 - a2*b1;
+
+  const addStep = (label, title, math, note, delay) => {
+    const div = document.createElement('div');
+    div.className = 'solution-step';
+    div.style.animationDelay = delay + 's';
+    div.innerHTML = `<div class="step-label">${label}</div><div class="step-body"><div class="step-title">${title}</div><div class="step-math">${math}</div><div class="step-note">${note}</div></div>`;
+    stepsEl.appendChild(div);
+  };
+
+  const e1 = `${a1}x + ${b1}y = ${c1}`;
+  const e2 = `${a2}x + ${b2}y = ${c2}`;
+
+  addStep('SETUP', 'Write the system', `① &nbsp;${e1}<br>② &nbsp;${e2}`, 'These are your two equations. We will use the Elimination Method.', 0);
+
+  if (det === 0) {
+    // no or infinite solutions
+    const ratio = c1/a1;
+    if (Math.abs(a2*ratio - c2) < 1e-9) {
+      addStep('RESULT', 'Infinite Solutions', 'The two equations describe the SAME line.', 'Every point on the line is a solution. The system is dependent.', 0.3);
+    } else {
+      addStep('RESULT', 'No Solution', 'The determinant is zero, the lines are parallel.', 'There is no (x, y) that satisfies both equations. The system is inconsistent.', 0.3);
+    }
+    return;
+  }
+
+  const x = (c1*b2 - c2*b1) / det;
+  const y = (a1*c2 - a2*c1) / det;
+
+  // Show elimination steps
+  const mult1 = b2, mult2 = b1;
+  const na1=a1*mult1, nb1=b1*mult1, nc1=c1*mult1;
+  const na2=a2*mult2, nb2=b2*mult2, nc2=c2*mult2;
+
+  addStep('STEP 1', `Multiply ① by ${mult1} and ② by ${mult2} to match y-coefficients`,
+    `① × ${mult1}: &nbsp;${na1}x + ${nb1}y = ${nc1}<br>② × ${mult2}: &nbsp;${na2}x + ${nb2}y = ${nc2}`,
+    `Goal: get the y-coefficients equal so we can eliminate y by subtraction.`, 0.2);
+
+  const rx=na1-na2, ry=nb1-nb2, rc=nc1-nc2;
+  addStep('STEP 2', 'Subtract the two new equations (Eq1 − Eq2)',
+    `(${na1} − ${na2})x + (${nb1} − ${nb2})y = ${nc1} − ${nc2}<br>→ &nbsp;${rx}x + ${ry}y = ${rc}`,
+    `The y terms cancel: ${nb1}y − ${nb2}y = ${ry}y = 0, so y is eliminated.`, 0.4);
+
+  addStep('STEP 3', 'Solve for x',
+    `${rx}x = ${rc}<br>x = ${rc} ÷ ${rx} = ${fmtNum(x)}`,
+    `Divide both sides by the coefficient of x.`, 0.6);
+
+  addStep('STEP 4', `Substitute x = ${fmtNum(x)} into Equation ①`,
+    `${a1}(${fmtNum(x)}) + ${b1}y = ${c1}<br>${(a1*x).toFixed(4).replace(/\.?0+$/,'')} + ${b1}y = ${c1}<br>${b1}y = ${c1 - a1*x}<br>y = ${fmtNum(y)}`,
+    `Plug x back in to find y.`, 0.8);
+
+  addStep('STEP 5', 'Verify the solution',
+    `Check ①: ${a1}(${fmtNum(x)}) + ${b1}(${fmtNum(y)}) = ${(a1*x + b1*y).toFixed(4).replace(/\.?0+$/,'')} ${Math.abs(a1*x+b1*y-c1)<0.001?'✅':'❌'}<br>Check ②: ${a2}(${fmtNum(x)}) + ${b2}(${fmtNum(y)}) = ${(a2*x + b2*y).toFixed(4).replace(/\.?0+$/,'')} ${Math.abs(a2*x+b2*y-c2)<0.001?'✅':'❌'}`,
+    'Substitute both values back into the original equations.', 1.0);
+
+  const resultDiv = document.createElement('div');
+  resultDiv.className = 'solution-step';
+  resultDiv.style.animationDelay = '1.2s';
+  resultDiv.innerHTML = `
+    <div class="step-label" style="background:rgba(105,240,174,0.15);border-color:rgba(105,240,174,0.4);color:var(--green)">ANSWER</div>
+    <div class="step-body">
+      <div class="step-title" style="color:var(--green)">Final Solution</div>
+      <div class="step-math" style="font-size:1.2rem;color:#fff">x = ${fmtNum(x)} &nbsp;&nbsp; y = ${fmtNum(y)}</div>
+      <div class="step-note">The intersection point is (${fmtNum(x)}, ${fmtNum(y)})</div>
+    </div>`;
+  stepsEl.appendChild(resultDiv);
+}
+
+// ===================== LIKE TERMS PRACTICE =====================
+const ltProblems = [
+  { q: 'Simplify: 2x − 5x', hint: 'Both terms have x. Subtract coefficients.', ans: '-3x', explanation: '2−5 = −3, so 2x−5x = −3x' },
+  { q: 'Simplify: 4y + 7y', hint: 'Both terms have y. Add coefficients.', ans: '11y', explanation: '4+7 = 11, so 4y+7y = 11y' },
+  { q: 'Simplify: 3x + 2x − x', hint: 'All are x-terms. Remember: x = 1x', ans: '4x', explanation: '3+2−1 = 4, so the answer is 4x' },
+  { q: 'Simplify: 8a − 3a + a', hint: 'a = 1a. Combine all a-terms.', ans: '6a', explanation: '8−3+1 = 6, so 8a−3a+a = 6a' },
+  { q: 'Simplify: 5x + 3 − 2x + 7', hint: 'Group x-terms and constants separately.', ans: '3x+10', explanation: '(5x−2x) + (3+7) = 3x+10' },
+  { q: 'Simplify: 6y² − 2y + 3y² + y', hint: 'y² and y are NOT like terms! Group separately.', ans: '9y²-y', explanation: '(6+3)y² + (−2+1)y = 9y²−y' },
+  { q: 'Simplify: 4x − 4x', hint: 'The coefficients are equal with opposite signs...', ans: '0', explanation: '4−4 = 0, so 4x−4x = 0' },
+  { q: 'Simplify: 2x + 3y − x + 2y − 5', hint: 'Group x-terms, y-terms, constants.', ans: 'x+5y-5', explanation: '(2−1)x + (3+2)y − 5 = x+5y−5' },
+  { q: 'Simplify: 10n − 4n + 2n', hint: 'All n-terms. Work left to right.', ans: '8n', explanation: '10−4+2 = 8, so 8n' },
+  { q: 'Simplify: −3x + 7 + 5x − 2', hint: 'Watch the negative sign on −3x.', ans: '2x+5', explanation: '(−3+5)x + (7−2) = 2x+5' },
+];
+
+let ltIdx=0, ltCorrect=0, ltAttempted=0;
+function showLT() {
+  const p=ltProblems[ltIdx%ltProblems.length];
+  document.getElementById('lt-problem-text').textContent=p.q;
+  document.getElementById('lt-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('lt-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  const fb=document.getElementById('lt-feedback');
+  fb.classList.remove('show','correct','wrong');
+}
+function normalize(s) {
+  return s.replace(/\s+/g,'').toLowerCase()
+    .replace(/\+-/g,'-').replace(/\+\+/g,'+').replace(/--/g,'+');
+}
+function checkLT() {
+  const p=ltProblems[ltIdx%ltProblems.length];
+  const inp=document.getElementById('lt-answer');
+  const ans=normalize(inp.value);
+  const correct=normalize(p.ans);
+  const fb=document.getElementById('lt-feedback');
+  ltAttempted++;
+  document.getElementById('lt-total').textContent=ltAttempted;
+  if(ans===correct){
+    ltCorrect++;
+    document.getElementById('lt-score').textContent=ltCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! ' + p.explanation;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. The correct answer is <span class="solution">${p.ans}</span><br>${p.explanation}`;
+  }
+  updateLTProgress();
+}
+function updateLTProgress() {
+  const pct=Math.round((ltCorrect/Math.max(ltAttempted,1))*100);
+  document.getElementById('lt-progress').style.width=pct+'%';
+}
+function nextLT() { ltIdx++; showLT(); }
+showLT();
+
+// ===================== EXPONENT PRACTICE =====================
+const expProblems = [
+  { q: 'Simplify: x³ · x⁴', hint: 'Product Rule: add the exponents', ans: 'x^7', explanation: 'x³·x⁴ = x^(3+4) = x^7' },
+  { q: 'Simplify: y⁶ ÷ y²', hint: 'Quotient Rule: subtract the exponents', ans: 'y^4', explanation: 'y⁶÷y² = y^(6-2) = y^4' },
+  { q: 'Simplify: (x²)⁵', hint: 'Power Rule: multiply the exponents', ans: 'x^10', explanation: '(x²)⁵ = x^(2×5) = x^10' },
+  { q: 'What is 5⁰?', hint: 'Zero Exponent Rule: any nonzero base to the 0 power', ans: '1', explanation: 'Any nonzero number raised to 0 = 1' },
+  { q: 'Simplify: x⁻³ (write with positive exponent)', hint: 'Negative Exponent Rule: flip to denominator', ans: '1/x^3', explanation: 'x⁻³ = 1/x³' },
+  { q: 'Simplify: x² · x⁰ · x⁵', hint: 'x⁰=1, then use Product Rule', ans: 'x^7', explanation: 'x²·1·x⁵ = x^(2+5) = x^7' },
+  { q: 'Simplify: (2x³)²', hint: 'Power of a Product: square each factor', ans: '4x^6', explanation: '2²·(x³)² = 4·x^6 = 4x^6' },
+  { q: 'Simplify: x⁵/x⁸', hint: 'Quotient Rule — you will get a negative exponent', ans: '1/x^3', explanation: 'x⁵/x⁸ = x^(5-8) = x^(-3) = 1/x^3' },
+  { q: 'What is 27^(1/3)?', hint: 'Fractional exponent = root. What cubed = 27?', ans: '3', explanation: '27^(1/3) = ∛27 = 3, because 3³=27' },
+  { q: 'Simplify: (x³y²)⁴', hint: 'Distribute the exponent to each base', ans: 'x^12y^8', explanation: 'x^(3×4) · y^(2×4) = x^12 · y^8' },
+];
+
+let expIdx=0, expCorrect=0, expAttempted=0;
+function showExp() {
+  const p=expProblems[expIdx%expProblems.length];
+  document.getElementById('exp-problem-text').textContent=p.q;
+  document.getElementById('exp-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('exp-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  const fb=document.getElementById('exp-feedback');
+  fb.classList.remove('show','correct','wrong');
+}
+function normalizeExp(s) {
+  return s.replace(/\s+/g,'').toLowerCase()
+    .replace(/\*\*/g,'^').replace(/×/g,'*');
+}
+function checkExp() {
+  const p=expProblems[expIdx%expProblems.length];
+  const inp=document.getElementById('exp-answer');
+  const ans=normalizeExp(inp.value);
+  const correct=normalizeExp(p.ans);
+  const fb=document.getElementById('exp-feedback');
+  expAttempted++;
+  document.getElementById('exp-total').textContent=expAttempted;
+  if(ans===correct){
+    expCorrect++;
+    document.getElementById('exp-score').textContent=expCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! ' + p.explanation;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. The answer is <span class="solution">${p.ans}</span><br>${p.explanation}`;
+  }
+}
+function nextExp() { expIdx++; showExp(); }
+showExp();
+
+// ===================== SYSTEMS PRACTICE =====================
+const sysProblems = [
+  { eq1:'y = x + 1', eq2:'x + y = 5', x:2, y:3, method:'Substitute y=x+1 into eq2: x+(x+1)=5 → 2x=4 → x=2, y=3' },
+  { eq1:'2x + y = 10', eq2:'x - y = 2', x:4, y:2, method:'Add equations: 3x=12 → x=4. Then y=4-2=2' },
+  { eq1:'3x + 2y = 12', eq2:'x - 2y = 4', x:4, y:0, method:'Add equations: 4x=16 → x=4. Then 4-2y=4 → y=0' },
+  { eq1:'x + y = 7', eq2:'x - y = 3', x:5, y:2, method:'Add: 2x=10 → x=5. Subtract: 2y=4 → y=2' },
+  { eq1:'2x + 3y = 16', eq2:'x + y = 6', x:2, y:4, method:'From eq2: x=6-y. Sub into eq1: 2(6-y)+3y=16 → 12+y=16 → y=4, x=2' },
+  { eq1:'4x - y = 9', eq2:'2x + y = 9', x:3, y:3, method:'Add: 6x=18 → x=3. Then y=9-6=3' },
+  { eq1:'y = 3x - 2', eq2:'y = x + 4', x:3, y:7, method:'Set equal: 3x-2=x+4 → 2x=6 → x=3, y=7' },
+  { eq1:'x + 2y = 8', eq2:'3x - 2y = 8', x:4, y:2, method:'Add: 4x=16 → x=4. Then 4+2y=8 → y=2' },
+];
+
+let sysIdx=0, sysCorrect=0, sysAttempted=0, sysProblem=null;
+function showSys() {
+  sysProblem=sysProblems[sysIdx%sysProblems.length];
+  document.getElementById('sys-problem-text').innerHTML = sysProblem.eq1 + '<br>' + sysProblem.eq2;
+  document.getElementById('sys-problem-hint').textContent='Find x and y that satisfy both equations.';
+  document.getElementById('sys-x').value='';
+  document.getElementById('sys-y').value='';
+  document.getElementById('sys-x').classList.remove('correct','wrong');
+  document.getElementById('sys-y').classList.remove('correct','wrong');
+  document.getElementById('sys-feedback').classList.remove('show','correct','wrong');
+}
+function checkSys() {
+  if(!sysProblem){nextSys();return;}
+  const xv=parseFloat(document.getElementById('sys-x').value);
+  const yv=parseFloat(document.getElementById('sys-y').value);
+  const fb=document.getElementById('sys-feedback');
+  sysAttempted++;
+  document.getElementById('sys-total').textContent=sysAttempted;
+  if(Math.abs(xv-sysProblem.x)<0.01 && Math.abs(yv-sysProblem.y)<0.01){
+    sysCorrect++;
+    document.getElementById('sys-score').textContent=sysCorrect;
+    document.getElementById('sys-x').classList.add('correct');
+    document.getElementById('sys-y').classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML=`✅ Correct! x = ${sysProblem.x}, y = ${sysProblem.y}<br><span style="color:#b0bcd8;font-size:0.85rem">${sysProblem.method}</span>`;
+  } else {
+    document.getElementById('sys-x').classList.add('wrong');
+    document.getElementById('sys-y').classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. The solution is x = ${sysProblem.x}, y = ${sysProblem.y}<br><span style="color:#b0bcd8;font-size:0.85rem">${sysProblem.method}</span>`;
+  }
+}
+function nextSys() { sysIdx++; showSys(); }
+showSys();
+
+// ===================== QUIZ =====================
+const quizData = [
+  { q:'What is 6x − 10x?', opts:['−4x','16x','4x','−16x'], ans:0, exp:'6−10 = −4, so 6x−10x = −4x' },
+  { q:'What does "like terms" mean?', opts:['Terms with the same number','Terms with same variable AND exponent','Terms that add to zero','Terms on the left side'], ans:1, exp:'Like terms must have the same variable(s) raised to the same power.' },
+  { q:'Simplify: 5y + 3 − 2y + 7', opts:['3y+10','7y+10','3y−4','10y'], ans:0, exp:'(5y−2y)+(3+7) = 3y+10' },
+  { q:'What is the result of x³ · x⁵?', opts:['x¹⁵','x⁸','2x⁸','x²'], ans:1, exp:'Product Rule: add exponents. x^(3+5) = x^8' },
+  { q:'Simplify (x²)⁴', opts:['x⁶','x⁸','4x²','x²⁴'], ans:1, exp:'Power Rule: multiply exponents. x^(2×4) = x^8' },
+  { q:'What is any nonzero number raised to the 0 power?', opts:['0','The number itself','1','Undefined'], ans:2, exp:'x⁰ = 1 for any x ≠ 0. This is the Zero Exponent Rule.' },
+  { q:'Solve: 3x + 6 = 21', opts:['x = 9','x = 5','x = 7','x = 4'], ans:1, exp:'3x = 21−6 = 15, then x = 15÷3 = 5' },
+  { q:'What is x⁻² written with a positive exponent?', opts:['−x²','2x','1/x²','x²'], ans:2, exp:'Negative exponent means reciprocal: x⁻² = 1/x²' },
+  { q:'Which method involves replacing a variable with an expression?', opts:['Elimination','Substitution','FOIL','Factoring'], ans:1, exp:'Substitution means solving for one variable and plugging that expression into the other equation.' },
+  { q:'What do you call the number in front of a variable (e.g., the 4 in 4x)?', opts:['Exponent','Constant','Coefficient','Variable'], ans:2, exp:'The coefficient is the numerical multiplier of a variable.' },
+  { q:'Solve the system: x+y=5 and x−y=1', opts:['x=3,y=2','x=2,y=3','x=4,y=1','x=1,y=4'], ans:0, exp:'Add: 2x=6→x=3. Subtract: 2y=4→y=2.' },
+  { q:'Expand: 3(2x − 4)', opts:['6x−4','6x−12','5x−7','3x−12'], ans:1, exp:'Distribute 3: 3·2x = 6x and 3·(−4) = −12. So 6x−12.' },
+  { q:'What is the FOIL of (x+2)(x+5)?', opts:['x²+7x+10','x²+10x+7','x²+7','2x+7'], ans:0, exp:'F:x², O:5x, I:2x, L:10. Total: x²+(5x+2x)+10 = x²+7x+10' },
+  { q:'Simplify: (2x³)³', opts:['6x⁶','8x⁹','2x⁶','6x⁹'], ans:1, exp:'Power of a Product: 2³=8, (x³)³=x⁹. Answer: 8x⁹' },
+  { q:'If 4x = 28, what is x?', opts:['7','24','112','4'], ans:0, exp:'Divide both sides by 4: x = 28÷4 = 7' },
+  { q:'What is the Quotient Rule for exponents?', opts:['x^a · x^b = x^(a+b)','x^a / x^b = x^(a-b)','(x^a)^b = x^(ab)','x^0 = 1'], ans:1, exp:'When dividing same base, subtract exponents: x^a ÷ x^b = x^(a-b)' },
+  { q:'Simplify: 5x² + 3x − 2x² + x', opts:['3x²+4x','6x²+2x','3x²+2x','7x²'], ans:0, exp:'(5x²−2x²) + (3x+x) = 3x²+4x' },
+  { q:'Which of these pairs are NOT like terms?', opts:['3x and 7x','5y and −2y','4x² and 4x','8 and −3'], ans:2, exp:'4x² has exponent 2 and 4x has exponent 1. Different exponents = NOT like terms.' },
+  { q:'To solve 2x + y = 7 and x − y = 2 by elimination, what do you do?', opts:['Multiply both by 2','Add the equations to cancel y','Subtract x from both sides','Divide by y'], ans:1, exp:'Adding: (2x+x) + (y−y) = 7+2 → 3x = 9 → x=3. Then y=7−6=1.' },
+  { q:'What is 16^(1/2)?', opts:['8','4','2','32'], ans:1, exp:'Fractional exponent 1/2 means square root. √16 = 4.' },
+];
+
+let quizIdx=0, quizCorrect=0, quizAnswered=false;
+function renderQuiz() {
+  if(quizIdx>=quizData.length){
+    document.getElementById('quiz-question').textContent=`🎉 Quiz Complete! You scored ${quizCorrect} out of ${quizData.length}`;
+    document.getElementById('quiz-options').innerHTML='';
+    document.getElementById('quiz-feedback').classList.remove('show');
+    document.getElementById('quiz-next-btn').style.display='none';
+    document.getElementById('quiz-counter').textContent=`Final Score: ${quizCorrect}/${quizData.length} (${Math.round(quizCorrect/quizData.length*100)}%)`;
+    document.getElementById('quiz-progress').style.width='100%';
+    return;
+  }
+  const q=quizData[quizIdx];
+  quizAnswered=false;
+  document.getElementById('quiz-question').textContent=`Q${quizIdx+1}. ${q.q}`;
+  document.getElementById('quiz-counter').textContent=`Question ${quizIdx+1} / ${quizData.length}`;
+  document.getElementById('quiz-progress').style.width=((quizIdx+1)/quizData.length*100)+'%';
+  document.getElementById('quiz-next-btn').style.display='none';
+  document.getElementById('quiz-feedback').classList.remove('show','correct','wrong');
+
+  const optsEl=document.getElementById('quiz-options');
+  optsEl.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-option';
+    btn.textContent=opt;
+    btn.onclick=()=>selectQuizOpt(i);
+    optsEl.appendChild(btn);
+  });
+}
+function selectQuizOpt(idx) {
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizData[quizIdx];
+  const opts=document.querySelectorAll('.quiz-option');
+  opts[idx].classList.add('selected', idx===q.ans?'correct':'wrong');
+  opts[q.ans].classList.add('reveal','correct');
+  const fb=document.getElementById('quiz-feedback');
+  if(idx===q.ans){
+    quizCorrect++;
+    fb.className='quiz-feedback show correct';
+    fb.innerHTML='✅ Correct! '+q.exp;
+  } else {
+    fb.className='quiz-feedback show wrong';
+    fb.innerHTML=`❌ Not quite. The answer is <strong>${q.opts[q.ans]}</strong>. ${q.exp}`;
+  }
+  document.getElementById('quiz-next-btn').style.display='block';
+}
+function nextQuiz() { quizIdx++; renderQuiz(); }
+renderQuiz();
+</script>
+</body>
+</html>
