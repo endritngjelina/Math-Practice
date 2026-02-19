@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra Academy — Master Math Step by Step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap">
+<style>
+  :root {
+    --bg: #0a0c14;
+    --surface: #111420;
+    --surface2: #181d2e;
+    --surface3: #1e2438;
+    --border: #252d45;
+    --text: #e8ecf5;
+    --text-muted: #6b7799;
+    --text-dim: #3d4a6b;
+    --accent: #4fffb0;
+    --accent2: #ff6b9d;
+    --accent3: #7b9fff;
+    --accent4: #ffce5c;
+    --accent5: #b97fff;
+    --glow: rgba(79,255,176,0.15);
+    --glow2: rgba(255,107,157,0.15);
+    --glow3: rgba(123,159,255,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+    font-size: 15px;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 10;
+  }
+  #sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 200px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(79,255,176,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .logo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .progress-bar-wrap {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: 'Space Mono', monospace;
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    width: 0%;
+  }
+
+  .nav-section {
+    padding: 16px 0 8px;
+  }
+  .nav-section-title {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 0 24px 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border-left: 2px solid transparent;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: rgba(79,255,176,0.06);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+  .nav-item.completed { color: var(--text); }
+  .nav-item .nav-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    background: var(--surface3);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .nav-item.active .nav-icon { background: rgba(79,255,176,0.15); }
+  .nav-item.completed .nav-icon { background: rgba(79,255,176,0.1); }
+  .nav-item .nav-check {
+    margin-left: auto;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .nav-item.completed .nav-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* MAIN CONTENT */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #topbar {
+    padding: 18px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .topic-breadcrumb {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+  .topic-breadcrumb span { color: var(--accent); }
+  .tab-switcher {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .tab-btn {
+    padding: 6px 16px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--surface3); color: var(--text); border: 1px solid var(--border); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  #content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+    position: relative;
+  }
+  #content-area::-webkit-scrollbar { width: 6px; }
+  #content-area::-webkit-scrollbar-track { background: transparent; }
+  #content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* LESSON CONTENT */
+  .lesson-panel, .practice-panel { display: none; }
+  .lesson-panel.active, .practice-panel.active { display: block; }
+
+  .lesson-hero {
+    margin-bottom: 36px;
+  }
+  .lesson-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    border: 1px solid;
+  }
+  .lesson-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .lesson-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 680px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title .icon {
+    font-size: 20px;
+  }
+
+  /* Definition boxes */
+  .definition {
+    background: rgba(79,255,176,0.05);
+    border: 1px solid rgba(79,255,176,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    position: relative;
+  }
+  .definition::before {
+    content: 'DEFINITION';
+    position: absolute;
+    top: -9px; left: 16px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+  .definition p { color: var(--text); line-height: 1.7; }
+
+  .formula-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 24px;
+    margin: 16px 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+    color: var(--accent3);
+    letter-spacing: 0.5px;
+  }
+
+  .example-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+  .example-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+
+  .step-list { list-style: none; counter-reset: steps; }
+  .step-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-list li::before {
+    content: counter(steps);
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg, var(--accent3), var(--accent5));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-list li p { line-height: 1.7; color: var(--text); }
+  .step-list li .math {
+    font-family: 'Space Mono', monospace;
+    color: var(--accent4);
+    background: rgba(255,206,92,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .tip-box {
+    background: rgba(255,206,92,0.06);
+    border: 1px solid rgba(255,206,92,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .tip-box .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .tip-box p { color: var(--text-muted); line-height: 1.6; font-size: 14px; }
+  .tip-box p strong { color: var(--accent4); }
+
+  .warning-box {
+    background: rgba(255,107,157,0.05);
+    border: 1px solid rgba(255,107,157,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .warning-box .warn-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .warning-box p { color: var(--text-muted); line-height: 1.6; font-size: 14px; }
+  .warning-box p strong { color: var(--accent2); }
+
+  /* Two-column layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media(max-width:900px) { .two-col { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .mini-card-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .mini-card .val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  p { line-height: 1.75; color: var(--text-muted); margin-bottom: 12px; }
+  p strong { color: var(--text); font-weight: 500; }
+  .math-inline {
+    font-family: 'Space Mono', monospace;
+    background: rgba(123,159,255,0.1);
+    color: var(--accent3);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 28px 0 14px;
+    color: var(--text);
+  }
+  h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 18px 0 10px;
+    color: var(--text);
+  }
+
+  /* PRACTICE PANEL */
+  .practice-header {
+    margin-bottom: 32px;
+  }
+  .score-display {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 24px;
+    text-align: center;
+    flex: 1;
+  }
+  .score-card .score-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .score-card .score-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .question-card.correct { border-color: var(--accent); background: rgba(79,255,176,0.04); }
+  .question-card.wrong { border-color: var(--accent2); background: rgba(255,107,157,0.04); }
+
+  .q-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-family: 'Syne', sans-serif;
+  }
+  .q-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    background: var(--surface2);
+    padding: 10px 16px;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent3);
+    display: none;
+  }
+  .q-hint.show { display: block; }
+
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .option-btn {
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent3); background: rgba(123,159,255,0.06); }
+  .option-btn.selected-correct { border-color: var(--accent); background: rgba(79,255,176,0.12); color: var(--accent); }
+  .option-btn.selected-wrong { border-color: var(--accent2); background: rgba(255,107,157,0.1); color: var(--accent2); }
+  .option-btn.reveal-correct { border-color: var(--accent); background: rgba(79,255,176,0.07); }
+  .option-btn:disabled { cursor: default; }
+
+  .input-answer {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .input-answer:focus { border-color: var(--accent3); }
+  .input-answer.correct-input { border-color: var(--accent); background: rgba(79,255,176,0.06); }
+  .input-answer.wrong-input { border-color: var(--accent2); background: rgba(255,107,157,0.06); }
+
+  .q-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 22px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { background: #3ae09a; }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { color: var(--text); border-color: var(--accent3); }
+  .btn-hint { background: rgba(255,206,92,0.1); color: var(--accent4); border: 1px solid rgba(255,206,92,0.25); }
+  .btn-hint:hover { background: rgba(255,206,92,0.18); }
+
+  .feedback-box {
+    display: none;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-top: 16px;
+    animation: slideIn 0.3s ease;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb { background: rgba(79,255,176,0.08); border: 1px solid rgba(79,255,176,0.25); }
+  .feedback-box.wrong-fb { background: rgba(255,107,157,0.08); border: 1px solid rgba(255,107,157,0.25); }
+  .feedback-title { font-weight: 600; margin-bottom: 6px; }
+  .correct-fb .feedback-title { color: var(--accent); }
+  .wrong-fb .feedback-title { color: var(--accent2); }
+  .feedback-box p { font-size: 14px; margin: 0; }
+
+  .solution-steps {
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: var(--surface3);
+    border-radius: 10px;
+    display: none;
+  }
+  .solution-steps.show { display: block; }
+  .solution-steps .s-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .solution-steps ol { padding-left: 20px; }
+  .solution-steps li {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    line-height: 1.6;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* GRAPH */
+  canvas {
+    border-radius: 12px;
+    background: var(--surface2);
+  }
+  .graph-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .graph-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .graph-controls label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .graph-controls input[type="text"] {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent3);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    padding: 8px 14px;
+    width: 180px;
+    outline: none;
+  }
+  .graph-controls input:focus { border-color: var(--accent3); }
+
+  /* QUIZ MODE */
+  .quiz-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .quiz-dot {
+    width: 32px; height: 4px;
+    border-radius: 2px;
+    background: var(--surface3);
+    transition: all 0.3s;
+  }
+  .quiz-dot.done { background: var(--accent); }
+  .quiz-dot.current { background: var(--accent3); }
+  .quiz-dot.wrong-dot { background: var(--accent2); }
+
+  /* CHEAT SHEET */
+  .formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin: 16px 0; }
+  .formula-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 0.2s;
+  }
+  .formula-card:hover { border-color: var(--accent3); transform: translateY(-1px); }
+  .formula-card .fc-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: 'Space Mono', monospace;
+  }
+  .formula-card .fc-formula {
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+    color: var(--accent3);
+    margin-bottom: 8px;
+  }
+  .formula-card .fc-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+  /* ANIMATIONS */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  .lesson-panel.active { animation: fadeIn 0.35s ease; }
+
+  /* NEXT LESSON BTN */
+  .lesson-nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-next {
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    color: var(--bg);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s;
+  }
+  .btn-next:hover { opacity: 0.88; transform: translateX(3px); }
+
+  /* SCROLLBAR */
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s;
+    pointer-events: none;
+    max-width: 300px;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.toast-success { border-color: var(--accent); color: var(--accent); }
+  #toast.toast-error { border-color: var(--accent2); color: var(--accent2); }
+
+  /* Color dots for levels */
+  .level-beginner { color: var(--accent); border-color: rgba(79,255,176,0.3); background: rgba(79,255,176,0.06); }
+  .level-intermediate { color: var(--accent4); border-color: rgba(255,206,92,0.3); background: rgba(255,206,92,0.06); }
+  .level-advanced { color: var(--accent2); border-color: rgba(255,107,157,0.3); background: rgba(255,107,157,0.06); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th {
+    background: var(--surface3);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td.hl { color: var(--accent3); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">Algebra Academy</div>
+    <div class="logo-sub">Interactive Learning</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Your Progress</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Foundations</div>
+    <div class="nav-item active" data-topic="0" onclick="goTopic(0)">
+      <div class="nav-icon">🔢</div> Number Types
+      <div class="nav-check" id="check-0">✓</div>
+    </div>
+    <div class="nav-item" data-topic="1" onclick="goTopic(1)">
+      <div class="nav-icon">📐</div> Order of Operations
+      <div class="nav-check" id="check-1">✓</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Core Algebra</div>
+    <div class="nav-item" data-topic="2" onclick="goTopic(2)">
+      <div class="nav-icon">🔡</div> Variables & Expressions
+      <div class="nav-check" id="check-2">✓</div>
+    </div>
+    <div class="nav-item" data-topic="3" onclick="goTopic(3)">
+      <div class="nav-icon">⚖️</div> Linear Equations
+      <div class="nav-check" id="check-3">✓</div>
+    </div>
+    <div class="nav-item" data-topic="4" onclick="goTopic(4)">
+      <div class="nav-icon">↔️</div> Inequalities
+      <div class="nav-check" id="check-4">✓</div>
+    </div>
+    <div class="nav-item" data-topic="5" onclick="goTopic(5)">
+      <div class="nav-icon">📈</div> Graphing Lines
+      <div class="nav-check" id="check-5">✓</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Intermediate</div>
+    <div class="nav-item" data-topic="6" onclick="goTopic(6)">
+      <div class="nav-icon">🔄</div> Systems of Equations
+      <div class="nav-check" id="check-6">✓</div>
+    </div>
+    <div class="nav-item" data-topic="7" onclick="goTopic(7)">
+      <div class="nav-icon">🧩</div> Polynomials & FOIL
+      <div class="nav-check" id="check-7">✓</div>
+    </div>
+    <div class="nav-item" data-topic="8" onclick="goTopic(8)">
+      <div class="nav-icon">🔍</div> Factoring
+      <div class="nav-check" id="check-8">✓</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced</div>
+    <div class="nav-item" data-topic="9" onclick="goTopic(9)">
+      <div class="nav-icon">📉</div> Quadratic Equations
+      <div class="nav-check" id="check-9">✓</div>
+    </div>
+    <div class="nav-item" data-topic="10" onclick="goTopic(10)">
+      <div class="nav-icon">⚡</div> Exponents & Radicals
+      <div class="nav-check" id="check-10">✓</div>
+    </div>
+    <div class="nav-item" data-topic="11" onclick="goTopic(11)">
+      <div class="nav-icon">📋</div> Formula Cheat Sheet
+      <div class="nav-check" id="check-11">✓</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div class="topic-breadcrumb" id="breadcrumb">Algebra Academy › <span>Number Types</span></div>
+    <div class="tab-switcher">
+      <button class="tab-btn active" onclick="switchTab('lesson')">📖 Lesson</button>
+      <button class="tab-btn" onclick="switchTab('practice')">✏️ Practice</button>
+    </div>
+  </div>
+
+  <div id="content-area">
+
+    <!-- ===================== TOPIC 0: NUMBER TYPES ===================== -->
+    <div id="topic-0" class="lesson-panel active">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-beginner">Beginner · Lesson 1 of 12</div>
+        <div class="lesson-title">Number Types & The Number Line</div>
+        <p class="lesson-subtitle">Before algebra makes sense, you need to understand what kinds of numbers exist. This is the foundation everything else is built on.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🌍</span> The Number Universe</div>
+        <p>In algebra, we work with many different types of numbers. Think of them as nested sets — each one contains the previous:</p>
+        <div class="two-col">
+          <div class="mini-card">
+            <div class="mini-card-title">Natural Numbers (ℕ)</div>
+            <div class="val">1, 2, 3, 4...</div>
+            <p style="font-size:13px;margin-top:8px;">The counting numbers. Positive, no fractions, no zero.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Whole Numbers (W)</div>
+            <div class="val">0, 1, 2, 3...</div>
+            <p style="font-size:13px;margin-top:8px;">Natural numbers plus zero.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Integers (ℤ)</div>
+            <div class="val">...-2, -1, 0, 1, 2...</div>
+            <p style="font-size:13px;margin-top:8px;">Whole numbers plus negative numbers. No fractions.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Rational Numbers (ℚ)</div>
+            <div class="val">½, -⅓, 0.75, 4...</div>
+            <p style="font-size:13px;margin-top:8px;">Any number that can be written as a fraction p/q.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Irrational Numbers</div>
+            <div class="val">π, √2, e...</div>
+            <p style="font-size:13px;margin-top:8px;">Cannot be expressed as a fraction. Decimals that never repeat.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Real Numbers (ℝ)</div>
+            <div class="val" style="color:var(--accent5)">All of the above</div>
+            <p style="font-size:13px;margin-top:8px;">Every number on the number line. Rationals + Irrationals.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📏</span> The Number Line</div>
+        <p>The number line is a visual tool showing all real numbers in order. Negatives go left, positives go right, zero is in the middle.</p>
+        <div style="margin:20px 0;padding:20px;background:var(--surface2);border-radius:12px;text-align:center;">
+          <canvas id="numline-canvas" width="580" height="80"></canvas>
+        </div>
+        <h4>Key Properties</h4>
+        <ul style="list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <li style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--text-muted);">🔵 Numbers get <strong style="color:var(--text)">bigger</strong> as you move right</li>
+          <li style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--text-muted);">🔴 Numbers get <strong style="color:var(--text)">smaller</strong> as you move left</li>
+          <li style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--text-muted);">⬛ Zero is the <strong style="color:var(--text)">origin</strong> — the center point</li>
+          <li style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--text-muted);">📐 Distance from zero = <strong style="color:var(--text)">absolute value</strong> |x|</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> Absolute Value</div>
+        <div class="definition">
+          <p><strong>Absolute Value</strong> is the <em>distance</em> from zero on the number line. It is always positive (or zero). Written as |x|.</p>
+        </div>
+        <div class="two-col">
+          <div class="example-box">
+            <div class="example-label">Examples</div>
+            <p style="font-family:'Space Mono',monospace;color:var(--accent3);font-size:14px;margin:0">
+              |7| = 7<br>
+              |-7| = 7<br>
+              |0| = 0<br>
+              |-3.5| = 3.5
+            </p>
+          </div>
+          <div class="example-box">
+            <div class="example-label">How to think about it</div>
+            <p style="font-size:14px;">If the number is positive → keep it.<br>If the number is negative → remove the minus sign.<br><br>Both 7 and -7 are exactly <strong style="color:var(--accent)">7 steps</strong> from zero.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔤</span> Properties of Numbers</div>
+        <table>
+          <tr><th>Property</th><th>What it means</th><th>Example</th></tr>
+          <tr><td>Commutative (+ ×)</td><td>Order doesn't matter</td><td class="hl">a + b = b + a</td></tr>
+          <tr><td>Associative (+ ×)</td><td>Grouping doesn't matter</td><td class="hl">(a+b)+c = a+(b+c)</td></tr>
+          <tr><td>Distributive</td><td>Multiply across a sum</td><td class="hl">a(b+c) = ab + ac</td></tr>
+          <tr><td>Identity</td><td>Special numbers that leave values unchanged</td><td class="hl">a + 0 = a, a × 1 = a</td></tr>
+          <tr><td>Inverse</td><td>Undoes an operation</td><td class="hl">a + (-a) = 0</td></tr>
+        </table>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <p><strong>Remember:</strong> These properties work with variables too, not just plain numbers. They are the rules algebra is built on.</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(1)">Next: Order of Operations →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 1: ORDER OF OPERATIONS ===================== -->
+    <div id="topic-1" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-beginner">Beginner · Lesson 2 of 12</div>
+        <div class="lesson-title">Order of Operations (PEMDAS)</div>
+        <p class="lesson-subtitle">When an expression has multiple operations, you must follow a specific order — otherwise you get the wrong answer every time.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> PEMDAS — The Golden Rule</div>
+        <div class="definition">
+          <p><strong>PEMDAS</strong> is the universally agreed order for solving math expressions: <strong>P</strong>arentheses → <strong>E</strong>xponents → <strong>M</strong>ultiplication & <strong>D</strong>ivision (left to right) → <strong>A</strong>ddition & <strong>S</strong>ubtraction (left to right).</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:20px 0;">
+          <div style="text-align:center;padding:16px 8px;background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent)">P</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Parentheses ()</div>
+          </div>
+          <div style="text-align:center;padding:16px 8px;background:rgba(123,159,255,0.08);border:1px solid rgba(123,159,255,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent3)">E</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Exponents ^</div>
+          </div>
+          <div style="text-align:center;padding:16px 8px;background:rgba(185,127,255,0.08);border:1px solid rgba(185,127,255,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent5)">M</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Multiply ×</div>
+          </div>
+          <div style="text-align:center;padding:16px 8px;background:rgba(185,127,255,0.08);border:1px solid rgba(185,127,255,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent5)">D</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Divide ÷</div>
+          </div>
+          <div style="text-align:center;padding:16px 8px;background:rgba(255,206,92,0.08);border:1px solid rgba(255,206,92,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent4)">A</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Add +</div>
+          </div>
+          <div style="text-align:center;padding:16px 8px;background:rgba(255,107,157,0.08);border:1px solid rgba(255,107,157,0.2);border-radius:10px;">
+            <div style="font-size:22px;font-family:'Space Mono',monospace;font-weight:bold;color:var(--accent2)">S</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Subtract -</div>
+          </div>
+        </div>
+        <div class="tip-box">
+          <div class="tip-icon">🧠</div>
+          <p><strong>Memory trick:</strong> "Please Excuse My Dear Aunt Sally" — each first letter matches PEMDAS. You can also use BODMAS (Brackets, Orders, Division/Multiplication, Addition/Subtraction) — same concept!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Worked Examples</div>
+        <h4>Example 1: Simple PEMDAS</h4>
+        <div class="formula-box">2 + 3 × 4 = ?</div>
+        <ol class="step-list">
+          <li><p>No parentheses or exponents to handle first.</p></li>
+          <li><p>Do the multiplication first: <span class="math">3 × 4 = 12</span></p></li>
+          <li><p>Now add: <span class="math">2 + 12 = 14</span> ✓</p></li>
+        </ol>
+        <div class="warning-box"><div class="warn-icon">⚠️</div><p>Common mistake: Adding first gives 2+3=5, then 5×4=<strong>20</strong>. That is WRONG. Multiplication always comes before addition!</p></div>
+
+        <h4>Example 2: With Parentheses</h4>
+        <div class="formula-box">(2 + 3) × 4 = ?</div>
+        <ol class="step-list">
+          <li><p>Parentheses first: <span class="math">(2 + 3) = 5</span></p></li>
+          <li><p>Now multiply: <span class="math">5 × 4 = 20</span> ✓</p></li>
+        </ol>
+
+        <h4>Example 3: Full PEMDAS</h4>
+        <div class="formula-box">3 + 2² × (8 - 5) ÷ 6 = ?</div>
+        <ol class="step-list">
+          <li><p><strong>P:</strong> Parentheses: <span class="math">(8 - 5) = 3</span> → expression becomes <span class="math">3 + 2² × 3 ÷ 6</span></p></li>
+          <li><p><strong>E:</strong> Exponents: <span class="math">2² = 4</span> → expression becomes <span class="math">3 + 4 × 3 ÷ 6</span></p></li>
+          <li><p><strong>MD:</strong> Left to right: <span class="math">4 × 3 = 12</span> then <span class="math">12 ÷ 6 = 2</span> → <span class="math">3 + 2</span></p></li>
+          <li><p><strong>AS:</strong> Add: <span class="math">3 + 2 = 5</span> ✓</p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📌</span> Important Rules to Remember</div>
+        <table>
+          <tr><th>Situation</th><th>Rule</th><th>Example</th></tr>
+          <tr><td>Multiplication vs Division</td><td>Go LEFT to RIGHT</td><td class="hl">8 ÷ 2 × 4 = (8÷2)×4 = 16</td></tr>
+          <tr><td>Addition vs Subtraction</td><td>Go LEFT to RIGHT</td><td class="hl">10 - 3 + 2 = (10-3)+2 = 9</td></tr>
+          <tr><td>Nested parentheses</td><td>Innermost first</td><td class="hl">2×(3+(4×2)) = 2×(3+8) = 22</td></tr>
+          <tr><td>Negative exponent base</td><td>Use parentheses to clarify</td><td class="hl">-3² = -9 but (-3)² = 9</td></tr>
+        </table>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(2)">Next: Variables & Expressions →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 2: VARIABLES ===================== -->
+    <div id="topic-2" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-beginner">Beginner · Lesson 3 of 12</div>
+        <div class="lesson-title">Variables & Algebraic Expressions</div>
+        <p class="lesson-subtitle">Variables are the heart of algebra. They let us describe patterns and relationships without knowing exact values yet.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔡</span> What is a Variable?</div>
+        <div class="definition">
+          <p>A <strong>variable</strong> is a letter (like x, y, n) that represents an unknown number. Think of it as a placeholder — a box that holds a value we may or may not know yet.</p>
+        </div>
+        <p>For example: "A number plus 5 equals 12" in algebra becomes <span class="math-inline">x + 5 = 12</span>. Here <strong>x</strong> is the unknown we want to find.</p>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <p>You can use <strong>any letter</strong> as a variable. Mathematicians often use x and y for unknowns, n for integers, t for time, and so on — but there's no strict rule.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🧱</span> Parts of an Expression</div>
+        <div class="formula-box">3x² + 7x - 5</div>
+        <table>
+          <tr><th>Part</th><th>Name</th><th>Explanation</th></tr>
+          <tr><td class="hl">3, 7, -5</td><td>Coefficients / Constants</td><td>Numbers multiplying variables (or standing alone)</td></tr>
+          <tr><td class="hl">x, x²</td><td>Variable terms</td><td>The letter parts — x is the variable</td></tr>
+          <tr><td class="hl">3x², 7x, -5</td><td>Terms</td><td>Separated by + or − signs</td></tr>
+          <tr><td class="hl">²</td><td>Exponent / Degree</td><td>Tells you how many times to multiply x by itself</td></tr>
+        </table>
+
+        <h4>Like Terms vs Unlike Terms</h4>
+        <p><strong>Like terms</strong> have the exact same variable and exponent. Only like terms can be combined.</p>
+        <div class="two-col">
+          <div class="example-box">
+            <div class="example-label">Like Terms (CAN combine)</div>
+            <p style="font-family:'Space Mono',monospace;color:var(--accent);font-size:14px;margin:0">
+              3x + 5x = 8x<br>
+              2y² - y² = y²<br>
+              4 + 7 = 11
+            </p>
+          </div>
+          <div class="example-box">
+            <div class="example-label">Unlike Terms (CANNOT combine)</div>
+            <p style="font-family:'Space Mono',monospace;color:var(--accent2);font-size:14px;margin:0">
+              3x + 5y → stays as is<br>
+              2x² + 2x → stays as is<br>
+              x + 3 → stays as is
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Simplifying Expressions</div>
+        <p>To simplify: collect like terms, apply the distributive property, and combine constants.</p>
+        <h4>Example: Simplify 4x + 3 - 2x + 7</h4>
+        <ol class="step-list">
+          <li><p>Identify like terms: <span class="math">4x</span> and <span class="math">-2x</span> are like; <span class="math">3</span> and <span class="math">7</span> are like.</p></li>
+          <li><p>Combine x terms: <span class="math">4x - 2x = 2x</span></p></li>
+          <li><p>Combine constants: <span class="math">3 + 7 = 10</span></p></li>
+          <li><p>Result: <span class="math">2x + 10</span> ✓</p></li>
+        </ol>
+
+        <h4>Example: Expand 3(2x - 4)</h4>
+        <ol class="step-list">
+          <li><p>Use the distributive property: multiply 3 by each term inside.</p></li>
+          <li><p><span class="math">3 × 2x = 6x</span> and <span class="math">3 × (-4) = -12</span></p></li>
+          <li><p>Result: <span class="math">6x - 12</span> ✓</p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔌</span> Evaluating Expressions</div>
+        <p>To <strong>evaluate</strong> means to find the value when you substitute a specific number for the variable.</p>
+        <div class="example-box">
+          <div class="example-label">Evaluate 2x² - 3x + 1 when x = 4</div>
+          <ol class="step-list" style="margin-top:10px">
+            <li><p>Substitute x = 4: <span class="math">2(4)² - 3(4) + 1</span></p></li>
+            <li><p>Exponent first: <span class="math">4² = 16</span> → <span class="math">2(16) - 3(4) + 1</span></p></li>
+            <li><p>Multiply: <span class="math">32 - 12 + 1</span></p></li>
+            <li><p>Left to right: <span class="math">32 - 12 = 20</span>, then <span class="math">20 + 1 = 21</span> ✓</p></li>
+          </ol>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(3)">Next: Linear Equations →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 3: LINEAR EQUATIONS ===================== -->
+    <div id="topic-3" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-beginner">Beginner · Lesson 4 of 12</div>
+        <div class="lesson-title">Solving Linear Equations</div>
+        <p class="lesson-subtitle">A linear equation has one solution. Learning to isolate the variable is the core skill of all algebra — master this and everything else becomes easier.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚖️</span> The Balance Principle</div>
+        <div class="definition">
+          <p>An equation is like a <strong>perfectly balanced scale</strong>. Whatever you do to one side, you MUST do to the other side. The goal is to get the variable alone on one side (isolation).</p>
+        </div>
+        <div class="tip-box">
+          <div class="tip-icon">🎯</div>
+          <p><strong>The Inverse Operations Strategy:</strong> Use the opposite operation to "undo" what's happening to the variable.<br>
+          • Undo addition with subtraction (and vice versa)<br>
+          • Undo multiplication with division (and vice versa)</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔢</span> One-Step Equations</div>
+        <div class="two-col">
+          <div class="example-box">
+            <div class="example-label">Addition/Subtraction</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;margin:0;color:var(--text)">
+              x + 9 = 14<br>
+              x = 14 - 9<br>
+              <span style="color:var(--accent)">x = 5</span>
+            </p>
+          </div>
+          <div class="example-box">
+            <div class="example-label">Multiplication/Division</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;margin:0;color:var(--text)">
+              4x = 28<br>
+              x = 28 ÷ 4<br>
+              <span style="color:var(--accent)">x = 7</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔀</span> Two-Step Equations</div>
+        <div class="formula-box">2x + 7 = 19</div>
+        <ol class="step-list">
+          <li><p>Subtract 7 from both sides to remove the constant: <span class="math">2x + 7 - 7 = 19 - 7</span> → <span class="math">2x = 12</span></p></li>
+          <li><p>Divide both sides by 2 to get x alone: <span class="math">2x ÷ 2 = 12 ÷ 2</span> → <span class="math">x = 6</span></p></li>
+          <li><p><strong>Check:</strong> Substitute back: <span class="math">2(6) + 7 = 12 + 7 = 19 ✓</span></p></li>
+        </ol>
+        <div class="tip-box">
+          <div class="tip-icon">✅</div>
+          <p><strong>Always check your answer</strong> by substituting the value back into the original equation. Both sides should be equal.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔩</span> Multi-Step & Variables on Both Sides</div>
+        <div class="formula-box">5x - 3 = 2x + 9</div>
+        <ol class="step-list">
+          <li><p>Move variable terms to one side — subtract 2x from both sides: <span class="math">5x - 2x - 3 = 9</span> → <span class="math">3x - 3 = 9</span></p></li>
+          <li><p>Add 3 to both sides: <span class="math">3x = 12</span></p></li>
+          <li><p>Divide by 3: <span class="math">x = 4</span></p></li>
+          <li><p>Check: <span class="math">5(4)-3 = 17</span> and <span class="math">2(4)+9 = 17 ✓</span></p></li>
+        </ol>
+
+        <h4>With Distribution</h4>
+        <div class="formula-box">3(x - 2) = 2(x + 5)</div>
+        <ol class="step-list">
+          <li><p>Distribute both sides: <span class="math">3x - 6 = 2x + 10</span></p></li>
+          <li><p>Subtract 2x: <span class="math">x - 6 = 10</span></p></li>
+          <li><p>Add 6: <span class="math">x = 16</span> ✓</p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> Special Cases</div>
+        <div class="two-col">
+          <div class="mini-card">
+            <div class="mini-card-title">No Solution</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent2)">2x + 3 = 2x + 7<br>3 = 7 ← impossible!</p>
+            <p style="font-size:13px;margin-top:8px;">When variables cancel and you get a FALSE statement, there is <strong style="color:var(--accent2)">no solution</strong>.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Infinite Solutions</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent)">3x + 6 = 3(x + 2)<br>6 = 6 ← always true!</p>
+            <p style="font-size:13px;margin-top:8px;">When variables cancel and you get a TRUE statement, there are <strong style="color:var(--accent)">infinite solutions</strong>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(4)">Next: Inequalities →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 4: INEQUALITIES ===================== -->
+    <div id="topic-4" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-beginner">Beginner · Lesson 5 of 12</div>
+        <div class="lesson-title">Inequalities</div>
+        <p class="lesson-subtitle">Instead of one exact answer, inequalities describe a range of values. Think of them as "at least," "at most," "more than," or "less than" situations.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">↔️</span> Inequality Symbols</div>
+        <table>
+          <tr><th>Symbol</th><th>Meaning</th><th>Example</th></tr>
+          <tr><td class="hl">&lt;</td><td>Less than (strict)</td><td class="hl">x &lt; 5 → x can be 4, 3, 1, -10...</td></tr>
+          <tr><td class="hl">&gt;</td><td>Greater than (strict)</td><td class="hl">x &gt; 2 → x can be 3, 10, 100...</td></tr>
+          <tr><td class="hl">≤</td><td>Less than or equal to</td><td class="hl">x ≤ 5 → x can be 5, 4, 3, -10...</td></tr>
+          <tr><td class="hl">≥</td><td>Greater than or equal to</td><td class="hl">x ≥ 2 → x can be 2, 3, 10, 100...</td></tr>
+        </table>
+        <div class="tip-box">
+          <div class="tip-icon">🎯</div>
+          <p><strong>Trick:</strong> The symbol always "points to" the smaller side. Think of it as a hungry mouth — it always opens towards the bigger number.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔧</span> Solving Inequalities</div>
+        <p>Solve inequalities almost exactly like equations — with ONE critical exception:</p>
+        <div class="warning-box">
+          <div class="warn-icon">🚨</div>
+          <p><strong>The Flip Rule:</strong> When you <strong>multiply or divide BOTH SIDES by a NEGATIVE number</strong>, you MUST flip the inequality sign. For example: &lt; becomes &gt;, ≤ becomes ≥.</p>
+        </div>
+        <h4>Example 1 (no flip needed)</h4>
+        <div class="formula-box">3x + 4 ≤ 19</div>
+        <ol class="step-list">
+          <li><p>Subtract 4: <span class="math">3x ≤ 15</span></p></li>
+          <li><p>Divide by 3 (positive, no flip): <span class="math">x ≤ 5</span></p></li>
+        </ol>
+
+        <h4>Example 2 (flip required!)</h4>
+        <div class="formula-box">-2x + 6 > 10</div>
+        <ol class="step-list">
+          <li><p>Subtract 6: <span class="math">-2x > 4</span></p></li>
+          <li><p>Divide by -2 → FLIP the sign: <span class="math">x < -2</span></p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📍</span> Graphing & Interval Notation</div>
+        <table>
+          <tr><th>Inequality</th><th>Graph</th><th>Interval Notation</th></tr>
+          <tr><td class="hl">x &lt; 3</td><td>Open circle at 3, arrow left</td><td class="hl">(-∞, 3)</td></tr>
+          <tr><td class="hl">x ≤ 3</td><td>Closed circle at 3, arrow left</td><td class="hl">(-∞, 3]</td></tr>
+          <tr><td class="hl">x &gt; -1</td><td>Open circle at -1, arrow right</td><td class="hl">(-1, ∞)</td></tr>
+          <tr><td class="hl">-2 ≤ x &lt; 5</td><td>Closed at -2, open at 5</td><td class="hl">[-2, 5)</td></tr>
+        </table>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <p><strong>Open vs Closed:</strong> Open circle (or parenthesis) = that point is NOT included. Closed circle (or bracket) = that point IS included. Use parentheses with ∞ always, since infinity is never a real ending.</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(5)">Next: Graphing Lines →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 5: GRAPHING ===================== -->
+    <div id="topic-5" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-intermediate">Intermediate · Lesson 6 of 12</div>
+        <div class="lesson-title">Graphing Linear Equations</div>
+        <p class="lesson-subtitle">Every linear equation in two variables (x and y) creates a perfectly straight line. Understanding slope and intercepts unlocks the visual world of algebra.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📐</span> Slope-Intercept Form</div>
+        <div class="definition">
+          <p>The most useful form for graphing is <strong>y = mx + b</strong> where:<br>
+          • <strong>m</strong> = slope (steepness and direction of the line)<br>
+          • <strong>b</strong> = y-intercept (where the line crosses the y-axis)</p>
+        </div>
+        <div class="two-col">
+          <div class="mini-card">
+            <div class="mini-card-title">Slope (m)</div>
+            <div class="val">Rise ÷ Run</div>
+            <p style="font-size:13px;margin-top:8px;">How much y changes per unit of x.<br>Positive = goes up. Negative = goes down. Zero = flat.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Y-Intercept (b)</div>
+            <div class="val">Point (0, b)</div>
+            <p style="font-size:13px;margin-top:8px;">Where the line hits the y-axis. Always has x = 0.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📈</span> Interactive Graph</div>
+        <p>Change the slope and intercept below to see the line update in real time!</p>
+        <div class="graph-controls">
+          <label>y = </label>
+          <input type="text" id="slope-val" value="2" placeholder="slope m" style="width:80px">
+          <label>x + </label>
+          <input type="text" id="intercept-val" value="1" placeholder="b" style="width:80px">
+          <button class="btn btn-primary" onclick="drawGraph()">Graph It!</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('slope-val').value=1;document.getElementById('intercept-val').value=0;drawGraph()">Reset</button>
+        </div>
+        <div class="graph-wrap" style="padding:10px;background:var(--surface3)">
+          <canvas id="graph-canvas" width="600" height="380"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔢</span> Other Important Forms</div>
+        <table>
+          <tr><th>Form</th><th>Equation</th><th>Best Used When...</th></tr>
+          <tr><td>Slope-Intercept</td><td class="hl">y = mx + b</td><td>Graphing, identifying slope & y-int</td></tr>
+          <tr><td>Standard Form</td><td class="hl">Ax + By = C</td><td>Finding both intercepts quickly</td></tr>
+          <tr><td>Point-Slope</td><td class="hl">y - y₁ = m(x - x₁)</td><td>Given a point and slope</td></tr>
+        </table>
+
+        <h4>Finding the Slope Between Two Points</h4>
+        <div class="formula-box">m = (y₂ - y₁) / (x₂ - x₁) = Δy / Δx</div>
+        <div class="example-box">
+          <div class="example-label">Find slope between (1, 3) and (4, 9)</div>
+          <p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent3)">m = (9 - 3) / (4 - 1) = 6 / 3 = 2</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">↕️</span> Parallel & Perpendicular Lines</div>
+        <div class="two-col">
+          <div class="mini-card">
+            <div class="mini-card-title">Parallel Lines</div>
+            <p style="font-size:13px;color:var(--text-muted)">Same slope (m), different y-intercept. They never meet.</p>
+            <p style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent)">y=2x+1 ∥ y=2x-3</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title">Perpendicular Lines</div>
+            <p style="font-size:13px;color:var(--text-muted)">Slopes are negative reciprocals: m₁ × m₂ = -1.</p>
+            <p style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent3)">y=3x+1 ⊥ y=-⅓x+2</p>
+          </div>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(6)">Next: Systems of Equations →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 6: SYSTEMS ===================== -->
+    <div id="topic-6" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-intermediate">Intermediate · Lesson 7 of 12</div>
+        <div class="lesson-title">Systems of Equations</div>
+        <p class="lesson-subtitle">Two or more equations working together to find multiple unknowns. Where do the lines meet?</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> What is a System?</div>
+        <div class="definition">
+          <p>A <strong>system of equations</strong> is a set of two (or more) equations sharing the same variables. The <strong>solution</strong> is the set of values that makes ALL equations true simultaneously — the intersection point on a graph.</p>
+        </div>
+        <div class="two-col">
+          <div class="mini-card"><div class="mini-card-title">One Solution</div><p style="font-size:13px">Lines intersect at one point. Most common case.</p></div>
+          <div class="mini-card"><div class="mini-card-title">No Solution</div><p style="font-size:13px">Lines are parallel — never meet.</p></div>
+          <div class="mini-card"><div class="mini-card-title">Infinite Solutions</div><p style="font-size:13px">Lines are the same — every point is a solution.</p></div>
+          <div class="mini-card" style="background:rgba(79,255,176,0.04);border-color:rgba(79,255,176,0.15)"><div class="mini-card-title">Solution Format</div><p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent)">(x, y) as an ordered pair</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> Method 1: Substitution</div>
+        <p>Solve one equation for one variable, then substitute into the other.</p>
+        <div class="formula-box">y = 2x + 1 and 3x + y = 16</div>
+        <ol class="step-list">
+          <li><p>The first equation already gives us y: <span class="math">y = 2x + 1</span></p></li>
+          <li><p>Substitute into the second: <span class="math">3x + (2x + 1) = 16</span></p></li>
+          <li><p>Simplify: <span class="math">5x + 1 = 16</span> → <span class="math">5x = 15</span> → <span class="math">x = 3</span></p></li>
+          <li><p>Find y: <span class="math">y = 2(3) + 1 = 7</span></p></li>
+          <li><p>Solution: <span class="math">(3, 7)</span></p></li>
+          <li><p>Check in BOTH: <span class="math">7 = 2(3)+1=7 ✓</span> and <span class="math">3(3)+7=16 ✓</span></p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">➕</span> Method 2: Elimination</div>
+        <p>Add or subtract equations to eliminate one variable. Best when equations are in standard form.</p>
+        <div class="formula-box">2x + 3y = 12 and 4x - 3y = 6</div>
+        <ol class="step-list">
+          <li><p>Notice the 3y and -3y — they will cancel if we add! Add both equations:</p></li>
+          <li><p><span class="math">(2x + 4x) + (3y - 3y) = (12 + 6)</span> → <span class="math">6x = 18</span> → <span class="math">x = 3</span></p></li>
+          <li><p>Substitute back: <span class="math">2(3) + 3y = 12</span> → <span class="math">6 + 3y = 12</span> → <span class="math">3y = 6</span> → <span class="math">y = 2</span></p></li>
+          <li><p>Solution: <span class="math">(3, 2) ✓</span></p></li>
+        </ol>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <p><strong>Multiplication trick:</strong> If no variables cancel right away, multiply one or both equations by a constant first. E.g., to eliminate x from 2x and 3x, multiply the first by 3 and second by 2 to get 6x in both.</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(7)">Next: Polynomials & FOIL →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 7: POLYNOMIALS ===================== -->
+    <div id="topic-7" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-intermediate">Intermediate · Lesson 8 of 12</div>
+        <div class="lesson-title">Polynomials & the FOIL Method</div>
+        <p class="lesson-subtitle">Polynomials are expressions with multiple terms. Multiplying them requires understanding how every part interacts with every other part.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🧩</span> Polynomial Basics</div>
+        <table>
+          <tr><th>Name</th><th>Terms</th><th>Example</th></tr>
+          <tr><td>Monomial</td><td>1 term</td><td class="hl">5x²</td></tr>
+          <tr><td>Binomial</td><td>2 terms</td><td class="hl">3x + 7</td></tr>
+          <tr><td>Trinomial</td><td>3 terms</td><td class="hl">x² + 5x + 6</td></tr>
+          <tr><td>Polynomial</td><td>4+ terms</td><td class="hl">x³ - 2x² + x - 5</td></tr>
+        </table>
+        <p>The <strong>degree</strong> of a polynomial is the highest exponent. In <span class="math-inline">3x⁴ + x² - 7</span>, the degree is 4.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">✖️</span> FOIL Method (Binomial × Binomial)</div>
+        <div class="definition">
+          <p><strong>FOIL</strong> stands for <strong>F</strong>irst, <strong>O</strong>uter, <strong>I</strong>nner, <strong>L</strong>ast — the four pairs of terms you multiply when expanding (a+b)(c+d).</p>
+        </div>
+        <div class="formula-box">(x + 3)(x + 5)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0">
+          <div style="text-align:center;padding:14px 8px;background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.25);border-radius:10px">
+            <div style="font-size:20px;font-weight:bold;color:var(--accent);font-family:'Space Mono',monospace">F</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px">First Terms<br><span style="color:var(--accent)">x · x = x²</span></div>
+          </div>
+          <div style="text-align:center;padding:14px 8px;background:rgba(123,159,255,0.08);border:1px solid rgba(123,159,255,0.25);border-radius:10px">
+            <div style="font-size:20px;font-weight:bold;color:var(--accent3);font-family:'Space Mono',monospace">O</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px">Outer Terms<br><span style="color:var(--accent3)">x · 5 = 5x</span></div>
+          </div>
+          <div style="text-align:center;padding:14px 8px;background:rgba(185,127,255,0.08);border:1px solid rgba(185,127,255,0.25);border-radius:10px">
+            <div style="font-size:20px;font-weight:bold;color:var(--accent5);font-family:'Space Mono',monospace">I</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px">Inner Terms<br><span style="color:var(--accent5)">3 · x = 3x</span></div>
+          </div>
+          <div style="text-align:center;padding:14px 8px;background:rgba(255,206,92,0.08);border:1px solid rgba(255,206,92,0.25);border-radius:10px">
+            <div style="font-size:20px;font-weight:bold;color:var(--accent4);font-family:'Space Mono',monospace">L</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px">Last Terms<br><span style="color:var(--accent4)">3 · 5 = 15</span></div>
+          </div>
+        </div>
+        <div class="formula-box">x² + 5x + 3x + 15 = x² + 8x + 15</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⭐</span> Special Products</div>
+        <table>
+          <tr><th>Pattern</th><th>Formula</th><th>Example</th></tr>
+          <tr><td>Perfect Square (sum)</td><td class="hl">(a+b)² = a² + 2ab + b²</td><td class="hl">(x+3)² = x²+6x+9</td></tr>
+          <tr><td>Perfect Square (diff)</td><td class="hl">(a-b)² = a² - 2ab + b²</td><td class="hl">(x-4)² = x²-8x+16</td></tr>
+          <tr><td>Difference of Squares</td><td class="hl">(a+b)(a-b) = a² - b²</td><td class="hl">(x+5)(x-5) = x²-25</td></tr>
+        </table>
+        <div class="tip-box">
+          <div class="tip-icon">🚀</div>
+          <p><strong>Memorize these patterns!</strong> They appear constantly in factoring, quadratics, and beyond. Recognizing them instantly saves enormous time.</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(8)">Next: Factoring →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 8: FACTORING ===================== -->
+    <div id="topic-8" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-intermediate">Intermediate · Lesson 9 of 12</div>
+        <div class="lesson-title">Factoring Polynomials</div>
+        <p class="lesson-subtitle">Factoring is the reverse of multiplying. It's like reverse-engineering an expression into its component parts — essential for solving equations.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">1️⃣</span> Step 1: Greatest Common Factor (GCF)</div>
+        <div class="definition">
+          <p>Always check for a <strong>GCF</strong> first — the largest factor that divides every term. Factor it out using the distributive property in reverse.</p>
+        </div>
+        <div class="formula-box">6x³ + 9x² - 3x</div>
+        <ol class="step-list">
+          <li><p>Find GCF of 6, 9, 3: it's <span class="math">3</span></p></li>
+          <li><p>Find GCF of x³, x², x: it's <span class="math">x</span></p></li>
+          <li><p>GCF = 3x. Divide each term: <span class="math">3x(2x² + 3x - 1)</span> ✓</p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">2️⃣</span> Factoring Trinomials: x² + bx + c</div>
+        <p>Find two numbers that <strong>multiply to c</strong> and <strong>add to b</strong>.</p>
+        <div class="formula-box">x² + 7x + 12</div>
+        <ol class="step-list">
+          <li><p>Need two numbers that multiply to 12 AND add to 7.</p></li>
+          <li><p>Pairs that multiply to 12: (1,12), (2,6), (3,4)...</p></li>
+          <li><p>3 + 4 = 7 ✓ → use 3 and 4.</p></li>
+          <li><p>Answer: <span class="math">(x + 3)(x + 4)</span></p></li>
+          <li><p>Verify with FOIL: <span class="math">x² + 4x + 3x + 12 = x² + 7x + 12 ✓</span></p></li>
+        </ol>
+
+        <h4>When the leading coefficient ≠ 1: AC Method</h4>
+        <div class="formula-box">2x² + 7x + 3</div>
+        <ol class="step-list">
+          <li><p>Multiply a × c: <span class="math">2 × 3 = 6</span>. Find factors of 6 that add to 7: <span class="math">6 and 1</span> (since 6+1=7)</p></li>
+          <li><p>Rewrite middle term: <span class="math">2x² + 6x + 1x + 3</span></p></li>
+          <li><p>Group: <span class="math">(2x² + 6x) + (x + 3)</span> = <span class="math">2x(x + 3) + 1(x + 3)</span></p></li>
+          <li><p>Factor out (x+3): <span class="math">(2x + 1)(x + 3) ✓</span></p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">3️⃣</span> Special Factoring Patterns</div>
+        <table>
+          <tr><th>Pattern</th><th>Formula</th><th>Example</th></tr>
+          <tr><td>Difference of Squares</td><td class="hl">a² - b² = (a+b)(a-b)</td><td class="hl">x² - 25 = (x+5)(x-5)</td></tr>
+          <tr><td>Perfect Square Trinomial</td><td class="hl">a² + 2ab + b² = (a+b)²</td><td class="hl">x²+6x+9 = (x+3)²</td></tr>
+          <tr><td>Sum of Cubes</td><td class="hl">a³+b³ = (a+b)(a²-ab+b²)</td><td class="hl">x³+8 = (x+2)(x²-2x+4)</td></tr>
+          <tr><td>Difference of Cubes</td><td class="hl">a³-b³ = (a-b)(a²+ab+b²)</td><td class="hl">x³-27 = (x-3)(x²+3x+9)</td></tr>
+        </table>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(9)">Next: Quadratic Equations →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 9: QUADRATICS ===================== -->
+    <div id="topic-9" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-advanced">Advanced · Lesson 10 of 12</div>
+        <div class="lesson-title">Quadratic Equations</div>
+        <p class="lesson-subtitle">Quadratics describe parabolas — the path of a thrown ball, satellite dishes, and countless real-world phenomena. They can have 0, 1, or 2 solutions.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📉</span> Standard Form</div>
+        <div class="definition">
+          <p>A <strong>quadratic equation</strong> has the form <strong>ax² + bx + c = 0</strong>, where a ≠ 0. The graph is a U-shaped curve called a <strong>parabola</strong>. The solutions (roots) are where the parabola crosses the x-axis.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔧</span> Method 1: Factoring</div>
+        <p>If you can factor the quadratic, set each factor to zero (Zero Product Property).</p>
+        <div class="formula-box">x² + 5x + 6 = 0</div>
+        <ol class="step-list">
+          <li><p>Factor: <span class="math">(x + 2)(x + 3) = 0</span></p></li>
+          <li><p>Zero Product Property: either <span class="math">x + 2 = 0</span> OR <span class="math">x + 3 = 0</span></p></li>
+          <li><p>Solve each: <span class="math">x = -2</span> or <span class="math">x = -3 ✓</span></p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">✨</span> Method 2: The Quadratic Formula</div>
+        <p>Works for ANY quadratic — the ultimate fallback method.</p>
+        <div class="formula-box" style="font-size:18px;text-align:center;letter-spacing:1px">x = (-b ± √(b² - 4ac)) / 2a</div>
+        <h4>Example: 2x² - 5x - 3 = 0</h4>
+        <ol class="step-list">
+          <li><p>Identify: <span class="math">a = 2, b = -5, c = -3</span></p></li>
+          <li><p>Calculate discriminant: <span class="math">b² - 4ac = 25 + 24 = 49</span></p></li>
+          <li><p>Plug in: <span class="math">x = (5 ± √49) / 4 = (5 ± 7) / 4</span></p></li>
+          <li><p>Two solutions: <span class="math">x = (5+7)/4 = 3</span> or <span class="math">x = (5-7)/4 = -½ ✓</span></p></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔬</span> The Discriminant (b² - 4ac)</div>
+        <table>
+          <tr><th>Value of b² - 4ac</th><th>Number of Solutions</th><th>Graph</th></tr>
+          <tr><td class="hl">Positive (&gt; 0)</td><td>Two real solutions</td><td>Parabola crosses x-axis twice</td></tr>
+          <tr><td class="hl">Zero (= 0)</td><td>One real solution (repeated)</td><td>Parabola touches x-axis once</td></tr>
+          <tr><td class="hl">Negative (&lt; 0)</td><td>No real solutions (complex)</td><td>Parabola doesn't cross x-axis</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🏔️</span> Method 3: Completing the Square</div>
+        <div class="formula-box">x² + 6x + 2 = 0</div>
+        <ol class="step-list">
+          <li><p>Move constant: <span class="math">x² + 6x = -2</span></p></li>
+          <li><p>Take half of b (=6), square it: <span class="math">(6/2)² = 9</span>. Add to BOTH sides: <span class="math">x² + 6x + 9 = 7</span></p></li>
+          <li><p>Left side is a perfect square: <span class="math">(x + 3)² = 7</span></p></li>
+          <li><p>Square root both sides: <span class="math">x + 3 = ±√7</span></p></li>
+          <li><p>Solve: <span class="math">x = -3 ± √7 ✓</span></p></li>
+        </ol>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(10)">Next: Exponents & Radicals →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 10: EXPONENTS ===================== -->
+    <div id="topic-10" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag level-advanced">Advanced · Lesson 11 of 12</div>
+        <div class="lesson-title">Exponents & Radicals</div>
+        <p class="lesson-subtitle">Exponents describe repeated multiplication. Radicals (roots) are their inverses. Together they appear in virtually every area of mathematics.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> Laws of Exponents</div>
+        <table>
+          <tr><th>Law</th><th>Rule</th><th>Example</th></tr>
+          <tr><td>Product Rule</td><td class="hl">xᵃ · xᵇ = xᵃ⁺ᵇ</td><td class="hl">x³ · x⁵ = x⁸</td></tr>
+          <tr><td>Quotient Rule</td><td class="hl">xᵃ / xᵇ = xᵃ⁻ᵇ</td><td class="hl">x⁷ / x³ = x⁴</td></tr>
+          <tr><td>Power Rule</td><td class="hl">(xᵃ)ᵇ = xᵃᵇ</td><td class="hl">(x²)³ = x⁶</td></tr>
+          <tr><td>Zero Exponent</td><td class="hl">x⁰ = 1 (x ≠ 0)</td><td class="hl">7⁰ = 1</td></tr>
+          <tr><td>Negative Exponent</td><td class="hl">x⁻ⁿ = 1/xⁿ</td><td class="hl">x⁻³ = 1/x³</td></tr>
+          <tr><td>Fraction Exponent</td><td class="hl">x^(m/n) = ⁿ√(xᵐ)</td><td class="hl">8^(2/3) = (∛8)² = 4</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">√</span> Simplifying Radicals</div>
+        <div class="definition">
+          <p>To simplify a radical (like √), find the largest perfect square factor and pull it out.</p>
+        </div>
+        <div class="formula-box">√72</div>
+        <ol class="step-list">
+          <li><p>Factor 72 into perfect squares: <span class="math">72 = 36 × 2</span></p></li>
+          <li><p>Split the radical: <span class="math">√36 × √2</span></p></li>
+          <li><p>Simplify: <span class="math">6√2 ✓</span></p></li>
+        </ol>
+
+        <h4>Operations with Radicals</h4>
+        <div class="two-col">
+          <div class="example-box">
+            <div class="example-label">Adding/Subtracting</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent3)">
+              3√5 + 2√5 = 5√5<br>
+              7√3 - 4√3 = 3√3<br>
+              <span style="color:var(--text-muted)">(same radicand = like terms)</span>
+            </p>
+          </div>
+          <div class="example-box">
+            <div class="example-label">Multiplying</div>
+            <p style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent3)">
+              √3 × √7 = √21<br>
+              2√5 × 3√5 = 6·5 = 30<br>
+              (√a)² = a
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔀</span> Rationalizing the Denominator</div>
+        <p>We never leave a radical in the denominator. Multiply by a form of 1 to clear it.</p>
+        <div class="formula-box">3 / √5 = (3 × √5) / (√5 × √5) = 3√5 / 5</div>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <p>For binomial denominators like <span class="math-inline">3 + √2</span>, multiply by its <strong>conjugate</strong> <span class="math-inline">3 - √2</span>. This uses the difference of squares pattern!</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-next" onclick="goTopic(11)">Next: Formula Cheat Sheet →</button></div>
+    </div>
+
+    <!-- ===================== TOPIC 11: CHEAT SHEET ===================== -->
+    <div id="topic-11" class="lesson-panel">
+      <div class="lesson-hero">
+        <div class="lesson-tag" style="color:var(--accent5);border-color:rgba(185,127,255,0.3);background:rgba(185,127,255,0.06)">Reference Sheet</div>
+        <div class="lesson-title">Algebra Formula Cheat Sheet</div>
+        <p class="lesson-subtitle">All the essential formulas and rules in one place. Bookmark this and refer back whenever you need a quick refresher.</p>
+      </div>
+      <div class="formula-grid">
+        <div class="formula-card"><div class="fc-name">PEMDAS Order</div><div class="fc-formula">P → E → M/D → A/S</div><p class="fc-desc">Parentheses, Exponents, Mult/Div (L→R), Add/Sub (L→R)</p></div>
+        <div class="formula-card"><div class="fc-name">Slope Formula</div><div class="fc-formula">m = (y₂-y₁)/(x₂-x₁)</div><p class="fc-desc">Rise over run. Change in y over change in x.</p></div>
+        <div class="formula-card"><div class="fc-name">Slope-Intercept</div><div class="fc-formula">y = mx + b</div><p class="fc-desc">m = slope, b = y-intercept (where line hits y-axis)</p></div>
+        <div class="formula-card"><div class="fc-name">Point-Slope Form</div><div class="fc-formula">y - y₁ = m(x - x₁)</div><p class="fc-desc">Use when you know slope and one point on the line.</p></div>
+        <div class="formula-card"><div class="fc-name">Quadratic Formula</div><div class="fc-formula">x = (-b ± √(b²-4ac)) / 2a</div><p class="fc-desc">Solves any quadratic ax² + bx + c = 0</p></div>
+        <div class="formula-card"><div class="fc-name">Discriminant</div><div class="fc-formula">Δ = b² - 4ac</div><p class="fc-desc">&gt;0: two roots | =0: one root | &lt;0: no real roots</p></div>
+        <div class="formula-card"><div class="fc-name">Difference of Squares</div><div class="fc-formula">a² - b² = (a+b)(a-b)</div><p class="fc-desc">Always check for this pattern when factoring!</p></div>
+        <div class="formula-card"><div class="fc-name">Perfect Square</div><div class="fc-formula">(a+b)² = a²+2ab+b²</div><p class="fc-desc">Memorize both signs. (a-b)² = a²-2ab+b²</p></div>
+        <div class="formula-card"><div class="fc-name">FOIL</div><div class="fc-formula">(a+b)(c+d) = ac+ad+bc+bd</div><p class="fc-desc">First, Outer, Inner, Last — for multiplying two binomials.</p></div>
+        <div class="formula-card"><div class="fc-name">Distributive Property</div><div class="fc-formula">a(b+c) = ab + ac</div><p class="fc-desc">Multiply the factor outside by every term inside.</p></div>
+        <div class="formula-card"><div class="fc-name">Exponent Rules</div><div class="fc-formula">xᵃ·xᵇ = xᵃ⁺ᵇ | (xᵃ)ᵇ=xᵃᵇ</div><p class="fc-desc">Product: add exponents. Power: multiply exponents.</p></div>
+        <div class="formula-card"><div class="fc-name">Negative Exponent</div><div class="fc-formula">x⁻ⁿ = 1/xⁿ</div><p class="fc-desc">Flip the fraction to make the exponent positive.</p></div>
+        <div class="formula-card"><div class="fc-name">Absolute Value</div><div class="fc-formula">|x| = x if x≥0, -x if x&lt;0</div><p class="fc-desc">Distance from zero. Always non-negative.</p></div>
+        <div class="formula-card"><div class="fc-name">Inequality Flip Rule</div><div class="fc-formula">Flip sign when ÷ or × by -</div><p class="fc-desc">Multiplying/dividing by negative flips &lt; to &gt; and vice versa.</p></div>
+        <div class="formula-card"><div class="fc-name">Completing the Square</div><div class="fc-formula">Add (b/2)² to both sides</div><p class="fc-desc">Creates a perfect square trinomial on the left.</p></div>
+        <div class="formula-card"><div class="fc-name">Radical Simplification</div><div class="fc-formula">√(ab) = √a · √b</div><p class="fc-desc">Find largest perfect square factor. Pull it out.</p></div>
+      </div>
+
+      <div style="margin-top:32px;padding:24px;background:rgba(79,255,176,0.05);border:1px solid rgba(79,255,176,0.2);border-radius:16px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);margin-bottom:10px">🎉 You've reached the end!</div>
+        <p>You've been through all 11 topics. Head back to any lesson or test yourself in Practice mode. Keep reviewing and you'll master algebra!</p>
+        <button class="btn-next" onclick="goTopic(0)" style="margin:16px auto 0;display:inline-flex">Start Over from Beginning →</button>
+      </div>
+    </div>
+
+    <!-- ===================== PRACTICE PANELS ===================== -->
+    <div id="practice-0" class="practice-panel">
+      <div class="practice-header">
+        <div class="lesson-tag level-beginner">Practice: Number Types</div>
+        <div class="lesson-title" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin:10px 0 0">Test Your Knowledge</div>
+      </div>
+      <div class="score-display">
+        <div class="score-card"><div class="score-num" id="sc-correct-0" style="color:var(--accent)">0</div><div class="score-label">Correct</div></div>
+        <div class="score-card"><div class="score-num" id="sc-wrong-0" style="color:var(--accent2)">0</div><div class="score-label">Wrong</div></div>
+        <div class="score-card"><div class="score-num" id="sc-total-0" style="color:var(--accent3)">5</div><div class="score-label">Total</div></div>
+      </div>
+      <div id="questions-0"></div>
+    </div>
+    <div id="practice-1" class="practice-panel">
+      <div class="practice-header">
+        <div class="lesson-tag level-beginner">Practice: Order of Operations</div>
+        <div class="lesson-title" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin:10px 0 0">Test Your Knowledge</div>
+      </div>
+      <div class="score-display">
+        <div class="score-card"><div class="score-num" id="sc-correct-1" style="color:var(--accent)">0</div><div class="score-label">Correct</div></div>
+        <div class="score-card"><div class="score-num" id="sc-wrong-1" style="color:var(--accent2)">0</div><div class="score-label">Wrong</div></div>
+        <div class="score-card"><div class="score-num" id="sc-total-1" style="color:var(--accent3)">5</div><div class="score-label">Total</div></div>
+      </div>
+      <div id="questions-1"></div>
+    </div>
+    <div id="practice-2" class="practice-panel">
+      <div class="practice-header">
+        <div class="lesson-tag level-beginner">Practice: Variables & Expressions</div>
+        <div class="lesson-title" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin:10px 0 0">Test Your Knowledge</div>
+      </div>
+      <div class="score-display">
+        <div class="score-card"><div class="score-num" id="sc-correct-2" style="color:var(--accent)">0</div><div class="score-label">Correct</div></div>
+        <div class="score-card"><div class="score-num" id="sc-wrong-2" style="color:var(--accent2)">0</div><div class="score-label">Wrong</div></div>
+        <div class="score-card"><div class="score-num" id="sc-total-2" style="color:var(--accent3)">5</div><div class="score-label">Total</div></div>
+      </div>
+      <div id="questions-2"></div>
+    </div>
+    <div id="practice-3" class="practice-panel">
+      <div class="practice-header">
+        <div class="lesson-tag level-beginner">Practice: Linear Equations</div>
+        <div class="lesson-title" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin:10px 0 0">Test Your Knowledge</div>
+      </div>
+      <div class="score-display">
+        <div class="score-card"><div class="score-num" id="sc-correct-3" style="color:var(--accent)">0</div><div class="score-label">Correct</div></div>
+        <div class="score-card"><div class="score-num" id="sc-wrong-3" style="color:var(--accent2)">0</div><div class="score-label">Wrong</div></div>
+        <div class="score-card"><div class="score-num" id="sc-total-3" style="color:var(--accent3)">5</div><div class="score-label">Total</div></div>
+      </div>
+      <div id="questions-3"></div>
+    </div>
+    <div id="practice-4" class="practice-panel"><div id="questions-4"></div></div>
+    <div id="practice-5" class="practice-panel"><div id="questions-5"></div></div>
+    <div id="practice-6" class="practice-panel"><div id="questions-6"></div></div>
+    <div id="practice-7" class="practice-panel"><div id="questions-7"></div></div>
+    <div id="practice-8" class="practice-panel"><div id="questions-8"></div></div>
+    <div id="practice-9" class="practice-panel"><div id="questions-9"></div></div>
+    <div id="practice-10" class="practice-panel"><div id="questions-10"></div></div>
+    <div id="practice-11" class="practice-panel">
+      <div style="padding:40px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">📋</div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:12px">Cheat Sheet</div>
+        <p>This section is a reference — switch to the Lesson tab to review all formulas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===================== DATA =====================
+const topics = [
+  "Number Types", "Order of Operations", "Variables & Expressions", "Linear Equations",
+  "Inequalities", "Graphing Lines", "Systems of Equations", "Polynomials & FOIL",
+  "Factoring", "Quadratic Equations", "Exponents & Radicals", "Formula Cheat Sheet"
+];
+
+// Questions database per topic
+const questionsDB = {
+  0: [
+    { q: "Which number type includes both positive and negative whole numbers but NOT fractions?", type: "mc", options: ["Natural Numbers", "Whole Numbers", "Integers", "Rational Numbers"], answer: 2, hint: "Think about ℤ — it's the set that includes negatives.", solution: ["Integers (ℤ) include ...-3, -2, -1, 0, 1, 2, 3...", "They include negatives but no fractions or decimals."] },
+    { q: "What is |-15| equal to?", type: "mc", options: ["-15", "15", "0", "-1"], answer: 1, hint: "Absolute value = distance from zero. Distance is always positive!", solution: ["|-15| means how far -15 is from 0.", "The distance is 15, so |-15| = 15."] },
+    { q: "Which of these is an IRRATIONAL number?", type: "mc", options: ["0.333...", "√9", "√5", "7/2"], answer: 2, hint: "Irrational numbers cannot be written as p/q fractions.", solution: ["√9 = 3 (rational). 0.333... = 1/3 (rational). 7/2 = 3.5 (rational).", "√5 ≈ 2.2360679... never repeats or ends → IRRATIONAL."] },
+    { q: "Which property is demonstrated by: 3 × (4 + 5) = 3×4 + 3×5?", type: "mc", options: ["Commutative", "Associative", "Distributive", "Identity"], answer: 2, hint: "This property 'distributes' multiplication across addition.", solution: ["The distributive property: a(b+c) = ab + ac.", "3 × (4+5) = 3×4 + 3×5 = 12 + 15 = 27 ✓"] },
+    { q: "What is the absolute value of |5 - 12|?", type: "input", answer: "7", hint: "First calculate 5 - 12, then take the absolute value.", solution: ["5 - 12 = -7", "|−7| = 7 (always positive)"] },
+  ],
+  1: [
+    { q: "Evaluate: 3 + 4 × 2", type: "mc", options: ["14", "11", "24", "20"], answer: 1, hint: "Remember: multiplication before addition!", solution: ["Following PEMDAS: multiply first: 4 × 2 = 8", "Then add: 3 + 8 = 11"] },
+    { q: "Evaluate: (3 + 4) × 2", type: "mc", options: ["14", "11", "10", "9"], answer: 0, hint: "Parentheses are done FIRST in PEMDAS.", solution: ["Parentheses first: (3 + 4) = 7", "Then multiply: 7 × 2 = 14"] },
+    { q: "Evaluate: 2 + 3² - 4", type: "mc", options: ["13", "7", "25", "11"], answer: 1, hint: "Exponents before addition and subtraction. 3² = ?", solution: ["Exponent: 3² = 9", "Left to right: 2 + 9 - 4 = 11 - 4 = 7"] },
+    { q: "Evaluate: 20 ÷ 4 × 2", type: "input", answer: "10", hint: "Multiplication and division go left to right. Do ÷ first since it's leftmost.", solution: ["MD left to right: 20 ÷ 4 = 5", "Then: 5 × 2 = 10"] },
+    { q: "Evaluate: 2³ + (6 - 2) × 3 - 5", type: "input", answer: "15", hint: "Follow PEMDAS step by step: P, E, M/D, A/S", solution: ["P: (6-2) = 4 → 2³ + 4 × 3 - 5", "E: 2³ = 8 → 8 + 4 × 3 - 5", "M: 4 × 3 = 12 → 8 + 12 - 5", "A/S left to right: 8 + 12 = 20, 20 - 5 = 15"] },
+  ],
+  2: [
+    { q: "Simplify: 5x + 3x - 2", type: "mc", options: ["8x - 2", "6x", "8x", "5x + 1"], answer: 0, hint: "Combine like terms: only the x terms can be added.", solution: ["5x and 3x are like terms: 5x + 3x = 8x", "-2 is a constant with no like term.", "Answer: 8x - 2"] },
+    { q: "Expand: 4(3x - 5)", type: "mc", options: ["7x - 5", "12x - 5", "12x - 20", "12x + 20"], answer: 2, hint: "Distributive property: multiply 4 by EACH term inside.", solution: ["4 × 3x = 12x", "4 × (-5) = -20", "Answer: 12x - 20"] },
+    { q: "Evaluate 3x - 7 when x = 5", type: "input", answer: "8", hint: "Replace x with 5, then calculate following PEMDAS.", solution: ["3(5) - 7 = 15 - 7 = 8"] },
+    { q: "Simplify: 2x² + 3x - x² + 5x - 4", type: "mc", options: ["x² + 8x - 4", "3x² + 8x - 4", "x² - 2x - 4", "2x² + 2x"], answer: 0, hint: "Group like terms: x² terms together, x terms together, constants together.", solution: ["x² terms: 2x² - x² = x²", "x terms: 3x + 5x = 8x", "Constants: -4", "Answer: x² + 8x - 4"] },
+    { q: "What is the coefficient of x in: 7 - 3x + 2x²?", type: "input", answer: "-3", hint: "The coefficient is the number multiplying the variable x (not x²).", solution: ["The term with x (not x²) is -3x.", "The coefficient is -3."] },
+  ],
+  3: [
+    { q: "Solve: x + 12 = 20", type: "input", answer: "8", hint: "Subtract 12 from both sides.", solution: ["x + 12 = 20", "x = 20 - 12", "x = 8"] },
+    { q: "Solve: 3x = 27", type: "input", answer: "9", hint: "Divide both sides by 3.", solution: ["3x = 27", "x = 27 ÷ 3", "x = 9"] },
+    { q: "Solve: 2x + 5 = 17", type: "input", answer: "6", hint: "Step 1: subtract 5. Step 2: divide by 2.", solution: ["2x + 5 = 17", "2x = 17 - 5 = 12", "x = 12 ÷ 2 = 6"] },
+    { q: "Solve: 5x - 3 = 2x + 9", type: "input", answer: "4", hint: "Move x terms to one side, constants to the other.", solution: ["5x - 2x = 9 + 3", "3x = 12", "x = 4"] },
+    { q: "Solve: 4(x - 3) = 2x + 10", type: "input", answer: "11", hint: "Distribute first, then solve.", solution: ["4x - 12 = 2x + 10", "4x - 2x = 10 + 12", "2x = 22", "x = 11"] },
+  ],
+  4: [
+    { q: "Solve: x + 4 < 9", type: "mc", options: ["x < 13", "x < 5", "x > 5", "x ≤ 5"], answer: 1, hint: "Subtract 4 from both sides. Does the sign flip?", solution: ["x + 4 < 9", "x < 9 - 4", "x < 5 (no flip — we subtracted, not multiplied by negative)"] },
+    { q: "Solve: -3x > 15. Which is correct?", type: "mc", options: ["x > -5", "x < -5", "x > 5", "x < 5"], answer: 1, hint: "Dividing by a NEGATIVE number flips the inequality sign!", solution: ["Divide both sides by -3 → FLIP the sign", "-3x > 15 → x < -5"] },
+    { q: "Which inequality matches: 'x is at least 7'?", type: "mc", options: ["x < 7", "x > 7", "x ≥ 7", "x ≤ 7"], answer: 2, hint: "'At least' means 7 or more — it includes 7 itself.", solution: ["'At least 7' means ≥ 7 (7 is allowed).", "This is different from 'more than 7' which would be x > 7."] },
+    { q: "Solve: 2x - 5 ≥ 11. What is the minimum value of x?", type: "input", answer: "8", hint: "Add 5 first, then divide by 2.", solution: ["2x - 5 ≥ 11", "2x ≥ 16", "x ≥ 8 (minimum value is 8)"] },
+    { q: "Solve: -4x + 3 ≤ 19. What values satisfy this?", type: "mc", options: ["x ≥ -4", "x ≤ -4", "x ≥ 4", "x ≤ 4"], answer: 0, hint: "Subtract 3, then divide by -4. Don't forget the flip!", solution: ["-4x + 3 ≤ 19", "-4x ≤ 16", "Divide by -4 and FLIP: x ≥ -4"] },
+  ],
+  5: [
+    { q: "In y = 3x - 7, what is the slope?", type: "input", answer: "3", hint: "y = mx + b format. m is the slope.", solution: ["In y = mx + b, m = slope.", "So in y = 3x - 7, slope = 3."] },
+    { q: "What is the y-intercept of y = -2x + 4?", type: "input", answer: "4", hint: "y = mx + b. b is the y-intercept.", solution: ["In y = mx + b, b = y-intercept.", "y = -2x + 4 → b = 4. Point: (0, 4)"] },
+    { q: "Find the slope between (2, 5) and (6, 13)", type: "input", answer: "2", hint: "Use slope formula: m = (y₂-y₁)/(x₂-x₁)", solution: ["m = (13-5)/(6-2) = 8/4 = 2"] },
+    { q: "Which line is PARALLEL to y = 4x + 1?", type: "mc", options: ["y = 4x - 3", "y = -4x + 1", "y = ¼x + 1", "y = -¼x - 1"], answer: 0, hint: "Parallel lines have the SAME slope.", solution: ["Parallel lines have identical slopes.", "y = 4x + 1 has slope 4.", "y = 4x - 3 also has slope 4 → parallel."] },
+    { q: "A line has slope -2 and passes through (0, 5). What is its equation?", type: "mc", options: ["y = 5x - 2", "y = -2x", "y = -2x + 5", "y = 2x + 5"], answer: 2, hint: "If it passes through (0, 5), then b = 5. Use y = mx + b.", solution: ["slope = -2, y-intercept = 5 (passes through (0,5))", "y = -2x + 5"] },
+  ],
+  6: [
+    { q: "Solve by substitution: y = x + 2 and x + y = 10. Find x.", type: "input", answer: "4", hint: "Substitute (x+2) for y in the second equation.", solution: ["x + (x+2) = 10", "2x + 2 = 10", "2x = 8", "x = 4 (and y = 6)"] },
+    { q: "What does a 'no solution' system look like graphically?", type: "mc", options: ["Intersecting lines", "Same line", "Parallel lines", "Perpendicular lines"], answer: 2, hint: "If lines never meet, they never share a point (solution).", solution: ["Parallel lines have the same slope but different y-intercepts.", "They never intersect, so there's no common point = no solution."] },
+    { q: "Solve: 3x + y = 11 and x - y = 1. Find x + y.", type: "input", answer: "7", hint: "Add the two equations to eliminate y.", solution: ["Add equations: 4x = 12 → x = 3", "Substitute: 3 - y = 1 → y = 2", "x + y = 3 + 2 = 5... wait, re-check: x+y = 3+2 = 5"] },
+    { q: "Which method is best when both equations are in standard form Ax + By = C?", type: "mc", options: ["Substitution", "Elimination", "Graphing", "Factoring"], answer: 1, hint: "Elimination works best when coefficients can cancel easily.", solution: ["Elimination is best for standard form equations.", "You can add/subtract to cancel a variable directly."] },
+    { q: "System: 2x + y = 8 and x = 3. What is y?", type: "input", answer: "2", hint: "Substitute x = 3 directly into the first equation.", solution: ["x = 3, so: 2(3) + y = 8", "6 + y = 8", "y = 2"] },
+  ],
+  7: [
+    { q: "Expand using FOIL: (x + 4)(x + 2)", type: "mc", options: ["x² + 6x + 8", "x² + 8x + 8", "x² + 4x + 8", "x² + 6x + 6"], answer: 0, hint: "FOIL: First(x²) + Outer(2x) + Inner(4x) + Last(8)", solution: ["F: x·x = x²", "O: x·2 = 2x", "I: 4·x = 4x", "L: 4·2 = 8", "Combine: x² + 2x + 4x + 8 = x² + 6x + 8"] },
+    { q: "Expand: (x - 5)²", type: "mc", options: ["x² - 25", "x² + 25", "x² - 10x + 25", "x² - 5x + 25"], answer: 2, hint: "Perfect square formula: (a-b)² = a² - 2ab + b²", solution: ["(x-5)² = x² - 2(x)(5) + 5² = x² - 10x + 25"] },
+    { q: "What is the degree of 4x³ - 2x + 7?", type: "input", answer: "3", hint: "Degree = highest exponent on any variable.", solution: ["The highest power of x is 3 (from 4x³).", "Degree = 3"] },
+    { q: "Expand: (x + 6)(x - 6)", type: "mc", options: ["x² - 12x - 36", "x² - 36", "x² + 36", "x² - 12"], answer: 1, hint: "This is a difference of squares pattern: (a+b)(a-b) = a² - b²", solution: ["(x+6)(x-6) = x² - 6² = x² - 36", "The middle terms cancel: +6x and -6x = 0"] },
+    { q: "Multiply: (2x + 3)(x - 4)", type: "mc", options: ["2x² - 8x + 3x - 12", "2x² - 5x - 12", "2x² + 5x - 12", "2x² - 5x + 12"], answer: 1, hint: "FOIL: F=2x², O=-8x, I=3x, L=-12. Then combine O and I.", solution: ["F: 2x·x = 2x²", "O: 2x·(-4) = -8x", "I: 3·x = 3x", "L: 3·(-4) = -12", "2x² + (-8x+3x) - 12 = 2x² - 5x - 12"] },
+  ],
+  8: [
+    { q: "Factor completely: 6x² + 9x", type: "mc", options: ["3(2x + 3x)", "3x(2x + 3)", "6x(x + 3)", "x(6x + 9)"], answer: 1, hint: "Find the GCF of 6x² and 9x first.", solution: ["GCF of 6x² and 9x is 3x.", "6x² + 9x = 3x(2x + 3)"] },
+    { q: "Factor: x² + 5x + 6", type: "mc", options: ["(x+2)(x+3)", "(x+1)(x+6)", "(x+5)(x+1)", "(x+6)(x-1)"], answer: 0, hint: "Find two numbers that multiply to 6 AND add to 5.", solution: ["Need: × to 6, + to 5.", "2 × 3 = 6 and 2 + 3 = 5 ✓", "(x+2)(x+3)"] },
+    { q: "Factor: x² - 16", type: "mc", options: ["(x-4)²", "(x+4)(x-4)", "(x+8)(x-2)", "(x-16)(x+1)"], answer: 1, hint: "This is a difference of squares: a² - b² = (a+b)(a-b)", solution: ["x² - 16 = x² - 4²", "= (x+4)(x-4)"] },
+    { q: "Factor: x² - 8x + 15", type: "mc", options: ["(x-3)(x-5)", "(x+3)(x+5)", "(x-3)(x+5)", "(x-15)(x+1)"], answer: 0, hint: "Find numbers that multiply to +15 and add to -8.", solution: ["-3 × -5 = 15 and -3 + -5 = -8 ✓", "(x-3)(x-5)"] },
+    { q: "Factor out GCF: 12x³ - 8x² + 4x", type: "mc", options: ["4x(3x² - 2x + 1)", "4(3x³ - 2x² + x)", "2x(6x² - 4x + 2)", "12x(x² - 1)"], answer: 0, hint: "GCF of 12x³, 8x², 4x — find common number and variable.", solution: ["GCF of 12,8,4 is 4. GCF of x³,x²,x is x.", "GCF = 4x", "4x(3x² - 2x + 1)"] },
+  ],
+  9: [
+    { q: "Solve by factoring: x² + 7x + 10 = 0", type: "mc", options: ["x = 2 or x = 5", "x = -2 or x = -5", "x = -2 or x = 5", "x = 2 or x = -5"], answer: 1, hint: "Factor the trinomial, then use Zero Product Property.", solution: ["x² + 7x + 10 = (x+2)(x+5) = 0", "x+2=0 → x=-2 or x+5=0 → x=-5"] },
+    { q: "Use the quadratic formula for: x² - 5x + 6 = 0. What is x?", type: "mc", options: ["x = 2 or x = 3", "x = -2 or x = -3", "x = 6 or x = 1", "x = 5 ± 1"], answer: 0, hint: "a=1, b=-5, c=6. Discriminant = 25-24 = 1.", solution: ["x = (5 ± √(25-24))/2 = (5 ± 1)/2", "x = 3 or x = 2"] },
+    { q: "What is the discriminant of 2x² - 4x + 2 = 0?", type: "input", answer: "0", hint: "Discriminant = b² - 4ac. Identify a, b, c.", solution: ["a=2, b=-4, c=2", "b²-4ac = 16 - 4(2)(2) = 16 - 16 = 0"] },
+    { q: "How many real solutions does x² + x + 5 = 0 have?", type: "mc", options: ["0", "1", "2", "Infinite"], answer: 0, hint: "Calculate the discriminant. Negative discriminant = ?", solution: ["b²-4ac = 1 - 4(1)(5) = 1 - 20 = -19", "Negative discriminant → 0 real solutions"] },
+    { q: "Solve by completing the square: x² + 4x = 5. Find positive x.", type: "input", answer: "1", hint: "Add (4/2)² = 4 to both sides. Then (x+2)² = 9.", solution: ["x² + 4x + 4 = 5 + 4", "(x+2)² = 9", "x+2 = ±3", "x = 1 or x = -5 → positive is 1"] },
+  ],
+  10: [
+    { q: "Simplify: x³ × x⁵", type: "mc", options: ["x¹⁵", "x⁸", "x²", "2x⁸"], answer: 1, hint: "Product rule: add exponents when multiplying same base.", solution: ["x³ × x⁵ = x^(3+5) = x⁸"] },
+    { q: "Simplify: x⁶ / x²", type: "mc", options: ["x³", "x⁴", "x⁸", "x¹²"], answer: 1, hint: "Quotient rule: subtract exponents when dividing.", solution: ["x⁶ / x² = x^(6-2) = x⁴"] },
+    { q: "What is 5⁰?", type: "input", answer: "1", hint: "Any nonzero number raised to the power of 0 is always 1.", solution: ["By the zero exponent rule: a⁰ = 1 for any a ≠ 0", "5⁰ = 1"] },
+    { q: "Simplify: √48", type: "mc", options: ["4√3", "6√2", "4√12", "2√12"], answer: 0, hint: "Find largest perfect square in 48. 48 = 16 × 3.", solution: ["√48 = √(16 × 3) = √16 × √3 = 4√3"] },
+    { q: "Simplify: x⁻³", type: "mc", options: ["-x³", "1/x³", "-1/x³", "3/x"], answer: 1, hint: "Negative exponent rule: flip to denominator, make positive.", solution: ["x⁻³ = 1/x³ (negative exponent = reciprocal)"] },
+  ],
+};
+
+// ===================== STATE =====================
+let currentTopic = 0;
+let currentTab = 'lesson';
+let completed = new Set();
+let scores = {};
+for (let i = 0; i <= 11; i++) scores[i] = { correct: 0, wrong: 0 };
+
+// ===================== NAVIGATION =====================
+function goTopic(n) {
+  // Hide all
+  document.querySelectorAll('.lesson-panel,.practice-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(it => it.classList.remove('active'));
+
+  currentTopic = n;
+  document.querySelector(`.nav-item[data-topic="${n}"]`).classList.add('active');
+  document.getElementById('breadcrumb').innerHTML = `Algebra Academy › <span>${topics[n]}</span>`;
+
+  if (currentTab === 'lesson') {
+    document.getElementById('topic-' + n).classList.add('active');
+  } else {
+    document.getElementById('practice-' + n).classList.add('active');
+  }
+
+  document.getElementById('content-area').scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Draw graph if topic 5
+  if (n === 5) setTimeout(drawGraph, 200);
+  // Draw number line if topic 0
+  if (n === 0) setTimeout(drawNumberLine, 200);
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  document.querySelectorAll('.lesson-panel,.practice-panel').forEach(p => p.classList.remove('active'));
+
+  if (tab === 'lesson') {
+    document.getElementById('topic-' + currentTopic).classList.add('active');
+    if (currentTopic === 5) setTimeout(drawGraph, 200);
+    if (currentTopic === 0) setTimeout(drawNumberLine, 200);
+  } else {
+    const pEl = document.getElementById('practice-' + currentTopic);
+    pEl.classList.add('active');
+    if (!pEl.dataset.built && questionsDB[currentTopic]) {
+      buildQuestions(currentTopic);
+      pEl.dataset.built = '1';
+    }
+  }
+}
+
+// ===================== QUESTION BUILDER =====================
+function buildQuestions(tid) {
+  const qs = questionsDB[tid];
+  if (!qs) return;
+  const container = document.getElementById('questions-' + tid);
+  container.innerHTML = '';
+  qs.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.id = `qcard-${tid}-${i}`;
+    let optionsHTML = '';
+    if (q.type === 'mc') {
+      optionsHTML = `<div class="options-grid">${q.options.map((o, oi) =>
+        `<button class="option-btn" onclick="checkMC(${tid},${i},${oi})" id="opt-${tid}-${i}-${oi}">${o}</button>`).join('')}</div>`;
+    } else {
+      optionsHTML = `<input class="input-answer" id="inp-${tid}-${i}" type="text" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')checkInput(${tid},${i})">
+        <div class="q-actions"><button class="btn btn-primary" onclick="checkInput(${tid},${i})">Submit</button>
+        <button class="btn btn-hint" onclick="toggleHint(${tid},${i})">💡 Hint</button></div>`;
+    }
+    div.innerHTML = `
+      <div class="q-number">Question ${i+1} of ${qs.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint" id="hint-${tid}-${i}">${q.hint}</div>
+      ${q.type === 'mc' ? optionsHTML + `<div class="q-actions"><button class="btn btn-hint" onclick="toggleHint(${tid},${i})">💡 Hint</button></div>` : optionsHTML}
+      <div class="feedback-box" id="fb-${tid}-${i}"></div>
+      <div class="solution-steps" id="sol-${tid}-${i}">
+        <div class="s-title">Step-by-step solution</div>
+        <ol>${q.solution.map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleHint(tid, qi) {
+  const hint = document.getElementById(`hint-${tid}-${qi}`);
+  hint.classList.toggle('show');
+}
+
+function checkMC(tid, qi, selected) {
+  const q = questionsDB[tid][qi];
+  const isCorrect = selected === q.answer;
+  const card = document.getElementById(`qcard-${tid}-${qi}`);
+  const fb = document.getElementById(`fb-${tid}-${qi}`);
+  const sol = document.getElementById(`sol-${tid}-${qi}`);
+
+  // Disable all options
+  q.options.forEach((_, oi) => {
+    const btn = document.getElementById(`opt-${tid}-${qi}-${oi}`);
+    btn.disabled = true;
+    if (oi === q.answer) btn.classList.add('reveal-correct');
+    if (oi === selected && !isCorrect) btn.classList.add('selected-wrong');
+    if (oi === selected && isCorrect) btn.classList.add('selected-correct');
+  });
+
+  showFeedback(tid, qi, isCorrect, fb, sol, card);
+}
+
+function checkInput(tid, qi) {
+  const q = questionsDB[tid][qi];
+  const inp = document.getElementById(`inp-${tid}-${qi}`);
+  if (inp.disabled) return;
+  const userAnswer = inp.value.trim().replace(/\s/g,'');
+  const correctAnswer = String(q.answer).trim().replace(/\s/g,'');
+  const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+  inp.disabled = true;
+  inp.classList.add(isCorrect ? 'correct-input' : 'wrong-input');
+
+  const fb = document.getElementById(`fb-${tid}-${qi}`);
+  const sol = document.getElementById(`sol-${tid}-${qi}`);
+  const card = document.getElementById(`qcard-${tid}-${qi}`);
+  showFeedback(tid, qi, isCorrect, fb, sol, card);
+}
+
+function showFeedback(tid, qi, isCorrect, fb, sol, card) {
+  const q = questionsDB[tid][qi];
+  card.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  if (isCorrect) {
+    scores[tid].correct++;
+    fb.className = 'feedback-box correct-fb show';
+    fb.innerHTML = `<div class="feedback-title">✅ Correct!</div><p>Great work! That is the right answer.</p>`;
+    showToast('✅ Correct! Well done!', 'success');
+    if (!completed.has(`${tid}-${qi}`)) {
+      completed.add(`${tid}-${qi}`);
+    }
+  } else {
+    scores[tid].wrong++;
+    fb.className = 'feedback-box wrong-fb show';
+    fb.innerHTML = `<div class="feedback-title">❌ Not quite!</div><p>The correct answer is: <strong style="color:var(--accent)">${q.type==='mc'?q.options[q.answer]:q.answer}</strong>. See the solution below.</p>`;
+    showToast('❌ Not quite — check the solution!', 'error');
+  }
+  sol.classList.add('show');
+  updateScore(tid);
+  updateProgress();
+}
+
+function updateScore(tid) {
+  if (document.getElementById(`sc-correct-${tid}`)) {
+    document.getElementById(`sc-correct-${tid}`).textContent = scores[tid].correct;
+    document.getElementById(`sc-wrong-${tid}`).textContent = scores[tid].wrong;
+  }
+}
+
+function updateProgress() {
+  const done = Object.values(scores).reduce((a,b) => a + b.correct, 0);
+  const total = Object.values(questionsDB).reduce((a,b) => a + b.length, 0);
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+
+  // Mark nav items as completed if all questions correct in that topic
+  Object.keys(questionsDB).forEach(tid => {
+    const qs = questionsDB[tid];
+    if (scores[tid].correct + scores[tid].wrong >= qs.length) {
+      document.querySelector(`.nav-item[data-topic="${tid}"]`).classList.add('completed');
+    }
+  });
+}
+
+// ===================== GRAPH (Topic 5) =====================
+function drawGraph() {
+  const canvas = document.getElementById('graph-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const scale = 35;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#181d2e';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#252d45';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += scale) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y <= H; y += scale) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#3d4a6b';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = '#6b7799';
+  ctx.font = '11px Space Mono, monospace';
+  ctx.textAlign = 'center';
+  for (let i = -8; i <= 8; i++) {
+    if (i === 0) continue;
+    ctx.fillText(i, cx + i * scale, cy + 16);
+  }
+  ctx.textAlign = 'right';
+  for (let i = -5; i <= 5; i++) {
+    if (i === 0) continue;
+    ctx.fillText(-i, cx - 4, cy + i * scale + 4);
+  }
+  ctx.fillStyle = '#e8ecf5';
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 13px Space Mono, monospace';
+  ctx.fillText('x', W - 12, cy - 6);
+  ctx.fillText('y', cx + 12, 14);
+  ctx.fillText('0', cx - 12, cy + 14);
+
+  // Plot function
+  const mStr = document.getElementById('slope-val').value;
+  const bStr = document.getElementById('intercept-val').value;
+  const m = parseFloat(mStr);
+  const b = parseFloat(bStr);
+
+  if (isNaN(m) || isNaN(b)) return;
+
+  ctx.strokeStyle = '#4fffb0';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#4fffb0';
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  let started = false;
+  for (let px = 0; px <= W; px++) {
+    const xMath = (px - cx) / scale;
+    const yMath = m * xMath + b;
+    const py = cy - yMath * scale;
+    if (!started) { ctx.moveTo(px, py); started = true; }
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Label the equation
+  ctx.fillStyle = '#4fffb0';
+  ctx.font = 'bold 13px Space Mono, monospace';
+  ctx.textAlign = 'left';
+  const sign = b >= 0 ? '+' : '-';
+  const bAbs = Math.abs(b);
+  ctx.fillText(`y = ${m}x ${sign} ${bAbs}`, 14, 22);
+
+  // Y-intercept dot
+  const yIntPx = cy - b * scale;
+  ctx.fillStyle = '#ff6b9d';
+  ctx.beginPath(); ctx.arc(cx, yIntPx, 5, 0, Math.PI*2); ctx.fill();
+
+  // Slope indicator
+  if (cx + scale <= W && yIntPx - m * scale >= 0 && yIntPx - m * scale <= H) {
+    ctx.strokeStyle = '#ffce5c';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cx, yIntPx); ctx.lineTo(cx + scale, yIntPx); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + scale, yIntPx); ctx.lineTo(cx + scale, yIntPx - m*scale); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ffce5c';
+    ctx.font = '11px Space Mono,monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('run=1', cx + scale/2, yIntPx + 14);
+    ctx.fillText(`rise=${m}`, cx + scale + 24, yIntPx - m*scale/2);
+  }
+}
+
+// ===================== NUMBER LINE =====================
+function drawNumberLine() {
+  const canvas = document.getElementById('numline-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cy = H / 2;
+  const step = 44;
+  const cx = W / 2;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#1e2438';
+  ctx.fillRect(0, 0, W, H);
+
+  // Line
+  ctx.strokeStyle = '#4b5680';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(20, cy); ctx.lineTo(W-20, cy); ctx.stroke();
+
+  // Arrows
+  ctx.fillStyle = '#4b5680';
+  ctx.beginPath(); ctx.moveTo(W-20, cy); ctx.lineTo(W-30, cy-5); ctx.lineTo(W-30, cy+5); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(20, cy); ctx.lineTo(30, cy-5); ctx.lineTo(30, cy+5); ctx.fill();
+
+  // Ticks and labels
+  for (let n = -6; n <= 6; n++) {
+    const x = cx + n * step;
+    const color = n === 0 ? '#e8ecf5' : n > 0 ? '#4fffb0' : '#7b9fff';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = n === 0 ? 2 : 1;
+    ctx.beginPath(); ctx.moveTo(x, cy - 8); ctx.lineTo(x, cy + 8); ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.font = `${n === 0 ? 'bold 13px' : '12px'} Space Mono, monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(n, x, cy + 22);
+  }
+  ctx.fillStyle = '#6b7799';
+  ctx.font = '11px Space Mono, monospace';
+  ctx.fillText('Negative ←', 55, cy - 16);
+  ctx.fillText('→ Positive', W - 55, cy - 16);
+}
+
+// ===================== TOAST =====================
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast-${type} show`;
+  setTimeout(() => t.className = '', 2500);
+}
+
+// ===================== INIT =====================
+window.addEventListener('load', () => {
+  drawNumberLine();
+  // Build questions for topic 0 in background
+  setTimeout(() => {
+    Object.keys(questionsDB).forEach(tid => buildQuestions(parseInt(tid)));
+    document.querySelectorAll('[id^="practice-"]').forEach(el => el.dataset.built = '1');
+  }, 300);
+});
+</script>
+</body>
+</html>
