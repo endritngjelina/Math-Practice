@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra 2 Interactive Learning Platform</title>
+<style>
+:root {
+  --color-bg-primary: #0a0e1a;
+  --color-bg-secondary: #141824;
+  --color-bg-tertiary: #1e2330;
+  --color-accent-primary: #10b981;
+  --color-accent-secondary: #34d399;
+  --color-accent-success: #10b981;
+  --color-accent-warning: #f59e0b;
+  --color-accent-error: #ef4444;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #2d3548;
+  --color-hover: #2a3142;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #1e2330 0%, #064e3b 100%);
+  padding: 2rem 2.5rem;
+  border-bottom: 2px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+}
+
+.progress-wrap {
+  margin-top: 1.2rem;
+  background: var(--color-bg-tertiary);
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.progress-text {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.container {
+  display: flex;
+  min-height: calc(100vh - 140px);
+}
+
+nav {
+  width: 280px;
+  background: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem 0;
+  position: sticky;
+  top: 140px;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+nav h2 {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+}
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  font-size: 0.95rem;
+}
+
+nav ul li a:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+nav ul li a.active {
+  background: var(--color-hover);
+  border-left-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+nav ul li a .icon {
+  font-size: 1.2rem;
+}
+
+nav ul li a .check {
+  margin-left: auto;
+  font-size: 0.7rem;
+  background: var(--color-accent-success);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 10px;
+  display: none;
+}
+
+nav ul li a .check.show {
+  display: block;
+}
+
+main {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 1000px;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.badge-intro { background: rgba(16, 185, 129, 0.2); color: var(--color-accent-primary); }
+.badge-core { background: rgba(52, 211, 153, 0.2); color: var(--color-accent-secondary); }
+.badge-advanced { background: rgba(245, 158, 11, 0.2); color: var(--color-accent-warning); }
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  color: var(--color-accent-primary);
+  margin-bottom: 1rem;
+}
+
+.card p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.8rem;
+  line-height: 1.8;
+}
+
+.card ul, .card ol {
+  margin-left: 1.5rem;
+  color: var(--color-text-secondary);
+  line-height: 2;
+}
+
+.highlight-box {
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  font-family: 'Courier New', monospace;
+  color: var(--color-text-primary);
+}
+
+.formula {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  margin: 1rem 0;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: var(--color-accent-warning);
+  display: inline-block;
+}
+
+.example-box {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.example-title {
+  font-size: 0.85rem;
+  color: var(--color-accent-success);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  background: var(--color-accent-primary);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.step-text strong {
+  color: var(--color-accent-success);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+.quiz-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-num {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-question {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: var(--color-text-primary);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.option {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-accent-primary);
+  background: var(--color-hover);
+}
+
+.option.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.option.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: none;
+}
+
+.feedback.show { display: block; }
+
+.feedback.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.feedback.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.show-solution-btn {
+  margin-top: 0.8rem;
+  background: none;
+  border: 2px solid var(--color-accent-warning);
+  color: var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.show-solution-btn:hover {
+  background: var(--color-accent-warning);
+  color: #000;
+}
+
+.solution {
+  margin-top: 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: none;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.solution.show { display: block; }
+
+.tip-box {
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--color-accent-success);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.warning-box {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--color-accent-error);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.calc-tool {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.calc-tool h3 {
+  font-size: 1.2rem;
+  color: var(--color-accent-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.calc-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.calc-group label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.calc-group input, .calc-group select {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  width: 120px;
+}
+
+.calc-group input:focus, .calc-group select:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+.calc-btn {
+  background: var(--color-accent-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calc-btn:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.calc-result {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem;
+  color: var(--color-accent-success);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  min-height: 60px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.home-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.home-card:hover {
+  border-color: var(--color-accent-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+}
+
+.home-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.home-card .title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.home-card .desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-accent-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: none;
+  border: 2px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+#scoreDisplay {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-accent-primary);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  color: var(--color-accent-primary);
+  z-index: 1000;
+}
+
+#scoreDisplay span {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧮 Algebra 2 Master Course</h1>
+  <p>Master equations, functions, polynomials, exponentials, and logarithms</p>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 of 14 sections completed</div>
+</header>
+
+<div class="container">
+  <nav>
+    <h2>Course Navigation</h2>
+    <ul>
+      <li><a href="#" onclick="showSection('home')" class="active" id="nav-home"><span class="icon">🏠</span>Home<span class="check" id="check-home">✓</span></a></li>
+      <li><a href="#" onclick="showSection('linear-equations')"><span class="icon">📈</span>Linear Equations<span class="check" id="check-linear-equations">✓</span></a></li>
+      <li><a href="#" onclick="showSection('systems')"><span class="icon">🔀</span>Systems of Equations<span class="check" id="check-systems">✓</span></a></li>
+      <li><a href="#" onclick="showSection('polynomials')"><span class="icon">🔢</span>Polynomials<span class="check" id="check-polynomials">✓</span></a></li>
+      <li><a href="#" onclick="showSection('factoring')"><span class="icon">✂️</span>Factoring<span class="check" id="check-factoring">✓</span></a></li>
+      <li><a href="#" onclick="showSection('quadratics')"><span class="icon">📐</span>Quadratic Equations<span class="check" id="check-quadratics">✓</span></a></li>
+      <li><a href="#" onclick="showSection('functions')"><span class="icon">ƒ</span>Functions<span class="check" id="check-functions">✓</span></a></li>
+      <li><a href="#" onclick="showSection('rational')"><span class="icon">➗</span>Rational Expressions<span class="check" id="check-rational">✓</span></a></li>
+      <li><a href="#" onclick="showSection('radicals')"><span class="icon">√</span>Radicals<span class="check" id="check-radicals">✓</span></a></li>
+      <li><a href="#" onclick="showSection('exponentials')"><span class="icon">💥</span>Exponential Functions<span class="check" id="check-exponentials">✓</span></a></li>
+      <li><a href="#" onclick="showSection('logarithms')"><span class="icon">📊</span>Logarithms<span class="check" id="check-logarithms">✓</span></a></li>
+      <li><a href="#" onclick="showSection('sequences')"><span class="icon">🔁</span>Sequences & Series<span class="check" id="check-sequences">✓</span></a></li>
+      <li><a href="#" onclick="showSection('calculators')"><span class="icon">🧮</span>Algebra Calculators<span class="check" id="check-calculators">✓</span></a></li>
+      <li><a href="#" onclick="showSection('quiz')"><span class="icon">📝</span>Final Quiz<span class="check" id="check-quiz">✓</span></a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HOME SECTION -->
+    <div class="section active" id="home">
+      <span class="badge badge-intro">START HERE</span>
+      <div class="section-title">Welcome to Algebra 2! 👋</div>
+      <div class="section-subtitle">Master advanced algebraic concepts and problem-solving</div>
+      
+      <div class="card">
+        <p>Algebra 2 builds on foundational algebra to explore <strong>complex equations, functions, polynomials, exponentials, and logarithms</strong>. This comprehensive course covers everything from linear systems to sequences and series.</p>
+        <p>Each section includes detailed explanations, worked examples, step-by-step solutions, interactive practice problems with instant feedback, and powerful calculators to verify your work.</p>
+      </div>
+
+      <div class="home-grid">
+        <a class="home-card" onclick="showSection('linear-equations')">
+          <div class="icon">📈</div>
+          <div class="title">Linear Equations</div>
+          <div class="desc">Solving & graphing lines</div>
+        </a>
+        <a class="home-card" onclick="showSection('systems')">
+          <div class="icon">🔀</div>
+          <div class="title">Systems</div>
+          <div class="desc">Multiple equation solving</div>
+        </a>
+        <a class="home-card" onclick="showSection('polynomials')">
+          <div class="icon">🔢</div>
+          <div class="title">Polynomials</div>
+          <div class="desc">Operations & properties</div>
+        </a>
+        <a class="home-card" onclick="showSection('factoring')">
+          <div class="icon">✂️</div>
+          <div class="title">Factoring</div>
+          <div class="desc">Breaking down expressions</div>
+        </a>
+        <a class="home-card" onclick="showSection('quadratics')">
+          <div class="icon">📐</div>
+          <div class="title">Quadratics</div>
+          <div class="desc">Parabolas & solutions</div>
+        </a>
+        <a class="home-card" onclick="showSection('functions')">
+          <div class="icon">ƒ</div>
+          <div class="title">Functions</div>
+          <div class="desc">Domain, range, composition</div>
+        </a>
+        <a class="home-card" onclick="showSection('rational')">
+          <div class="icon">➗</div>
+          <div class="title">Rational</div>
+          <div class="desc">Fractions with variables</div>
+        </a>
+        <a class="home-card" onclick="showSection('radicals')">
+          <div class="icon">√</div>
+          <div class="title">Radicals</div>
+          <div class="desc">Square roots & beyond</div>
+        </a>
+        <a class="home-card" onclick="showSection('exponentials')">
+          <div class="icon">💥</div>
+          <div class="title">Exponentials</div>
+          <div class="desc">Growth & decay</div>
+        </a>
+        <a class="home-card" onclick="showSection('logarithms')">
+          <div class="icon">📊</div>
+          <div class="title">Logarithms</div>
+          <div class="desc">Inverse of exponentials</div>
+        </a>
+        <a class="home-card" onclick="showSection('sequences')">
+          <div class="icon">🔁</div>
+          <div class="title">Sequences</div>
+          <div class="desc">Patterns & series</div>
+        </a>
+        <a class="home-card" onclick="showSection('calculators')">
+          <div class="icon">🧮</div>
+          <div class="title">Calculators</div>
+          <div class="desc">Interactive solving tools</div>
+        </a>
+        <a class="home-card" onclick="showSection('quiz')">
+          <div class="icon">📝</div>
+          <div class="title">Final Quiz</div>
+          <div class="desc">Test your mastery</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- LINEAR EQUATIONS SECTION -->
+    <div class="section" id="linear-equations">
+      <span class="badge badge-intro">SECTION 1</span>
+      <div class="section-title">📈 Linear Equations</div>
+      <div class="section-subtitle">Solving and graphing linear relationships</div>
+
+      <div class="card">
+        <h3>What is a Linear Equation?</h3>
+        <p>A <strong>linear equation</strong> is an equation whose graph forms a straight line. The standard form is:</p>
+        <div class="formula">ax + b = c</div>
+        <div class="highlight-box">
+KEY PROPERTY: Linear equations have no exponents greater than 1
+Examples:
+  • 2x + 5 = 13  ✓ Linear
+  • x² + 3 = 7   ✗ Not linear (has x²)
+  • 3x - 4 = 2x + 1  ✓ Linear</div>
+      </div>
+
+      <div class="card">
+        <h3>Solving Linear Equations</h3>
+        <p><strong>Goal:</strong> Isolate the variable (get x by itself)</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 3x + 7 = 22</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 7 from both sides: 3x = 15</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Divide both sides by 3: x = 5</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: x = 5</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 5x - 8 = 2x + 13</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 2x from both sides: 3x - 8 = 13</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Add 8 to both sides: 3x = 21</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Divide by 3: <strong>x = 7</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Slope-Intercept Form</h3>
+        <p>The most common form for graphing linear equations:</p>
+        <div class="formula">y = mx + b</div>
+        <div class="highlight-box">
+m = slope (steepness of line)
+b = y-intercept (where line crosses y-axis)
+
+Example: y = 2x + 3
+  • Slope (m) = 2
+  • Y-intercept (b) = 3</div>
+        <div class="tip-box">
+          💡 <strong>Slope Formula:</strong> m = (y₂ - y₁) / (x₂ - x₁)<br>
+          💡 <strong>Positive slope:</strong> line goes up from left to right<br>
+          💡 <strong>Negative slope:</strong> line goes down from left to right
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q1</div>
+          <div class="quiz-question">Solve: 4x + 9 = 25</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q1')">x = 4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">x = 6.25</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">x = 8</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">x = 16</button>
+          </div>
+          <div class="feedback" id="fb-Q1"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q1')">Show Solution</button>
+          <div class="solution" id="sol-Q1">4x + 9 = 25 → 4x = 16 → <strong>x = 4</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q2</div>
+          <div class="quiz-question">What is the slope of y = -3x + 5?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q2')">-3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">-5</button>
+          </div>
+          <div class="feedback" id="fb-Q2"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q2')">Show Solution</button>
+          <div class="solution" id="sol-Q2">In y = mx + b, m is the slope. Here m = <strong>-3</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="showSection('systems')">Next: Systems of Equations →</button>
+      </div>
+    </div>
+
+    <!-- SYSTEMS OF EQUATIONS SECTION -->
+    <div class="section" id="systems">
+      <span class="badge badge-core">SECTION 2</span>
+      <div class="section-title">🔀 Systems of Equations</div>
+      <div class="section-subtitle">Solving multiple equations simultaneously</div>
+
+      <div class="card">
+        <h3>What is a System of Equations?</h3>
+        <p>A <strong>system of equations</strong> consists of two or more equations with the same variables. The solution is the point(s) where all equations are true.</p>
+        <div class="highlight-box">
+Example System:
+  x + y = 10
+  2x - y = 5
+
+Solution: The (x, y) values that satisfy BOTH equations</div>
+      </div>
+
+      <div class="card">
+        <h3>Substitution Method</h3>
+        <p><strong>Steps:</strong> Solve one equation for a variable, substitute into the other equation.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: x + y = 10 and 2x - y = 5</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">From equation 1: y = 10 - x</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Substitute into equation 2: 2x - (10 - x) = 5</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Simplify: 2x - 10 + x = 5 → 3x = 15</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Solve: x = 5</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">Find y: y = 10 - 5 = 5</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-text"><strong>Solution: (5, 5)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Elimination Method</h3>
+        <p><strong>Steps:</strong> Add or subtract equations to eliminate one variable.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 3x + 2y = 16 and 5x - 2y = 8</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Notice the y-coefficients are opposites (+2y and -2y)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Add the equations: (3x + 2y) + (5x - 2y) = 16 + 8</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Simplify: 8x = 24</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Solve: x = 3</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">Substitute back: 3(3) + 2y = 16 → 9 + 2y = 16 → y = 3.5</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-text"><strong>Solution: (3, 3.5)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q3</div>
+          <div class="quiz-question">Solve: x + y = 8 and x - y = 2 (using elimination)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q3')">x = 5, y = 3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">x = 3, y = 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">x = 4, y = 4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">x = 6, y = 2</button>
+          </div>
+          <div class="feedback" id="fb-Q3"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q3')">Show Solution</button>
+          <div class="solution" id="sol-Q3">Add equations: 2x = 10 → x = 5. Then 5 + y = 8 → <strong>y = 3</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('linear-equations')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('polynomials')">Next: Polynomials →</button>
+      </div>
+    </div>
+
+    <!-- POLYNOMIALS SECTION -->
+    <div class="section" id="polynomials">
+      <span class="badge badge-core">SECTION 3</span>
+      <div class="section-title">🔢 Polynomials</div>
+      <div class="section-subtitle">Operations with multi-term expressions</div>
+
+      <div class="card">
+        <h3>What is a Polynomial?</h3>
+        <p>A <strong>polynomial</strong> is an expression with variables and coefficients involving only addition, subtraction, multiplication, and non-negative integer exponents.</p>
+        <div class="highlight-box">
+Examples:
+  • 3x² + 2x - 5  (degree 2, trinomial)
+  • 5x³ - 2x + 7  (degree 3, trinomial)
+  • 4x⁴           (degree 4, monomial)
+
+NOT polynomials:
+  • 1/x  (negative exponent)
+  • √x   (fractional exponent)</div>
+      </div>
+
+      <div class="card">
+        <h3>Adding & Subtracting Polynomials</h3>
+        <p><strong>Rule:</strong> Combine like terms (same variable and exponent)</p>
+        <div class="example-box">
+          <div class="example-title">Example — Add: (3x² + 2x - 5) + (x² - 4x + 7)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Group like terms: (3x² + x²) + (2x - 4x) + (-5 + 7)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Combine: 4x² - 2x + 2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: 4x² - 2x + 2</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Multiplying Polynomials</h3>
+        <p><strong>Rule:</strong> Distribute each term (FOIL for binomials)</p>
+        <div class="example-box">
+          <div class="example-title">Example — Multiply: (x + 3)(x + 5)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>F</strong>irst: x · x = x²</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>O</strong>uter: x · 5 = 5x</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>I</strong>nner: 3 · x = 3x</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>L</strong>ast: 3 · 5 = 15</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">Combine: x² + 5x + 3x + 15 = <strong>x² + 8x + 15</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q4</div>
+          <div class="quiz-question">Add: (2x² + 3x) + (x² - x + 5)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q4')">3x² + 2x + 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">2x² + 2x + 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">3x² + 4x + 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">x² + 2x + 5</button>
+          </div>
+          <div class="feedback" id="fb-Q4"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q4')">Show Solution</button>
+          <div class="solution" id="sol-Q4">(2x² + x²) + (3x - x) + 5 = <strong>3x² + 2x + 5</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q5</div>
+          <div class="quiz-question">Multiply: (x + 2)(x + 4)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">x² + 8</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q5')">x² + 6x + 8</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">x² + 4x + 8</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">2x² + 6x + 8</button>
+          </div>
+          <div class="feedback" id="fb-Q5"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q5')">Show Solution</button>
+          <div class="solution" id="sol-Q5">FOIL: x² + 4x + 2x + 8 = <strong>x² + 6x + 8</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('systems')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('factoring')">Next: Factoring →</button>
+      </div>
+    </div>
+
+    <!-- FACTORING SECTION -->
+    <div class="section" id="factoring">
+      <span class="badge badge-core">SECTION 4</span>
+      <div class="section-title">✂️ Factoring</div>
+      <div class="section-subtitle">Breaking expressions into products</div>
+
+      <div class="card">
+        <h3>What is Factoring?</h3>
+        <p><strong>Factoring</strong> is the reverse of multiplying—breaking an expression into factors that multiply to give the original expression.</p>
+        <div class="highlight-box">
+Example:
+  x² + 5x + 6 = (x + 2)(x + 3)
+  
+Verification (multiply back):
+  (x + 2)(x + 3) = x² + 3x + 2x + 6 = x² + 5x + 6 ✓</div>
+      </div>
+
+      <div class="card">
+        <h3>Greatest Common Factor (GCF)</h3>
+        <p><strong>Always factor out the GCF first!</strong></p>
+        <div class="example-box">
+          <div class="example-title">Example — Factor: 6x² + 9x</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Find GCF: Both terms divisible by 3x</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Factor out 3x: 3x(2x + 3)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: 3x(2x + 3)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Factoring Trinomials (ax² + bx + c)</h3>
+        <p><strong>Method:</strong> Find two numbers that multiply to c and add to b</p>
+        <div class="example-box">
+          <div class="example-title">Example — Factor: x² + 7x + 12</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Need two numbers that multiply to 12 and add to 7</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Test factors of 12: 1×12, 2×6, 3×4</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">3 + 4 = 7 ✓ and 3 × 4 = 12 ✓</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Answer: (x + 3)(x + 4)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Difference of Squares</h3>
+        <p><strong>Pattern:</strong> a² - b² = (a + b)(a - b)</p>
+        <div class="example-box">
+          <div class="example-title">Example — Factor: x² - 25</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Recognize as x² - 5²</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Apply pattern: <strong>(x + 5)(x - 5)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q6</div>
+          <div class="quiz-question">Factor: x² + 9x + 20</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">(x + 2)(x + 10)</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q6')">(x + 4)(x + 5)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">(x + 1)(x + 20)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">(x + 3)(x + 7)</button>
+          </div>
+          <div class="feedback" id="fb-Q6"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q6')">Show Solution</button>
+          <div class="solution" id="sol-Q6">Need numbers that multiply to 20 and add to 9: 4 and 5. Answer: <strong>(x + 4)(x + 5)</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q7</div>
+          <div class="quiz-question">Factor: x² - 49</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">(x - 7)(x - 7)</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q7')">(x + 7)(x - 7)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">(x + 49)(x - 1)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">Cannot be factored</button>
+          </div>
+          <div class="feedback" id="fb-Q7"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q7')">Show Solution</button>
+          <div class="solution" id="sol-Q7">Difference of squares: x² - 7² = <strong>(x + 7)(x - 7)</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('polynomials')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('quadratics')">Next: Quadratic Equations →</button>
+      </div>
+    </div>
+
+    <!-- QUADRATIC EQUATIONS SECTION -->
+    <div class="section" id="quadratics">
+      <span class="badge badge-core">SECTION 5</span>
+      <div class="section-title">📐 Quadratic Equations</div>
+      <div class="section-subtitle">Solving equations with x²</div>
+
+      <div class="card">
+        <h3>What is a Quadratic Equation?</h3>
+        <p>A <strong>quadratic equation</strong> has the form:</p>
+        <div class="formula">ax² + bx + c = 0</div>
+        <p>Where a ≠ 0. The graph of a quadratic is a <strong>parabola</strong> (U-shaped curve).</p>
+      </div>
+
+      <div class="card">
+        <h3>Solving by Factoring</h3>
+        <p><strong>Zero Product Property:</strong> If ab = 0, then a = 0 or b = 0</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: x² + 5x + 6 = 0</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Factor: (x + 2)(x + 3) = 0</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Set each factor to zero: x + 2 = 0 or x + 3 = 0</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Solutions: x = -2 or x = -3</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quadratic Formula</h3>
+        <p>Works for ANY quadratic equation ax² + bx + c = 0:</p>
+        <div class="formula">x = (-b ± √(b² - 4ac)) / 2a</div>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: x² + 6x + 5 = 0</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Identify: a = 1, b = 6, c = 5</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">x = (-6 ± √(36 - 20)) / 2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">x = (-6 ± √16) / 2 = (-6 ± 4) / 2</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">x = (-6 + 4)/2 = -1 or x = (-6 - 4)/2 = -5</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Solutions: x = -1 or x = -5</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>The Discriminant</h3>
+        <p>The expression <strong>b² - 4ac</strong> tells us about solutions:</p>
+        <div class="tip-box">
+          💡 <strong>b² - 4ac &gt; 0:</strong> Two real solutions<br>
+          💡 <strong>b² - 4ac = 0:</strong> One real solution (repeated)<br>
+          💡 <strong>b² - 4ac &lt; 0:</strong> No real solutions (imaginary)
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q8</div>
+          <div class="quiz-question">Solve by factoring: x² - x - 6 = 0</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">x = 2 or x = 3</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q8')">x = 3 or x = -2</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">x = -3 or x = 2</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">x = 1 or x = 6</button>
+          </div>
+          <div class="feedback" id="fb-Q8"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q8')">Show Solution</button>
+          <div class="solution" id="sol-Q8">(x - 3)(x + 2) = 0 → <strong>x = 3 or x = -2</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('factoring')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('functions')">Next: Functions →</button>
+      </div>
+    </div>
+
+    <!-- FUNCTIONS SECTION -->
+    <div class="section" id="functions">
+      <span class="badge badge-advanced">SECTION 6</span>
+      <div class="section-title">ƒ Functions</div>
+      <div class="section-subtitle">Understanding mathematical relationships</div>
+
+      <div class="card">
+        <h3>What is a Function?</h3>
+        <p>A <strong>function</strong> is a relationship where each input has exactly ONE output.</p>
+        <div class="highlight-box">
+Notation: f(x) = 2x + 3
+  "f of x equals 2x plus 3"
+
+Example:
+  f(5) = 2(5) + 3 = 13
+  f(-1) = 2(-1) + 3 = 1</div>
+        <div class="tip-box">
+          💡 <strong>Vertical Line Test:</strong> If a vertical line crosses the graph more than once, it's NOT a function
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Domain & Range</h3>
+        <p><strong>Domain:</strong> All possible input values (x-values)</p>
+        <p><strong>Range:</strong> All possible output values (y-values)</p>
+        <div class="example-box">
+          <div class="example-title">Example — f(x) = x²</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Domain: All real numbers (any x works)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Range: y ≥ 0 (x² is always non-negative)</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Function Composition</h3>
+        <p><strong>Composition:</strong> Applying one function to the result of another</p>
+        <div class="formula">(f ∘ g)(x) = f(g(x))</div>
+        <div class="example-box">
+          <div class="example-title">Example — f(x) = 2x + 1 and g(x) = x², find f(g(3))</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">First find g(3): g(3) = 3² = 9</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Then find f(9): f(9) = 2(9) + 1 = 19</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: f(g(3)) = 19</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q9</div>
+          <div class="quiz-question">If f(x) = 3x - 5, find f(4)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">12</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q9')">7</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">-2</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">17</button>
+          </div>
+          <div class="feedback" id="fb-Q9"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q9')">Show Solution</button>
+          <div class="solution" id="sol-Q9">f(4) = 3(4) - 5 = 12 - 5 = <strong>7</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('quadratics')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('rational')">Next: Rational Expressions →</button>
+      </div>
+    </div>
+
+    <!-- RATIONAL EXPRESSIONS SECTION -->
+    <div class="section" id="rational">
+      <span class="badge badge-advanced">SECTION 7</span>
+      <div class="section-title">➗ Rational Expressions</div>
+      <div class="section-subtitle">Fractions with polynomials</div>
+
+      <div class="card">
+        <h3>What is a Rational Expression?</h3>
+        <p>A <strong>rational expression</strong> is a fraction where the numerator and/or denominator contains polynomials.</p>
+        <div class="highlight-box">
+Examples:
+  • (x + 3) / (x - 2)
+  • (2x² + 5) / (x² - 9)
+  • 5 / (x + 1)
+
+RESTRICTION: Denominator cannot equal zero!</div>
+      </div>
+
+      <div class="card">
+        <h3>Simplifying Rational Expressions</h3>
+        <p><strong>Method:</strong> Factor numerator and denominator, cancel common factors</p>
+        <div class="example-box">
+          <div class="example-title">Example — Simplify: (x² - 9) / (x² - 3x)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Factor numerator: (x + 3)(x - 3)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Factor denominator: x(x - 3)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Cancel (x - 3): (x + 3) / x</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Answer: (x + 3) / x where x ≠ 0, 3</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Multiplying Rational Expressions</h3>
+        <p><strong>Rule:</strong> Multiply numerators, multiply denominators, then simplify</p>
+        <div class="formula">(a/b) × (c/d) = (ac)/(bd)</div>
+      </div>
+
+      <div class="card">
+        <h3>Adding Rational Expressions</h3>
+        <p><strong>Rule:</strong> Find common denominator, add numerators</p>
+        <div class="example-box">
+          <div class="example-title">Example — Add: 2/x + 3/x</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Same denominator, add numerators: (2 + 3) / x</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Answer: 5/x</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q10</div>
+          <div class="quiz-question">Simplify: (x² - 4) / (x + 2)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">x - 2</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q10')">x - 2 (x ≠ -2)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">x + 2</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">Cannot simplify</button>
+          </div>
+          <div class="feedback" id="fb-Q10"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q10')">Show Solution</button>
+          <div class="solution" id="sol-Q10">(x + 2)(x - 2) / (x + 2) = <strong>x - 2 where x ≠ -2</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('functions')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('radicals')">Next: Radicals →</button>
+      </div>
+    </div>
+
+    <!-- RADICALS SECTION -->
+    <div class="section" id="radicals">
+      <span class="badge badge-advanced">SECTION 8</span>
+      <div class="section-title">√ Radicals</div>
+      <div class="section-subtitle">Square roots and beyond</div>
+
+      <div class="card">
+        <h3>What is a Radical?</h3>
+        <p>A <strong>radical</strong> expression contains a root symbol (√).</p>
+        <div class="highlight-box">
+Examples:
+  • √16 = 4 (square root)
+  • ∛8 = 2 (cube root)
+  • √(x + 5)
+
+KEY PROPERTY: √(a × b) = √a × √b</div>
+      </div>
+
+      <div class="card">
+        <h3>Simplifying Radicals</h3>
+        <p><strong>Goal:</strong> No perfect squares under the radical</p>
+        <div class="example-box">
+          <div class="example-title">Example — Simplify: √72</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Factor: 72 = 36 × 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">√72 = √(36 × 2) = √36 × √2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: 6√2</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Adding & Subtracting Radicals</h3>
+        <p><strong>Rule:</strong> Can only combine like radicals (same radicand)</p>
+        <div class="example-box">
+          <div class="example-title">Example — Simplify: 3√5 + 2√5</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Like radicals (both √5)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Add coefficients: (3 + 2)√5</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: 5√5</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Rationalizing the Denominator</h3>
+        <p><strong>Goal:</strong> No radicals in denominator</p>
+        <div class="example-box">
+          <div class="example-title">Example — Rationalize: 1/√3</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Multiply by √3/√3: (1 × √3) / (√3 × √3)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Simplify: √3 / 3</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: √3 / 3</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q11</div>
+          <div class="quiz-question">Simplify: √50</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">10√5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q11')">5√2</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">2√5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">25√2</button>
+          </div>
+          <div class="feedback" id="fb-Q11"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q11')">Show Solution</button>
+          <div class="solution" id="sol-Q11">√50 = √(25 × 2) = √25 × √2 = <strong>5√2</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('rational')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('exponentials')">Next: Exponentials →</button>
+      </div>
+    </div>
+
+    <!-- EXPONENTIALS SECTION -->
+    <div class="section" id="exponentials">
+      <span class="badge badge-advanced">SECTION 9</span>
+      <div class="section-title">💥 Exponential Functions</div>
+      <div class="section-subtitle">Growth and decay</div>
+
+      <div class="card">
+        <h3>What is an Exponential Function?</h3>
+        <p>An <strong>exponential function</strong> has the form:</p>
+        <div class="formula">f(x) = a · bˣ</div>
+        <p>Where <strong>b</strong> is the base (b &gt; 0, b ≠ 1)</p>
+        <div class="tip-box">
+          💡 <strong>b &gt; 1:</strong> Exponential growth<br>
+          💡 <strong>0 &lt; b &lt; 1:</strong> Exponential decay
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exponential Growth</h3>
+        <p><strong>Example:</strong> Population growth, compound interest</p>
+        <div class="example-box">
+          <div class="example-title">Example — A bacteria population doubles every hour. Starting with 100, find population after 4 hours.</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Formula: P(t) = 100 · 2ᵗ</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">After 4 hours: P(4) = 100 · 2⁴</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">P(4) = 100 · 16 = <strong>1600 bacteria</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exponential Decay</h3>
+        <p><strong>Example:</strong> Radioactive decay, depreciation</p>
+        <div class="example-box">
+          <div class="example-title">Example — Car value depreciates by 15% per year. Starting value $20,000, find value after 3 years.</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Decay factor: 1 - 0.15 = 0.85</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Formula: V(t) = 20000 · (0.85)ᵗ</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">V(3) = 20000 · (0.85)³ ≈ <strong>$12,282.50</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exponent Rules Review</h3>
+        <div class="highlight-box">
+aᵐ · aⁿ = aᵐ⁺ⁿ
+aᵐ / aⁿ = aᵐ⁻ⁿ
+(aᵐ)ⁿ = aᵐⁿ
+a⁰ = 1
+a⁻ⁿ = 1/aⁿ</div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q12</div>
+          <div class="quiz-question">Is f(x) = 3ˣ growth or decay?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q12')">Growth</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">Decay</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">Neither</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">Cannot determine</button>
+          </div>
+          <div class="feedback" id="fb-Q12"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q12')">Show Solution</button>
+          <div class="solution" id="sol-Q12">Base = 3 &gt; 1, so this is <strong>exponential growth</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('radicals')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('logarithms')">Next: Logarithms →</button>
+      </div>
+    </div>
+
+    <!-- LOGARITHMS SECTION -->
+    <div class="section" id="logarithms">
+      <span class="badge badge-advanced">SECTION 10</span>
+      <div class="section-title">📊 Logarithms</div>
+      <div class="section-subtitle">The inverse of exponentials</div>
+
+      <div class="card">
+        <h3>What is a Logarithm?</h3>
+        <p>A <strong>logarithm</strong> answers: "What exponent gives me this number?"</p>
+        <div class="formula">logᵦ(x) = y means bʸ = x</div>
+        <div class="example-box">
+          <div class="example-title">Example — What is log₂(8)?</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Ask: "2 to what power equals 8?"</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">2³ = 8</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Answer: log₂(8) = 3</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Common & Natural Logarithms</h3>
+        <div class="grid-2">
+          <div>
+            <div class="formula">log(x) = log₁₀(x)</div>
+            <p><strong>Common log:</strong> Base 10 (calculator LOG button)</p>
+          </div>
+          <div>
+            <div class="formula">ln(x) = logₑ(x)</div>
+            <p><strong>Natural log:</strong> Base e ≈ 2.718 (calculator LN button)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Logarithm Properties</h3>
+        <div class="highlight-box">
+Product: log(ab) = log(a) + log(b)
+Quotient: log(a/b) = log(a) - log(b)
+Power: log(aⁿ) = n·log(a)
+Change of Base: logᵦ(a) = log(a)/log(b)</div>
+      </div>
+
+      <div class="card">
+        <h3>Solving Exponential Equations</h3>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 2ˣ = 10</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Take log of both sides: log(2ˣ) = log(10)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Use power rule: x·log(2) = log(10)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Divide: x = log(10)/log(2)</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">x ≈ 1/0.301 ≈ <strong>3.32</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q13</div>
+          <div class="quiz-question">What is log₃(27)?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">9</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q13')">3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">27</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">81</button>
+          </div>
+          <div class="feedback" id="fb-Q13"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q13')">Show Solution</button>
+          <div class="solution" id="sol-Q13">3³ = 27, so log₃(27) = <strong>3</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('exponentials')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('sequences')">Next: Sequences →</button>
+      </div>
+    </div>
+
+    <!-- SEQUENCES SECTION -->
+    <div class="section" id="sequences">
+      <span class="badge badge-advanced">SECTION 11</span>
+      <div class="section-title">🔁 Sequences & Series</div>
+      <div class="section-subtitle">Patterns and sums</div>
+
+      <div class="card">
+        <h3>What is a Sequence?</h3>
+        <p>A <strong>sequence</strong> is an ordered list of numbers following a pattern.</p>
+        <div class="highlight-box">
+Example: 2, 4, 6, 8, 10, ...
+  (even numbers)
+
+Notation: aₙ represents the nth term</div>
+      </div>
+
+      <div class="card">
+        <h3>Arithmetic Sequences</h3>
+        <p><strong>Definition:</strong> Each term differs from the previous by a constant (common difference d)</p>
+        <div class="formula">aₙ = a₁ + (n-1)d</div>
+        <div class="example-box">
+          <div class="example-title">Example — Find 10th term of: 5, 8, 11, 14, ...</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Identify: a₁ = 5, d = 3</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Formula: a₁₀ = 5 + (10-1)·3</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">a₁₀ = 5 + 27 = <strong>32</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Geometric Sequences</h3>
+        <p><strong>Definition:</strong> Each term is multiplied by a constant (common ratio r)</p>
+        <div class="formula">aₙ = a₁ · rⁿ⁻¹</div>
+        <div class="example-box">
+          <div class="example-title">Example — Find 5th term of: 3, 6, 12, 24, ...</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Identify: a₁ = 3, r = 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Formula: a₅ = 3 · 2⁵⁻¹ = 3 · 2⁴</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">a₅ = 3 · 16 = <strong>48</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Arithmetic Series Sum</h3>
+        <p><strong>Sum of first n terms:</strong></p>
+        <div class="formula">Sₙ = n(a₁ + aₙ)/2</div>
+        <div class="example-box">
+          <div class="example-title">Example — Sum first 10 terms of: 2, 4, 6, 8, ...</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">a₁ = 2, a₁₀ = 20, n = 10</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">S₁₀ = 10(2 + 20)/2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">S₁₀ = 10(22)/2 = <strong>110</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q14</div>
+          <div class="quiz-question">Find the 6th term of: 1, 4, 7, 10, ...</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">13</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q14')">16</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">19</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">22</button>
+          </div>
+          <div class="feedback" id="fb-Q14"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q14')">Show Solution</button>
+          <div class="solution" id="sol-Q14">a₆ = 1 + (6-1)·3 = 1 + 15 = <strong>16</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('logarithms')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('calculators')">Next: Calculators →</button>
+      </div>
+    </div>
+
+    <!-- CALCULATORS SECTION -->
+    <div class="section" id="calculators">
+      <span class="badge badge-core">TOOLS</span>
+      <div class="section-title">🧮 Algebra 2 Calculators</div>
+      <div class="section-subtitle">Interactive tools for all your algebra needs</div>
+
+      <div class="calc-tool">
+        <h3>Quadratic Equation Solver</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>a (x² coefficient)</label>
+            <input type="number" id="quadA" value="1">
+          </div>
+          <div class="calc-group">
+            <label>b (x coefficient)</label>
+            <input type="number" id="quadB" value="5">
+          </div>
+          <div class="calc-group">
+            <label>c (constant)</label>
+            <input type="number" id="quadC" value="6">
+          </div>
+          <button class="calc-btn" onclick="solveQuadratic()">Solve</button>
+        </div>
+        <div class="calc-result" id="quadResult">Enter coefficients for ax² + bx + c = 0</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Function Evaluator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>f(x) = ax + b</label>
+            <input type="number" id="funcA" value="2" placeholder="a">
+          </div>
+          <div class="calc-group">
+            <label>b value</label>
+            <input type="number" id="funcB" value="3" placeholder="b">
+          </div>
+          <div class="calc-group">
+            <label>Evaluate at x =</label>
+            <input type="number" id="funcX" value="5">
+          </div>
+          <button class="calc-btn" onclick="evalFunction()">Calculate</button>
+        </div>
+        <div class="calc-result" id="funcResult">Result will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Exponential Growth/Decay</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Initial (a)</label>
+            <input type="number" id="expA" value="100">
+          </div>
+          <div class="calc-group">
+            <label>Base (b)</label>
+            <input type="number" id="expB" value="2" step="0.1">
+          </div>
+          <div class="calc-group">
+            <label>Time (t)</label>
+            <input type="number" id="expT" value="3">
+          </div>
+          <button class="calc-btn" onclick="calcExponential()">Calculate</button>
+        </div>
+        <div class="calc-result" id="expResult">Formula: f(t) = a · bᵗ</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Sequence Term Finder</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Type</label>
+            <select id="seqType">
+              <option value="arithmetic">Arithmetic</option>
+              <option value="geometric">Geometric</option>
+            </select>
+          </div>
+          <div class="calc-group">
+            <label>First term (a₁)</label>
+            <input type="number" id="seqA1" value="2">
+          </div>
+          <div class="calc-group">
+            <label>Common diff/ratio</label>
+            <input type="number" id="seqD" value="3">
+          </div>
+          <div class="calc-group">
+            <label>Find term n =</label>
+            <input type="number" id="seqN" value="10">
+          </div>
+          <button class="calc-btn" onclick="calcSequence()">Find Term</button>
+        </div>
+        <div class="calc-result" id="seqResult">Result will appear here...</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="showSection('quiz')">Take Final Quiz →</button>
+      </div>
+    </div>
+
+    <!-- FINAL QUIZ SECTION -->
+    <div class="section" id="quiz">
+      <span class="badge badge-intro">FINAL ASSESSMENT</span>
+      <div class="section-title">📝 Algebra 2 Final Quiz</div>
+      <div class="section-subtitle">Test your algebra mastery!</div>
+
+      <div class="card">
+        <p><strong>Instructions:</strong> Answer all questions to test your understanding. Instant feedback provided. Good luck!</p>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ1</div>
+        <div class="quiz-question">Solve: 2x + 7 = 19</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">x = 13</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ1')">x = 6</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">x = 12</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">x = 26</button>
+        </div>
+        <div class="feedback" id="fb-FQ1"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ1')">Show Solution</button>
+        <div class="solution" id="sol-FQ1">2x + 7 = 19 → 2x = 12 → <strong>x = 6</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ2</div>
+        <div class="quiz-question">Factor: x² + 11x + 24</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">(x + 4)(x + 6)</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ2')">(x + 3)(x + 8)</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">(x + 2)(x + 12)</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">(x + 1)(x + 24)</button>
+        </div>
+        <div class="feedback" id="fb-FQ2"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ2')">Show Solution</button>
+        <div class="solution" id="sol-FQ2">Need 3 × 8 = 24 and 3 + 8 = 11 → <strong>(x + 3)(x + 8)</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ3</div>
+        <div class="quiz-question">What is log₂(16)?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">2</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">8</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ3')">4</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">16</button>
+        </div>
+        <div class="feedback" id="fb-FQ3"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ3')">Show Solution</button>
+        <div class="solution" id="sol-FQ3">2⁴ = 16, so log₂(16) = <strong>4</strong></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('calculators')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('home')">Return Home</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="scoreDisplay">
+  Score: <span id="scoreNum">0</span> / <span id="scoreTotal">0</span>
+</div>
+
+<script>
+let score = 0;
+let answered = {};
+const visited = new Set(['home']);
+
+function checkAnswer(btn, result, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  
+  const options = btn.parentElement.querySelectorAll('.option');
+  options.forEach(b => b.disabled = true);
+  
+  const fb = document.getElementById('fb-' + qid);
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    score++;
+    fb.textContent = '✅ Correct! Excellent work!';
+    fb.className = 'feedback show correct';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Not quite right. Check the solution below.';
+    fb.className = 'feedback show wrong';
+    options.forEach(b => {
+      if (b.onclick.toString().includes("'correct'")) {
+        b.classList.add('correct');
+      }
+    });
+  }
+  updateScore();
+}
+
+function updateScore() {
+  const total = Object.keys(answered).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreTotal').textContent = total;
+}
+
+function toggleSolution(id) {
+  const sol = document.getElementById(id);
+  sol.classList.toggle('show');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) {
+    navEl.classList.add('active');
+  } else {
+    document.querySelectorAll('nav ul li a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(id)) {
+        a.classList.add('active');
+      }
+    });
+  }
+  
+  visited.add(id);
+  const checkEl = document.getElementById('check-' + id);
+  if (checkEl) checkEl.classList.add('show');
+  
+  const progress = (visited.size / 14) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.getElementById('progressText').textContent = visited.size + ' of 14 sections completed';
+  
+  window.scrollTo(0, 0);
+}
+
+// Calculator Functions
+function solveQuadratic() {
+  const a = parseFloat(document.getElementById('quadA').value);
+  const b = parseFloat(document.getElementById('quadB').value);
+  const c = parseFloat(document.getElementById('quadC').value);
+  
+  const disc = b*b - 4*a*c;
+  
+  if (disc < 0) {
+    document.getElementById('quadResult').innerHTML = '<strong>No real solutions</strong><br>Discriminant = ' + disc.toFixed(2) + ' &lt; 0';
+  } else if (disc === 0) {
+    const x = -b / (2*a);
+    document.getElementById('quadResult').innerHTML = '<strong>One solution:</strong> x = ' + x.toFixed(2);
+  } else {
+    const x1 = (-b + Math.sqrt(disc)) / (2*a);
+    const x2 = (-b - Math.sqrt(disc)) / (2*a);
+    document.getElementById('quadResult').innerHTML = '<strong>Two solutions:</strong><br>x₁ = ' + x1.toFixed(2) + '<br>x₂ = ' + x2.toFixed(2);
+  }
+}
+
+function evalFunction() {
+  const a = parseFloat(document.getElementById('funcA').value);
+  const b = parseFloat(document.getElementById('funcB').value);
+  const x = parseFloat(document.getElementById('funcX').value);
+  
+  const result = a * x + b;
+  document.getElementById('funcResult').innerHTML = '<strong>f(' + x + ') = ' + a + '(' + x + ') + ' + b + ' = ' + result + '</strong>';
+}
+
+function calcExponential() {
+  const a = parseFloat(document.getElementById('expA').value);
+  const b = parseFloat(document.getElementById('expB').value);
+  const t = parseFloat(document.getElementById('expT').value);
+  
+  const result = a * Math.pow(b, t);
+  const type = b > 1 ? 'Growth' : 'Decay';
+  document.getElementById('expResult').innerHTML = '<strong>f(' + t + ') = ' + a + ' × ' + b + '<sup>' + t + '</sup> = ' + result.toFixed(2) + '</strong><br>Type: ' + type;
+}
+
+function calcSequence() {
+  const type = document.getElementById('seqType').value;
+  const a1 = parseFloat(document.getElementById('seqA1').value);
+  const d = parseFloat(document.getElementById('seqD').value);
+  const n = parseInt(document.getElementById('seqN').value);
+  
+  let result;
+  if (type === 'arithmetic') {
+    result = a1 + (n - 1) * d;
+    document.getElementById('seqResult').innerHTML = '<strong>a<sub>' + n + '</sub> = ' + result + '</strong><br>Formula: a<sub>n</sub> = ' + a1 + ' + (n-1) × ' + d;
+  } else {
+    result = a1 * Math.pow(d, n - 1);
+    document.getElementById('seqResult').innerHTML = '<strong>a<sub>' + n + '</sub> = ' + result.toFixed(2) + '</strong><br>Formula: a<sub>n</sub> = ' + a1 + ' × ' + d + '<sup>n-1</sup>';
+  }
+}
+
+showSection('home');
+</script>
+
+</body>
+</html>
+
