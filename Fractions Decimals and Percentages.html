@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fractions, Decimals & Percentages – Interactive Learning</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card2: #222640;
+    --accent: #7c6af7;
+    --accent2: #f76a8c;
+    --accent3: #43e8b0;
+    --accent4: #f7b643;
+    --text: #e8eaf6;
+    --muted: #9095b0;
+    --border: #2e3255;
+    --success: #43e8b0;
+    --error: #f76a8c;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh;}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,#1a1d2e 0%,#2a1f5e 100%);padding:28px 32px;border-bottom:2px solid var(--border);}
+  header h1{font-size:2rem;background:linear-gradient(90deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+  header p{color:var(--muted);font-size:1rem;}
+  .progress-bar-wrap{margin-top:16px;background:#2e3255;border-radius:30px;height:10px;width:100%;}
+  .progress-bar-fill{height:10px;border-radius:30px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .5s;}
+  .progress-label{color:var(--muted);font-size:.82rem;margin-top:5px;}
+
+  /* LAYOUT */
+  .container{display:flex;min-height:calc(100vh - 120px);}
+  nav{width:270px;min-width:220px;background:var(--card);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  nav h2{color:var(--muted);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:0 22px;margin-bottom:12px;}
+  nav ul{list-style:none;}
+  nav ul li a{display:flex;align-items:center;gap:10px;padding:11px 22px;color:var(--text);text-decoration:none;font-size:.95rem;border-left:3px solid transparent;transition:.2s;}
+  nav ul li a:hover{background:var(--card2);color:var(--accent);}
+  nav ul li a.active{background:var(--card2);border-left-color:var(--accent);color:var(--accent);}
+  nav ul li a .nav-icon{font-size:1.1rem;}
+  nav ul li a .nav-done{margin-left:auto;font-size:.75rem;background:var(--accent3);color:#000;padding:2px 7px;border-radius:20px;display:none;}
+  nav ul li a .nav-done.show{display:block;}
+  main{flex:1;padding:36px 40px;max-width:960px;}
+
+  /* SECTION */
+  .section{display:none;}
+  .section.active{display:block;}
+  .section-title{font-size:1.7rem;font-weight:700;margin-bottom:6px;}
+  .section-subtitle{color:var(--muted);margin-bottom:24px;font-size:.97rem;}
+  .badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:14px;letter-spacing:1px;}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:22px;}
+  .card h3{font-size:1.1rem;color:var(--accent);margin-bottom:12px;}
+  .card p{line-height:1.75;color:#cdd0e3;margin-bottom:10px;}
+  .card ul,.card ol{padding-left:20px;color:#cdd0e3;line-height:2;}
+  .highlight-box{background:linear-gradient(135deg,#1e1b4b,#2e1b4b);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .highlight-box code{font-family:monospace;font-size:1.05rem;color:var(--accent3);}
+  .formula-row{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;}
+  .formula-pill{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-family:monospace;font-size:1rem;color:var(--accent4);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+  @media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+
+  /* EXAMPLE STEPS */
+  .example-box{background:#12162a;border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin:14px 0;}
+  .example-box .ex-title{font-size:.85rem;color:var(--accent4);font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+  .step{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+  .step-num{background:var(--accent);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .step-text{color:#cdd0e3;line-height:1.65;}
+  .step-text strong{color:var(--accent3);}
+
+  /* QUIZ */
+  .quiz-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;}
+  .quiz-card .q-num{font-size:.78rem;color:var(--muted);font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+  .quiz-card .q-text{font-size:1.05rem;font-weight:600;margin-bottom:16px;color:var(--text);}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option-btn{background:var(--card2);border:1.5px solid var(--border);border-radius:9px;padding:12px 18px;color:var(--text);font-size:.97rem;cursor:pointer;text-align:left;transition:.2s;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+  .option-btn.correct{background:#0d2e22;border-color:var(--success);color:var(--success);}
+  .option-btn.wrong{background:#2e0d18;border-color:var(--error);color:var(--error);}
+  .feedback{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:.93rem;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#0d2e22;border:1px solid var(--success);color:var(--success);}
+  .feedback.wrong{background:#2e0d18;border:1px solid var(--error);color:var(--error);}
+  .show-sol-btn{margin-top:10px;background:none;border:1.5px solid var(--accent4);color:var(--accent4);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.88rem;transition:.2s;}
+  .show-sol-btn:hover{background:var(--accent4);color:#000;}
+  .solution-box{margin-top:12px;background:#1a1a0d;border:1px solid var(--accent4);border-radius:8px;padding:14px 18px;display:none;color:#f7e0a0;font-size:.93rem;line-height:1.7;}
+  .solution-box.show{display:block;}
+
+  /* CALCULATOR */
+  .calc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:22px;}
+  .calc-card h3{font-size:1.1rem;color:var(--accent3);margin-bottom:16px;}
+  .calc-inputs{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:16px;}
+  .calc-group{display:flex;flex-direction:column;gap:5px;}
+  .calc-group label{font-size:.82rem;color:var(--muted);}
+  .calc-group input,.calc-group select{background:#12162a;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:1rem;width:100px;}
+  .calc-group input:focus,.calc-group select:focus{outline:none;border-color:var(--accent);}
+  .calc-btn{background:var(--accent);border:none;border-radius:8px;padding:10px 22px;color:#fff;font-size:1rem;cursor:pointer;font-weight:600;transition:.2s;}
+  .calc-btn:hover{background:#6655e0;}
+  .calc-result{background:#12162a;border:1px solid var(--accent);border-radius:8px;padding:14px 18px;color:var(--accent3);font-size:1.05rem;min-height:50px;line-height:1.7;}
+  .frac-display{display:inline-flex;flex-direction:column;align-items:center;margin:0 6px;vertical-align:middle;}
+  .frac-display .fn{border-bottom:2px solid var(--accent3);padding-bottom:2px;font-size:1.1rem;}
+  .frac-display .fd{padding-top:2px;font-size:1.1rem;}
+
+  /* VISUAL AIDS */
+  canvas{border:1px solid var(--border);border-radius:10px;background:#12162a;display:block;margin:14px auto;}
+  .pie-wrap{text-align:center;}
+
+  /* TABS */
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .tab-btn{background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;color:var(--muted);cursor:pointer;font-size:.92rem;transition:.2s;}
+  .tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* SCORE */
+  #scoreDisplay{position:fixed;bottom:24px;right:24px;background:var(--card);border:1.5px solid var(--accent);border-radius:12px;padding:14px 20px;z-index:999;font-size:.95rem;color:var(--accent);}
+  #scoreDisplay span{font-size:1.3rem;font-weight:700;}
+
+  /* HOME */
+  .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:20px;}
+  .home-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;cursor:pointer;transition:.2s;text-decoration:none;color:var(--text);}
+  .home-card:hover{border-color:var(--accent);transform:translateY(-3px);}
+  .home-card .hc-icon{font-size:2rem;margin-bottom:10px;}
+  .home-card .hc-title{font-weight:700;margin-bottom:5px;}
+  .home-card .hc-desc{font-size:.83rem;color:var(--muted);}
+  .tip-box{background:#1a2a1a;border-left:4px solid var(--accent3);border-radius:8px;padding:13px 18px;margin:12px 0;color:#a8f0d0;font-size:.93rem;}
+  .warn-box{background:#2a1a1a;border-left:4px solid var(--error);border-radius:8px;padding:13px 18px;margin:12px 0;color:#f0a8b8;font-size:.93rem;}
+  .section-nav{display:flex;justify-content:flex-end;margin-top:20px;gap:10px;}
+  .snav-btn{background:var(--accent);border:none;border-radius:9px;padding:10px 22px;color:#fff;cursor:pointer;font-size:.95rem;font-weight:600;transition:.2s;}
+  .snav-btn:hover{background:#6655e0;}
+  .snav-btn.outline{background:none;border:1.5px solid var(--border);color:var(--muted);}
+  .snav-btn.outline:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:7px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔢 Fractions, Decimals &amp; Percentages</h1>
+  <p>A complete interactive course — from basics to mastery</p>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 10 sections visited</div>
+</header>
+
+<div class="container">
+<!-- NAV -->
+<nav>
+  <h2>Course Outline</h2>
+  <ul id="navList">
+    <li><a href="#" onclick="showSection('home')" class="active" id="nav-home"><span class="nav-icon">🏠</span>Home<span class="nav-done" id="done-home">✓</span></a></li>
+    <li><a href="#" onclick="showSection('fractions-basics')"><span class="nav-icon">½</span>Fraction Basics<span class="nav-done" id="done-fractions-basics">✓</span></a></li>
+    <li><a href="#" onclick="showSection('fractions-ops')"><span class="nav-icon">➕</span>Fraction Operations<span class="nav-done" id="done-fractions-ops">✓</span></a></li>
+    <li><a href="#" onclick="showSection('mixed-numbers')"><span class="nav-icon">🔀</span>Mixed Numbers<span class="nav-done" id="done-mixed-numbers">✓</span></a></li>
+    <li><a href="#" onclick="showSection('decimals')"><span class="nav-icon">·</span>Decimals<span class="nav-done" id="done-decimals">✓</span></a></li>
+    <li><a href="#" onclick="showSection('dec-ops')"><span class="nav-icon">✖</span>Decimal Operations<span class="nav-done" id="done-dec-ops">✓</span></a></li>
+    <li><a href="#" onclick="showSection('percentages')"><span class="nav-icon">%</span>Percentages<span class="nav-done" id="done-percentages">✓</span></a></li>
+    <li><a href="#" onclick="showSection('conversions')"><span class="nav-icon">🔄</span>Conversions<span class="nav-done" id="done-conversions">✓</span></a></li>
+    <li><a href="#" onclick="showSection('real-world')"><span class="nav-icon">🌍</span>Real-World Problems<span class="nav-done" id="done-real-world">✓</span></a></li>
+    <li><a href="#" onclick="showSection('calculators')"><span class="nav-icon">🧮</span>Calculators<span class="nav-done" id="done-calculators">✓</span></a></li>
+    <li><a href="#" onclick="showSection('quiz')"><span class="nav-icon">📝</span>Final Quiz<span class="nav-done" id="done-quiz">✓</span></a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ===== HOME ===== -->
+<div class="section active" id="home">
+  <div class="section-title">Welcome to the Course! 👋</div>
+  <div class="section-subtitle">Start from the beginning or jump to any topic below.</div>
+  <div class="card"><p>This course covers everything you need to confidently work with <strong>Fractions</strong>, <strong>Decimals</strong>, and <strong>Percentages</strong> — three of the most important building blocks in all of mathematics. Each section includes clear explanations, worked examples, interactive practice problems, and calculators.</p></div>
+  <div class="home-grid">
+    <a class="home-card" onclick="showSection('fractions-basics')"><div class="hc-icon">½</div><div class="hc-title">Fraction Basics</div><div class="hc-desc">What fractions are, types, simplifying</div></a>
+    <a class="home-card" onclick="showSection('fractions-ops')"><div class="hc-icon">➕</div><div class="hc-title">Fraction Operations</div><div class="hc-desc">Add, subtract, multiply, divide fractions</div></a>
+    <a class="home-card" onclick="showSection('mixed-numbers')"><div class="hc-icon">🔀</div><div class="hc-title">Mixed Numbers</div><div class="hc-desc">Convert & operate on mixed numbers</div></a>
+    <a class="home-card" onclick="showSection('decimals')"><div class="hc-icon">·</div><div class="hc-title">Decimals</div><div class="hc-desc">Place values, reading & writing decimals</div></a>
+    <a class="home-card" onclick="showSection('dec-ops')"><div class="hc-icon">✖</div><div class="hc-title">Decimal Operations</div><div class="hc-desc">Arithmetic with decimal numbers</div></a>
+    <a class="home-card" onclick="showSection('percentages')"><div class="hc-icon">%</div><div class="hc-title">Percentages</div><div class="hc-desc">Understanding & calculating percents</div></a>
+    <a class="home-card" onclick="showSection('conversions')"><div class="hc-icon">🔄</div><div class="hc-title">Conversions</div><div class="hc-desc">Convert between all three forms</div></a>
+    <a class="home-card" onclick="showSection('real-world')"><div class="hc-icon">🌍</div><div class="hc-title">Real-World Problems</div><div class="hc-desc">Discounts, tips, taxes, interest</div></a>
+    <a class="home-card" onclick="showSection('calculators')"><div class="hc-icon">🧮</div><div class="hc-title">Calculators</div><div class="hc-desc">Interactive math tools</div></a>
+    <a class="home-card" onclick="showSection('quiz')"><div class="hc-icon">📝</div><div class="hc-title">Final Quiz</div><div class="hc-desc">Test your full knowledge</div></a>
+  </div>
+</div>
+
+<!-- ===== FRACTION BASICS ===== -->
+<div class="section" id="fractions-basics">
+  <span class="badge" style="background:#3b2f8a;color:#c4b8ff;">SECTION 1</span>
+  <div class="section-title">½ Fraction Basics</div>
+  <div class="section-subtitle">What fractions are, parts of a fraction, types, and simplifying.</div>
+
+  <div class="card">
+    <h3>What Is a Fraction?</h3>
+    <p>A fraction represents a <strong>part of a whole</strong>. It is written as one number over another, separated by a line called a <em>vinculum</em>.</p>
+    <div class="highlight-box"><code>Fraction = Numerator / Denominator</code><br><br>
+      <code>Numerator</code> → how many parts you have<br>
+      <code>Denominator</code> → how many equal parts the whole is divided into
+    </div>
+    <p>Example: In the fraction <strong>3/4</strong>, the whole is cut into 4 equal parts and you have 3 of them.</p>
+  </div>
+
+  <div class="card">
+    <h3>Types of Fractions</h3>
+    <div class="two-col">
+      <div class="highlight-box"><strong style="color:var(--accent4)">Proper Fraction</strong><br>Numerator &lt; Denominator<br><code>3/4 &nbsp; 2/7 &nbsp; 5/9</code></div>
+      <div class="highlight-box"><strong style="color:var(--accent4)">Improper Fraction</strong><br>Numerator ≥ Denominator<br><code>7/4 &nbsp; 9/3 &nbsp; 11/5</code></div>
+      <div class="highlight-box"><strong style="color:var(--accent4)">Mixed Number</strong><br>Whole + proper fraction<br><code>2½ &nbsp; 3¾ &nbsp; 1⅓</code></div>
+      <div class="highlight-box"><strong style="color:var(--accent4)">Unit Fraction</strong><br>Numerator is always 1<br><code>1/2 &nbsp; 1/5 &nbsp; 1/10</code></div>
+      <div class="highlight-box"><strong style="color:var(--accent4)">Equivalent Fractions</strong><br>Different look, same value<br><code>1/2 = 2/4 = 4/8</code></div>
+      <div class="highlight-box"><strong style="color:var(--accent4)">Like Fractions</strong><br>Same denominator<br><code>2/7 and 5/7</code></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Simplifying (Reducing) Fractions</h3>
+    <p>A fraction is in <strong>simplest form</strong> when the numerator and denominator share no common factors other than 1. To simplify, divide both by their <strong>Greatest Common Factor (GCF)</strong>.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — Simplify 12/18</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Find factors of 12: 1, 2, 3, 4, 6, <strong>12</strong></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Find factors of 18: 1, 2, 3, 6, 9, <strong>18</strong></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">GCF = <strong style="color:var(--accent3)">6</strong></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Divide both: 12÷6 = <strong>2</strong>, 18÷6 = <strong>3</strong> → Answer: <strong style="color:var(--accent3)">2/3</strong></div></div>
+    </div>
+    <div class="tip-box">💡 <strong>Tip:</strong> Keep dividing by any common factor until no more exist — same result!</div>
+  </div>
+
+  <div class="card">
+    <h3>Equivalent Fractions</h3>
+    <p>Multiply or divide <strong>both</strong> numerator and denominator by the same number to create an equivalent fraction.</p>
+    <div class="formula-row">
+      <div class="formula-pill">1/2 × 3/3 = 3/6 ✓</div>
+      <div class="formula-pill">4/6 ÷ 2/2 = 2/3 ✓</div>
+    </div>
+    <p>Visualize it: cutting a pizza into 4 slices and taking 2 is the same as cutting it into 8 slices and taking 4.</p>
+    <div class="pie-wrap"><canvas id="pieCanvas" width="320" height="160"></canvas></div>
+    <div style="text-align:center;margin-top:8px;">
+      <label style="color:var(--muted);font-size:.9rem;">Adjust fraction: </label>
+      <input type="range" id="pieSlider" min="1" max="12" value="3" style="width:160px;vertical-align:middle;">
+      <span id="pieLabel" style="color:var(--accent3);margin-left:10px;">3/12</span>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card"><h3>Practice Problems — Fraction Basics</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q1</div>
+      <div class="q-text">What type of fraction is 9/4?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q1')">Proper fraction</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q1')">Improper fraction</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q1')">Unit fraction</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q1')">Mixed number</button>
+      </div>
+      <div class="feedback" id="fb-Q1"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q1')">Show Solution</button>
+      <div class="solution-box" id="sol-Q1">9/4 is an <strong>improper fraction</strong> because the numerator (9) is greater than the denominator (4). It equals 2¼ as a mixed number.</div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q2</div>
+      <div class="q-text">Simplify 24/36 to its lowest terms.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q2')">4/6</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q2')">2/3</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q2')">3/4</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q2')">6/9</button>
+      </div>
+      <div class="feedback" id="fb-Q2"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q2')">Show Solution</button>
+      <div class="solution-box" id="sol-Q2">GCF of 24 and 36 is <strong>12</strong>. 24÷12=2, 36÷12=3 → <strong>2/3</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q3</div>
+      <div class="q-text">Which fraction is equivalent to 3/5?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q3')">6/15</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q3')">9/15</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q3')">3/10</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q3')">6/8</button>
+      </div>
+      <div class="feedback" id="fb-Q3"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q3')">Show Solution</button>
+      <div class="solution-box" id="sol-Q3">3/5 × 3/3 = <strong>9/15</strong> ✓. Multiply both top and bottom by 3.</div>
+    </div>
+  </div>
+  <div class="section-nav"><button class="snav-btn" onclick="showSection('fractions-ops')">Next: Fraction Operations →</button></div>
+</div>
+
+<!-- ===== FRACTION OPERATIONS ===== -->
+<div class="section" id="fractions-ops">
+  <span class="badge" style="background:#3b2f8a;color:#c4b8ff;">SECTION 2</span>
+  <div class="section-title">➕ Fraction Operations</div>
+  <div class="section-subtitle">Add, subtract, multiply, and divide fractions with confidence.</div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('fops','add')">Addition</button>
+    <button class="tab-btn" onclick="switchTab('fops','sub')">Subtraction</button>
+    <button class="tab-btn" onclick="switchTab('fops','mul')">Multiplication</button>
+    <button class="tab-btn" onclick="switchTab('fops','div')">Division</button>
+  </div>
+
+  <div class="tab-panel active" id="fops-add">
+    <div class="card"><h3>Adding Fractions</h3>
+      <p><strong>Same denominator:</strong> Just add the numerators. <code style="color:var(--accent3)">2/7 + 3/7 = 5/7</code></p>
+      <p><strong>Different denominators:</strong> Find the <strong>Least Common Denominator (LCD)</strong> first.</p>
+      <div class="example-box">
+        <div class="ex-title">EXAMPLE — 1/3 + 1/4</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">LCD of 3 and 4 = <strong>12</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Convert: 1/3 = 4/12 &nbsp;&nbsp; 1/4 = 3/12</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Add numerators: 4/12 + 3/12 = <strong style="color:var(--accent3)">7/12</strong></div></div>
+      </div>
+      <div class="example-box">
+        <div class="ex-title">EXAMPLE — 2/5 + 3/10</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">LCD of 5 and 10 = <strong>10</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">2/5 = 4/10 &nbsp;&nbsp; 3/10 stays as 3/10</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">4/10 + 3/10 = <strong style="color:var(--accent3)">7/10</strong></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="fops-sub">
+    <div class="card"><h3>Subtracting Fractions</h3>
+      <p>Same rules as addition — find the LCD, convert, then <strong>subtract numerators</strong>.</p>
+      <div class="example-box">
+        <div class="ex-title">EXAMPLE — 5/6 − 1/4</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">LCD of 6 and 4 = <strong>12</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">5/6 = 10/12 &nbsp;&nbsp; 1/4 = 3/12</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">10/12 − 3/12 = <strong style="color:var(--accent3)">7/12</strong></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="fops-mul">
+    <div class="card"><h3>Multiplying Fractions</h3>
+      <p>Simply multiply numerator × numerator and denominator × denominator. <strong>No LCD needed!</strong></p>
+      <div class="formula-row"><div class="formula-pill">a/b × c/d = (a×c)/(b×d)</div></div>
+      <div class="example-box">
+        <div class="ex-title">EXAMPLE — 2/3 × 4/5</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">Multiply tops: 2 × 4 = <strong>8</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Multiply bottoms: 3 × 5 = <strong>15</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Result: <strong style="color:var(--accent3)">8/15</strong> (already simplified)</div></div>
+      </div>
+      <div class="tip-box">💡 <strong>Cross-Cancel Trick:</strong> Simplify diagonally before multiplying to get smaller numbers!</div>
+    </div>
+  </div>
+  <div class="tab-panel" id="fops-div">
+    <div class="card"><h3>Dividing Fractions</h3>
+      <p><strong>Keep, Change, Flip (KCF):</strong> Keep the first fraction, change ÷ to ×, flip the second fraction.</p>
+      <div class="formula-row"><div class="formula-pill">a/b ÷ c/d = a/b × d/c</div></div>
+      <div class="example-box">
+        <div class="ex-title">EXAMPLE — 3/4 ÷ 2/5</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">Keep 3/4, change to ×, flip 2/5 → 5/2</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">3/4 × 5/2 = 15/8</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Convert to mixed number: <strong style="color:var(--accent3)">1 and 7/8</strong></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q4</div><div class="q-text">Calculate: 1/4 + 3/8</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q4')">4/12</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q4')">5/8</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q4')">1/2</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q4')">4/8</button>
+      </div>
+      <div class="feedback" id="fb-Q4"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q4')">Show Solution</button>
+      <div class="solution-box" id="sol-Q4">LCD = 8. 1/4 = 2/8. Then 2/8 + 3/8 = <strong>5/8</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q5</div><div class="q-text">Calculate: 2/3 × 3/4</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q5')">5/7</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q5')">6/12</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q5')">1/2</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q5')">2/4</button>
+      </div>
+      <div class="feedback" id="fb-Q5"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q5')">Show Solution</button>
+      <div class="solution-box" id="sol-Q5">2/3 × 3/4 = 6/12 = <strong>1/2</strong> (simplified by dividing by 6)</div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q6</div><div class="q-text">Calculate: 5/6 ÷ 5/12</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q6')">1/2</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q6')">5/72</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q6')">2</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q6')">25/72</button>
+      </div>
+      <div class="feedback" id="fb-Q6"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q6')">Show Solution</button>
+      <div class="solution-box" id="sol-Q6">KCF: 5/6 × 12/5 = 60/30 = <strong>2</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('fractions-basics')">← Back</button>
+    <button class="snav-btn" onclick="showSection('mixed-numbers')">Next: Mixed Numbers →</button>
+  </div>
+</div>
+
+<!-- ===== MIXED NUMBERS ===== -->
+<div class="section" id="mixed-numbers">
+  <span class="badge" style="background:#3b2f8a;color:#c4b8ff;">SECTION 3</span>
+  <div class="section-title">🔀 Mixed Numbers</div>
+  <div class="section-subtitle">Convert between mixed numbers and improper fractions, and operate on them.</div>
+  <div class="card"><h3>Mixed Number ↔ Improper Fraction</h3>
+    <div class="two-col">
+      <div>
+        <p><strong>Mixed → Improper:</strong></p>
+        <div class="formula-row"><div class="formula-pill">(Whole × Denom + Num) / Denom</div></div>
+        <div class="example-box">
+          <div class="ex-title">EXAMPLE — 2 and 3/4</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">2 × 4 = 8</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">8 + 3 = 11</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Answer: <strong style="color:var(--accent3)">11/4</strong></div></div>
+        </div>
+      </div>
+      <div>
+        <p><strong>Improper → Mixed:</strong></p>
+        <div class="formula-row"><div class="formula-pill">Divide top by bottom</div></div>
+        <div class="example-box">
+          <div class="ex-title">EXAMPLE — 17/5</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">17 ÷ 5 = 3 remainder 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Whole = 3, Remainder = 2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Answer: <strong style="color:var(--accent3)">3 and 2/5</strong></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><h3>Adding &amp; Subtracting Mixed Numbers</h3>
+    <p>Convert to improper fractions first, find the LCD, operate, then convert back.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 1½ + 2⅓</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Convert: 1½ = 3/2 &nbsp;&nbsp; 2⅓ = 7/3</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">LCD = 6: 3/2 = 9/6 &nbsp; 7/3 = 14/6</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">9/6 + 14/6 = 23/6</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">23/6 = <strong style="color:var(--accent3)">3 and 5/6</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q7</div><div class="q-text">Convert 3 and 2/7 to an improper fraction.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q7')">5/7</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q7')">23/7</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q7')">21/7</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q7')">9/7</button>
+      </div>
+      <div class="feedback" id="fb-Q7"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q7')">Show Solution</button>
+      <div class="solution-box" id="sol-Q7">3 × 7 = 21, 21 + 2 = 23 → <strong>23/7</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q8</div><div class="q-text">Convert 19/4 to a mixed number.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q8')">3 and 1/4</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q8')">5 and 1/4</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q8')">4 and 3/4</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q8')">4 and 1/4</button>
+      </div>
+      <div class="feedback" id="fb-Q8"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q8')">Show Solution</button>
+      <div class="solution-box" id="sol-Q8">19 ÷ 4 = 4 remainder 3 → <strong>4 and 3/4</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('fractions-ops')">← Back</button>
+    <button class="snav-btn" onclick="showSection('decimals')">Next: Decimals →</button>
+  </div>
+</div>
+
+<!-- ===== DECIMALS ===== -->
+<div class="section" id="decimals">
+  <span class="badge" style="background:#1a3b2a;color:#a8f0d0;">SECTION 4</span>
+  <div class="section-title">· Decimals</div>
+  <div class="section-subtitle">Place values, reading, writing, comparing, and rounding decimals.</div>
+  <div class="card"><h3>Decimal Place Value</h3>
+    <p>Every digit in a decimal number has a specific <strong>place value</strong> based on its position relative to the decimal point.</p>
+    <div class="highlight-box">
+      <code>   1  2  3  .  4  5  6  7</code><br>
+      <code>   ↑  ↑  ↑     ↑  ↑  ↑  ↑</code><br>
+      <code> hun tens ones . tenths hundredths thousandths ten-thousandths</code>
+    </div>
+    <p>So <strong>0.4</strong> = four-tenths, <strong>0.04</strong> = four-hundredths, <strong>0.004</strong> = four-thousandths.</p>
+  </div>
+  <div class="card"><h3>Reading &amp; Writing Decimals</h3>
+    <div class="two-col">
+      <div class="highlight-box"><strong>0.7</strong> → "seven tenths"</div>
+      <div class="highlight-box"><strong>3.25</strong> → "three and twenty-five hundredths"</div>
+      <div class="highlight-box"><strong>0.009</strong> → "nine thousandths"</div>
+      <div class="highlight-box"><strong>12.305</strong> → "twelve and three hundred five thousandths"</div>
+    </div>
+  </div>
+  <div class="card"><h3>Comparing Decimals</h3>
+    <p>Align decimal points, then compare digit by digit from <strong>left to right</strong>.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — Compare 0.45 and 0.405</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Write with same digits: 0.450 vs 0.405</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Tenths: 4 = 4 → tie, move right</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Hundredths: 5 > 0 → <strong style="color:var(--accent3)">0.45 &gt; 0.405</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Rounding Decimals</h3>
+    <p>Look at the digit <strong>one place to the right</strong> of where you are rounding. If it's 5 or more, round up. If less than 5, keep the same.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — Round 3.746 to the nearest hundredth</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Identify hundredths place: 3.7<strong>4</strong>6</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Look at next digit (thousandths): <strong>6</strong> ≥ 5 → round up</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Answer: <strong style="color:var(--accent3)">3.75</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q9</div><div class="q-text">What is the value of the digit 7 in 2.073?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q9')">7 tenths</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q9')">7 hundredths</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q9')">7 thousandths</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q9')">7 ones</button>
+      </div>
+      <div class="feedback" id="fb-Q9"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q9')">Show Solution</button>
+      <div class="solution-box" id="sol-Q9">2.0<strong>7</strong>3 — The 0 is in the tenths place, so 7 is in the <strong>hundredths place</strong>.</div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q10</div><div class="q-text">Round 5.8472 to the nearest tenth.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q10')">5.9</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q10')">5.8</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q10')">6.0</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q10')">5.85</button>
+      </div>
+      <div class="feedback" id="fb-Q10"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q10')">Show Solution</button>
+      <div class="solution-box" id="sol-Q10">Tenths digit is 8. Next digit is 4 (< 5) → keep 8 → <strong>5.8</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('mixed-numbers')">← Back</button>
+    <button class="snav-btn" onclick="showSection('dec-ops')">Next: Decimal Operations →</button>
+  </div>
+</div>
+
+<!-- ===== DECIMAL OPERATIONS ===== -->
+<div class="section" id="dec-ops">
+  <span class="badge" style="background:#1a3b2a;color:#a8f0d0;">SECTION 5</span>
+  <div class="section-title">✖ Decimal Operations</div>
+  <div class="section-subtitle">Adding, subtracting, multiplying, and dividing decimal numbers.</div>
+  <div class="card"><h3>Adding &amp; Subtracting Decimals</h3>
+    <p><strong>Always align the decimal points</strong> before adding or subtracting. Fill empty spots with zeros.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 12.5 + 3.047</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Align: 12.500 + 03.047</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Add column by column right to left</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Answer: <strong style="color:var(--accent3)">15.547</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Multiplying Decimals</h3>
+    <p>Multiply as whole numbers, then count total decimal places in both factors and place the point from the right.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 2.4 × 1.3</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Ignore decimals: 24 × 13 = 312</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">2.4 has 1 decimal, 1.3 has 1 decimal → total 2 decimal places</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Place point: 3.12 → Answer: <strong style="color:var(--accent3)">3.12</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Dividing Decimals</h3>
+    <p>Move the decimal in the <strong>divisor</strong> to make it a whole number, then move the <strong>dividend's</strong> decimal the same number of places.</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 6.4 ÷ 0.8</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Move divisor decimal 1 place: 0.8 → 8</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Move dividend decimal 1 place: 6.4 → 64</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">64 ÷ 8 = <strong style="color:var(--accent3)">8</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q11</div><div class="q-text">Calculate: 4.56 + 2.4</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q11')">6.60</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q11')">6.96</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q11')">7.06</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q11')">6.9</button>
+      </div>
+      <div class="feedback" id="fb-Q11"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q11')">Show Solution</button>
+      <div class="solution-box" id="sol-Q11">4.56 + 2.40 = <strong>6.96</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q12</div><div class="q-text">Calculate: 3.6 × 0.5</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q12')">1.8</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q12')">18</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q12')">0.18</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q12')">36.5</button>
+      </div>
+      <div class="feedback" id="fb-Q12"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q12')">Show Solution</button>
+      <div class="solution-box" id="sol-Q12">36 × 5 = 180. Two decimal places → <strong>1.80 = 1.8</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('decimals')">← Back</button>
+    <button class="snav-btn" onclick="showSection('percentages')">Next: Percentages →</button>
+  </div>
+</div>
+
+<!-- ===== PERCENTAGES ===== -->
+<div class="section" id="percentages">
+  <span class="badge" style="background:#3b1a2a;color:#f0a8c8;">SECTION 6</span>
+  <div class="section-title">% Percentages</div>
+  <div class="section-subtitle">What percent means, finding percentages, percent increase/decrease.</div>
+  <div class="card"><h3>What Is a Percentage?</h3>
+    <p>Percent means <strong>"per hundred."</strong> 45% means 45 out of every 100.</p>
+    <div class="formula-row">
+      <div class="formula-pill">Percent = (Part / Whole) × 100</div>
+      <div class="formula-pill">Part = (Percent / 100) × Whole</div>
+      <div class="formula-pill">Whole = Part / (Percent / 100)</div>
+    </div>
+  </div>
+  <div class="card"><h3>Finding a Percent of a Number</h3>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — What is 30% of 250?</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Convert 30% to decimal: 30/100 = 0.30</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">0.30 × 250 = <strong style="color:var(--accent3)">75</strong></div></div>
+    </div>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 18 is what % of 72?</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">(18 / 72) × 100</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">0.25 × 100 = <strong style="color:var(--accent3)">25%</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Percent Increase &amp; Decrease</h3>
+    <div class="formula-row">
+      <div class="formula-pill">% Change = (New − Old) / Old × 100</div>
+    </div>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — Price goes from $80 to $100</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">(100 − 80) / 80 × 100</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">20/80 × 100 = <strong style="color:var(--accent3)">25% increase</strong></div></div>
+    </div>
+    <div class="warn-box">⚠️ If result is negative, it's a <strong>decrease</strong>. If positive, it's an <strong>increase</strong>.</div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q13</div><div class="q-text">What is 15% of 200?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q13')">30</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q13')">15</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q13')">25</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q13')">3</button>
+      </div>
+      <div class="feedback" id="fb-Q13"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q13')">Show Solution</button>
+      <div class="solution-box" id="sol-Q13">0.15 × 200 = <strong>30</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q14</div><div class="q-text">A jacket costs $60, marked down from $75. What is the percent decrease?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q14')">25%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q14')">15%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q14')">20%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q14')">10%</button>
+      </div>
+      <div class="feedback" id="fb-Q14"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q14')">Show Solution</button>
+      <div class="solution-box" id="sol-Q14">(75−60)/75 × 100 = 15/75 × 100 = <strong>20%</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('dec-ops')">← Back</button>
+    <button class="snav-btn" onclick="showSection('conversions')">Next: Conversions →</button>
+  </div>
+</div>
+
+<!-- ===== CONVERSIONS ===== -->
+<div class="section" id="conversions">
+  <span class="badge" style="background:#1a2a3b;color:#a8d0f0;">SECTION 7</span>
+  <div class="section-title">🔄 Conversions</div>
+  <div class="section-subtitle">Convert freely between fractions, decimals, and percentages.</div>
+  <div class="card"><h3>Conversion Chart</h3>
+    <div class="highlight-box">
+      <strong>Fraction → Decimal:</strong> Divide numerator by denominator<br>
+      <code>3/4 = 3 ÷ 4 = 0.75</code><br><br>
+      <strong>Decimal → Fraction:</strong> Write as fraction over power of 10, simplify<br>
+      <code>0.6 = 6/10 = 3/5</code><br><br>
+      <strong>Decimal → Percent:</strong> Multiply by 100<br>
+      <code>0.75 × 100 = 75%</code><br><br>
+      <strong>Percent → Decimal:</strong> Divide by 100<br>
+      <code>45% ÷ 100 = 0.45</code><br><br>
+      <strong>Fraction → Percent:</strong> Convert to decimal first, then × 100<br>
+      <code>3/8 = 0.375 → 37.5%</code><br><br>
+      <strong>Percent → Fraction:</strong> Write over 100, simplify<br>
+      <code>40% = 40/100 = 2/5</code>
+    </div>
+  </div>
+  <div class="card"><h3>Common Conversions to Memorize</h3>
+    <div class="two-col">
+      <div class="highlight-box"><code>1/2 = 0.5 = 50%</code></div>
+      <div class="highlight-box"><code>1/4 = 0.25 = 25%</code></div>
+      <div class="highlight-box"><code>3/4 = 0.75 = 75%</code></div>
+      <div class="highlight-box"><code>1/5 = 0.2 = 20%</code></div>
+      <div class="highlight-box"><code>1/3 ≈ 0.333 ≈ 33.3%</code></div>
+      <div class="highlight-box"><code>2/3 ≈ 0.667 ≈ 66.7%</code></div>
+      <div class="highlight-box"><code>1/8 = 0.125 = 12.5%</code></div>
+      <div class="highlight-box"><code>1/10 = 0.1 = 10%</code></div>
+    </div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q15</div><div class="q-text">Convert 0.325 to a percentage.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q15')">3.25%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q15')">32.5%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q15')">325%</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q15')">0.325%</button>
+      </div>
+      <div class="feedback" id="fb-Q15"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q15')">Show Solution</button>
+      <div class="solution-box" id="sol-Q15">0.325 × 100 = <strong>32.5%</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q16</div><div class="q-text">Convert 3/8 to a decimal.</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q16')">0.38</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q16')">0.3</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q16')">0.375</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q16')">0.83</button>
+      </div>
+      <div class="feedback" id="fb-Q16"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q16')">Show Solution</button>
+      <div class="solution-box" id="sol-Q16">3 ÷ 8 = <strong>0.375</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('percentages')">← Back</button>
+    <button class="snav-btn" onclick="showSection('real-world')">Next: Real-World Problems →</button>
+  </div>
+</div>
+
+<!-- ===== REAL WORLD ===== -->
+<div class="section" id="real-world">
+  <span class="badge" style="background:#3b2a1a;color:#f0d0a8;">SECTION 8</span>
+  <div class="section-title">🌍 Real-World Problems</div>
+  <div class="section-subtitle">Discounts, tips, taxes, interest, and more.</div>
+  <div class="card"><h3>Shopping Discounts</h3>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — 25% off a $120 item</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Discount = 25% × $120 = 0.25 × 120 = $30</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Sale price = $120 − $30 = <strong style="color:var(--accent3)">$90</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Tax &amp; Tips</h3>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — $48 meal with 8% tax and 18% tip</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">Tax = 0.08 × 48 = $3.84</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Tip = 0.18 × 48 = $8.64</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Total = $48 + $3.84 + $8.64 = <strong style="color:var(--accent3)">$60.48</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Simple Interest</h3>
+    <div class="formula-row"><div class="formula-pill">I = P × R × T</div></div>
+    <p>Where P = Principal, R = Rate (as decimal), T = Time (years)</p>
+    <div class="example-box">
+      <div class="ex-title">EXAMPLE — $1,000 at 5% for 3 years</div>
+      <div class="step"><div class="step-num">1</div><div class="step-text">I = 1000 × 0.05 × 3</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">I = <strong style="color:var(--accent3)">$150</strong></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Total = $1,000 + $150 = <strong style="color:var(--accent3)">$1,150</strong></div></div>
+    </div>
+  </div>
+  <div class="card"><h3>Practice Problems</h3>
+    <div class="quiz-card">
+      <div class="q-num">Q17</div><div class="q-text">A $200 pair of shoes is 30% off. What's the sale price?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q17')">$130</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q17')">$140</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q17')">$160</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q17')">$170</button>
+      </div>
+      <div class="feedback" id="fb-Q17"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q17')">Show Solution</button>
+      <div class="solution-box" id="sol-Q17">Discount = 0.30 × 200 = $60. Sale price = 200 − 60 = <strong>$140</strong></div>
+    </div>
+    <div class="quiz-card">
+      <div class="q-num">Q18</div><div class="q-text">You invest $500 at 4% simple interest for 2 years. How much interest do you earn?</div>
+      <div class="options">
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q18')">$20</button>
+        <button class="option-btn" onclick="checkAnswer(this,'correct','Q18')">$40</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q18')">$80</button>
+        <button class="option-btn" onclick="checkAnswer(this,'wrong','Q18')">$100</button>
+      </div>
+      <div class="feedback" id="fb-Q18"></div>
+      <button class="show-sol-btn" onclick="toggleSolution('sol-Q18')">Show Solution</button>
+      <div class="solution-box" id="sol-Q18">I = 500 × 0.04 × 2 = <strong>$40</strong></div>
+    </div>
+  </div>
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('conversions')">← Back</button>
+    <button class="snav-btn" onclick="showSection('calculators')">Next: Calculators →</button>
+  </div>
+</div>
+
+<!-- ===== CALCULATORS ===== -->
+<div class="section" id="calculators">
+  <span class="badge" style="background:#1a2b3b;color:#a8e0ff;">SECTION 9</span>
+  <div class="section-title">🧮 Interactive Calculators</div>
+  <div class="section-subtitle">Use these tools to check your work and explore math live.</div>
+
+  <!-- Fraction Calc -->
+  <div class="calc-card">
+    <h3>🔢 Fraction Calculator</h3>
+    <div class="calc-inputs">
+      <div class="calc-group"><label>Numerator 1</label><input type="number" id="fn1" value="1"></div>
+      <div class="calc-group"><label>Denominator 1</label><input type="number" id="fd1" value="2"></div>
+      <div class="calc-group"><label>Operation</label>
+        <select id="fop">
+          <option>+</option><option>-</option><option>×</option><option>÷</option>
+        </select>
+      </div>
+      <div class="calc-group"><label>Numerator 2</label><input type="number" id="fn2" value="1"></div>
+      <div class="calc-group"><label>Denominator 2</label><input type="number" id="fd2" value="3"></div>
+      <button class="calc-btn" onclick="calcFraction()">Calculate</button>
+    </div>
+    <div class="calc-result" id="fracResult">Result will appear here…</div>
+  </div>
+
+  <!-- Percent Calc -->
+  <div class="calc-card">
+    <h3>% Percentage Calculator</h3>
+    <div class="calc-inputs">
+      <div class="calc-group"><label>Value</label><input type="number" id="pval" value="25"></div>
+      <div class="calc-group"><label>% of</label><input type="number" id="pwhole" value="200"></div>
+      <button class="calc-btn" onclick="calcPercent()">Find %</button>
+    </div>
+    <div class="calc-result" id="pctResult">Result will appear here…</div>
+  </div>
+
+  <!-- Converter -->
+  <div class="calc-card">
+    <h3>🔄 Fraction / Decimal / Percent Converter</h3>
+    <div class="calc-inputs">
+      <div class="calc-group"><label>Numerator</label><input type="number" id="cvn" value="3"></div>
+      <div class="calc-group"><label>Denominator</label><input type="number" id="cvd" value="8"></div>
+      <button class="calc-btn" onclick="calcConvert()">Convert All</button>
+    </div>
+    <div class="calc-result" id="cvResult">Result will appear here…</div>
+  </div>
+
+  <!-- Discount Calc -->
+  <div class="calc-card">
+    <h3>🛍️ Discount Calculator</h3>
+    <div class="calc-inputs">
+      <div class="calc-group"><label>Original Price ($)</label><input type="number" id="dop" value="150"></div>
+      <div class="calc-group"><label>Discount %</label><input type="number" id="ddisc" value="20"></div>
+      <button class="calc-btn" onclick="calcDiscount()">Calculate</button>
+    </div>
+    <div class="calc-result" id="discResult">Result will appear here…</div>
+  </div>
+
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('real-world')">← Back</button>
+    <button class="snav-btn" onclick="showSection('quiz')">Next: Final Quiz →</button>
+  </div>
+</div>
+
+<!-- ===== FINAL QUIZ ===== -->
+<div class="section" id="quiz">
+  <span class="badge" style="background:#3b1a1a;color:#ffb8b8;">FINAL QUIZ</span>
+  <div class="section-title">📝 Final Quiz — All Topics</div>
+  <div class="section-subtitle">Test everything you've learned. Try without hints first!</div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ1</div><div class="q-text">Simplify 36/48.</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ1')">6/8</button>
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ1')">3/4</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ1')">4/5</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ1')">9/12</button>
+    </div>
+    <div class="feedback" id="fb-FQ1"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ1')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ1">GCF(36,48)=12. 36/12=3, 48/12=4 → <strong>3/4</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ2</div><div class="q-text">Calculate: 5/6 − 1/4</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ2')">7/12</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ2')">4/2</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ2')">1/3</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ2')">5/12</button>
+    </div>
+    <div class="feedback" id="fb-FQ2"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ2')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ2">LCD=12. 10/12 − 3/12 = <strong>7/12</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ3</div><div class="q-text">Convert 2 and 5/8 to an improper fraction.</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ3')">21/8</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ3')">7/8</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ3')">16/8</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ3')">13/8</button>
+    </div>
+    <div class="feedback" id="fb-FQ3"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ3')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ3">2×8=16, 16+5=21 → <strong>21/8</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ4</div><div class="q-text">Round 9.8752 to the nearest hundredth.</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ4')">9.88</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ4')">9.87</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ4')">9.9</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ4')">9.875</button>
+    </div>
+    <div class="feedback" id="fb-FQ4"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ4')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ4">Hundredths digit is 7. Next is 5 → round up → <strong>9.88</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ5</div><div class="q-text">What is 40% of 85?</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ5')">30</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ5')">38</button>
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ5')">34</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ5')">32</button>
+    </div>
+    <div class="feedback" id="fb-FQ5"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ5')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ5">0.40 × 85 = <strong>34</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ6</div><div class="q-text">Convert 7/20 to a percentage.</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ6')">30%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ6')">70%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ6')">35%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ6')">28%</button>
+    </div>
+    <div class="feedback" id="fb-FQ6"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ6')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ6">7÷20=0.35 → 0.35×100 = <strong>35%</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ7</div><div class="q-text">A laptop was $800, now $640. What is the percent decrease?</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ7')">25%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ7')">20%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ7')">16%</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ7')">18%</button>
+    </div>
+    <div class="feedback" id="fb-FQ7"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ7')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ7">(800−640)/800 × 100 = 160/800 × 100 = <strong>20%</strong></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="q-num">FQ8</div><div class="q-text">Calculate: 7.25 × 0.4</div>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this,'correct','FQ8')">2.9</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ8')">29</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ8')">0.29</button>
+      <button class="option-btn" onclick="checkAnswer(this,'wrong','FQ8')">2.8</button>
+    </div>
+    <div class="feedback" id="fb-FQ8"></div>
+    <button class="show-sol-btn" onclick="toggleSolution('sol-FQ8')">Show Solution</button>
+    <div class="solution-box" id="sol-FQ8">725 × 4 = 2900. Three decimal places → <strong>2.900 = 2.9</strong></div>
+  </div>
+
+  <div id="quizSummary" style="display:none;background:var(--card);border:2px solid var(--accent3);border-radius:14px;padding:28px;margin-top:24px;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:10px;">🎉</div>
+    <div style="font-size:1.4rem;font-weight:700;color:var(--accent3);" id="summaryText"></div>
+    <div style="color:var(--muted);margin-top:8px;font-size:.95rem;" id="summaryMsg"></div>
+    <button onclick="resetQuiz()" style="margin-top:18px;background:var(--accent);border:none;border-radius:9px;padding:10px 28px;color:#fff;cursor:pointer;font-size:1rem;font-weight:600;">Try Again</button>
+  </div>
+
+  <div class="section-nav">
+    <button class="snav-btn outline" onclick="showSection('calculators')">← Back</button>
+    <button class="snav-btn" style="background:var(--accent3);color:#000;" onclick="showFinalScore()">Submit Quiz</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- SCORE DISPLAY -->
+<div id="scoreDisplay">Score: <span id="scoreNum">0</span> / <span id="scoreTotal">0</span></div>
+
+<script>
+// ---- SCORE ----
+let score = 0, answered = {};
+function checkAnswer(btn, result, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = btn.parentElement.querySelectorAll('.option-btn');
+  opts.forEach(b => b.disabled = true);
+  const fb = document.getElementById('fb-' + qid);
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    score++;
+    fb.textContent = '✅ Correct! Well done!';
+    fb.className = 'feedback show correct';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Not quite. Click "Show Solution" to see the steps.';
+    fb.className = 'feedback show wrong';
+    // highlight the correct btn
+    opts.forEach(b => { if (b.onclick.toString().includes("'correct'")) b.classList.add('correct'); });
+  }
+  updateScore();
+}
+function updateScore() {
+  const total = Object.keys(answered).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreTotal').textContent = total;
+}
+
+// ---- SOLUTION TOGGLE ----
+function toggleSolution(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+}
+
+// ---- SECTIONS ----
+const visited = new Set();
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (!navEl) {
+    document.querySelectorAll('nav ul li a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(id)) a.classList.add('active');
+    });
+  } else { navEl.classList.add('active'); }
+  visited.add(id);
+  document.getElementById('done-' + id) && document.getElementById('done-' + id).classList.add('show');
+  const pct = Math.round((visited.size / 11) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = visited.size + ' of 11 sections visited';
+  window.scrollTo(0,0);
+}
+
+// ---- TABS ----
+function switchTab(group, tab) {
+  document.querySelectorAll('[id^="' + group + '-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById(group + '-' + tab).classList.add('active');
+  event.target.closest('.tab-row').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ---- CALCULATORS ----
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function calcFraction() {
+  let n1=+document.getElementById('fn1').value, d1=+document.getElementById('fd1').value;
+  let n2=+document.getElementById('fn2').value, d2=+document.getElementById('fd2').value;
+  let op = document.getElementById('fop').value;
+  if (d1===0||d2===0){document.getElementById('fracResult').innerHTML='<span style="color:var(--error)">Denominator cannot be zero!</span>';return;}
+  let rn, rd;
+  if(op==='+'){rn=n1*d2+n2*d1; rd=d1*d2;}
+  else if(op==='-'){rn=n1*d2-n2*d1; rd=d1*d2;}
+  else if(op==='×'){rn=n1*n2; rd=d1*d2;}
+  else{rn=n1*d2; rd=d1*n2;}
+  const g = gcd(Math.abs(rn), Math.abs(rd));
+  const sn = rn/g, sd = rd/g;
+  const dec = (rn/rd).toFixed(4);
+  document.getElementById('fracResult').innerHTML =
+    `<strong>${n1}/${d1} ${op} ${n2}/${d2}</strong> = <strong style="color:var(--accent3)">${sn}/${sd}</strong> &nbsp;|&nbsp; Decimal: <strong style="color:var(--accent4)">${dec}</strong>` +
+    (Math.abs(sn)>=Math.abs(sd) && sd!==1 ? ` &nbsp;|&nbsp; Mixed: <strong style="color:var(--accent2)">${Math.trunc(sn/sd)} and ${Math.abs(sn%sd)}/${Math.abs(sd)}</strong>` : '');
+}
+function calcPercent() {
+  const v=+document.getElementById('pval').value, w=+document.getElementById('pwhole').value;
+  if(w===0){document.getElementById('pctResult').innerHTML='<span style="color:var(--error)">Whole cannot be zero!</span>';return;}
+  const pct = (v/w*100).toFixed(2);
+  const part = (v/100*w).toFixed(4);
+  document.getElementById('pctResult').innerHTML =
+    `<strong>${v}</strong> is <strong style="color:var(--accent3)">${pct}%</strong> of ${w} &nbsp;|&nbsp; ${v}% of ${w} = <strong style="color:var(--accent4)">${part}</strong>`;
+}
+function calcConvert() {
+  const n=+document.getElementById('cvn').value, d=+document.getElementById('cvd').value;
+  if(d===0){document.getElementById('cvResult').innerHTML='<span style="color:var(--error)">Denominator cannot be zero!</span>';return;}
+  const dec=(n/d).toFixed(6).replace(/0+$/,'').replace(/\.$/,'');
+  const pct=(n/d*100).toFixed(4).replace(/0+$/,'').replace(/\.$/,'');
+  const g=gcd(Math.abs(n),Math.abs(d)); const sn=n/g, sd=d/g;
+  document.getElementById('cvResult').innerHTML =
+    `Fraction: <strong style="color:var(--accent3)">${sn}/${sd}</strong> &nbsp;→&nbsp; Decimal: <strong style="color:var(--accent4)">${dec}</strong> &nbsp;→&nbsp; Percent: <strong style="color:var(--accent2)">${pct}%</strong>`;
+}
+function calcDiscount() {
+  const op=+document.getElementById('dop').value, d=+document.getElementById('ddisc').value;
+  const discAmt=(op*d/100).toFixed(2);
+  const sale=(op-discAmt).toFixed(2);
+  document.getElementById('discResult').innerHTML =
+    `Original: <strong>$${op.toFixed(2)}</strong> &nbsp;|&nbsp; Discount (${d}%): <strong style="color:var(--error)">−$${discAmt}</strong> &nbsp;|&nbsp; Sale Price: <strong style="color:var(--accent3)">$${sale}</strong>`;
+}
+
+// ---- PIE CANVAS ----
+const pieCanvas = document.getElementById('pieCanvas');
+const ctx = pieCanvas.getContext('2d');
+const slider = document.getElementById('pieSlider');
+const pieLabel = document.getElementById('pieLabel');
+function drawPie(num, den) {
+  ctx.clearRect(0,0,320,160);
+  const colors = ['#7c6af7','#43e8b0','#f76a8c','#f7b643','#60a5fa','#a78bfa'];
+  const cx=80,cy=80,r=65;
+  for(let i=0;i<den;i++){
+    const start=-Math.PI/2+(i/den)*2*Math.PI, end=-Math.PI/2+((i+1)/den)*2*Math.PI;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end);
+    ctx.fillStyle = i<num ? '#7c6af7' : '#2e3255'; ctx.fill();
+    ctx.strokeStyle='#1a1d2e'; ctx.lineWidth=2; ctx.stroke();
+  }
+  // label
+  ctx.fillStyle='#e8eaf6'; ctx.font='bold 15px Segoe UI'; ctx.textAlign='center';
+  ctx.fillText(num+'/'+den, cx, cy+5);
+  // equivalent
+  const g=gcd(num,den); const sn=num/g,sd=den/g;
+  ctx.font='13px Segoe UI'; ctx.fillStyle='#9095b0';
+  ctx.fillText('= '+sn+'/'+sd+' = '+(num/den*100).toFixed(1)+'%', cx, cy+28);
+
+  // Bar on right
+  const bx=185,by=20,bw=100,bh=20;
+  ctx.fillStyle='#2e3255'; ctx.fillRect(bx,by,bw,bh);
+  ctx.fillStyle='#43e8b0'; ctx.fillRect(bx,by,bw*(num/den),bh);
+  ctx.strokeStyle='#7c6af7'; ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='#e8eaf6'; ctx.font='11px Segoe UI'; ctx.textAlign='left';
+  ctx.fillText('Bar model:', bx, by-6);
+  ctx.fillText((num/den*100).toFixed(1)+'% filled', bx, by+bh+16);
+
+  // Decimal display
+  ctx.font='bold 13px Segoe UI'; ctx.fillStyle='#f7b643';
+  ctx.fillText('Decimal: '+(num/den).toFixed(4), bx, by+bh+36);
+}
+slider.addEventListener('input', ()=>{
+  const num=+slider.value, den=12;
+  pieLabel.textContent=num+'/12';
+  drawPie(num,den);
+});
+drawPie(3,12);
+
+// ---- FINAL QUIZ SUBMIT ----
+const finalQs = ['FQ1','FQ2','FQ3','FQ4','FQ5','FQ6','FQ7','FQ8'];
+function showFinalScore() {
+  let correct=0, total=finalQs.length;
+  finalQs.forEach(q => { if(answered[q]) { if (score > 0) {} } });
+  // count correct from answered final questions
+  correct = finalQs.filter(q => answered[q]).length;
+  const actualCorrect = finalQs.filter(q => {
+    const fb = document.getElementById('fb-'+q);
+    return fb && fb.classList.contains('correct');
+  }).length;
+  const summary = document.getElementById('quizSummary');
+  const st = document.getElementById('summaryText');
+  const sm = document.getElementById('summaryMsg');
+  const pct = Math.round(actualCorrect/total*100);
+  st.textContent = actualCorrect + ' / ' + total + ' Correct (' + pct + '%)';
+  if(pct>=90) sm.textContent = '🌟 Outstanding! You have mastered fractions, decimals & percentages!';
+  else if(pct>=70) sm.textContent = '👍 Great job! Review any missed topics and you'll be a pro!';
+  else if(pct>=50) sm.textContent = '📚 Good effort! Go back and review a few sections, then try again.';
+  else sm.textContent = '💪 Keep practicing! Start from the beginning — you've got this!';
+  summary.style.display='block';
+  summary.scrollIntoView({behavior:'smooth'});
+}
+function resetQuiz() {
+  finalQs.forEach(q => {
+    delete answered[q];
+    const card = document.getElementById('fb-'+q).closest('.quiz-card');
+    card.querySelectorAll('.option-btn').forEach(b=>{b.disabled=false;b.className='option-btn';});
+    document.getElementById('fb-'+q).className='feedback';
+    const sol = document.getElementById('sol-'+q);
+    if(sol) sol.classList.remove('show');
+  });
+  document.getElementById('quizSummary').style.display='none';
+  updateScore();
+}
+
+// init
+showSection('home');
+</script>
+</body>
+</html>
