@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Algebra Interactive Learning Platform</title>
+<style>
+:root {
+  --color-bg-primary: #0a0e1a;
+  --color-bg-secondary: #141824;
+  --color-bg-tertiary: #1e2330;
+  --color-accent-primary: #6366f1;
+  --color-accent-secondary: #8b5cf6;
+  --color-accent-success: #10b981;
+  --color-accent-warning: #f59e0b;
+  --color-accent-error: #ef4444;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #2d3548;
+  --color-hover: #2a3142;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #1e2330 0%, #2a1f5e 100%);
+  padding: 2rem 2.5rem;
+  border-bottom: 2px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+}
+
+.progress-wrap {
+  margin-top: 1.2rem;
+  background: var(--color-bg-tertiary);
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.progress-text {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.container {
+  display: flex;
+  min-height: calc(100vh - 140px);
+}
+
+nav {
+  width: 280px;
+  background: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem 0;
+  position: sticky;
+  top: 140px;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+nav h2 {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+}
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  font-size: 0.95rem;
+}
+
+nav ul li a:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+nav ul li a.active {
+  background: var(--color-hover);
+  border-left-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+nav ul li a .icon {
+  font-size: 1.2rem;
+}
+
+nav ul li a .check {
+  margin-left: auto;
+  font-size: 0.7rem;
+  background: var(--color-accent-success);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 10px;
+  display: none;
+}
+
+nav ul li a .check.show {
+  display: block;
+}
+
+main {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 1000px;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.badge-intro { background: rgba(99, 102, 241, 0.2); color: var(--color-accent-primary); }
+.badge-core { background: rgba(139, 92, 246, 0.2); color: var(--color-accent-secondary); }
+.badge-advanced { background: rgba(16, 185, 129, 0.2); color: var(--color-accent-success); }
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  color: var(--color-accent-primary);
+  margin-bottom: 1rem;
+}
+
+.card p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.8rem;
+  line-height: 1.8;
+}
+
+.card ul, .card ol {
+  margin-left: 1.5rem;
+  color: var(--color-text-secondary);
+  line-height: 2;
+}
+
+.highlight-box {
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 4px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  font-family: 'Courier New', monospace;
+  color: var(--color-text-primary);
+}
+
+.formula {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  margin: 1rem 0;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: var(--color-accent-warning);
+  display: inline-block;
+}
+
+.example-box {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.example-title {
+  font-size: 0.85rem;
+  color: var(--color-accent-success);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  background: var(--color-accent-primary);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.step-text strong {
+  color: var(--color-accent-success);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+.quiz-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-num {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-question {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: var(--color-text-primary);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.option {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-accent-primary);
+  background: var(--color-hover);
+}
+
+.option.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.option.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: none;
+}
+
+.feedback.show { display: block; }
+
+.feedback.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.feedback.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.show-solution-btn {
+  margin-top: 0.8rem;
+  background: none;
+  border: 2px solid var(--color-accent-warning);
+  color: var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.show-solution-btn:hover {
+  background: var(--color-accent-warning);
+  color: #000;
+}
+
+.solution {
+  margin-top: 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: none;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.solution.show { display: block; }
+
+.tip-box {
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--color-accent-success);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.warning-box {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--color-accent-error);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.calc-tool {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.calc-tool h3 {
+  font-size: 1.2rem;
+  color: var(--color-accent-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.calc-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.calc-group label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.calc-group input, .calc-group select {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  width: 120px;
+}
+
+.calc-group input:focus, .calc-group select:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+.calc-btn {
+  background: var(--color-accent-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calc-btn:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.calc-result {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem;
+  color: var(--color-accent-success);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  min-height: 60px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.home-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.home-card:hover {
+  border-color: var(--color-accent-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.home-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.home-card .title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.home-card .desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-accent-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: none;
+  border: 2px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+#scoreDisplay {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-accent-primary);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  color: var(--color-accent-primary);
+  z-index: 1000;
+}
+
+#scoreDisplay span {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 Pre-Algebra Master Course</h1>
+  <p>Build a rock-solid foundation for algebra with comprehensive lessons and practice</p>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 of 12 sections completed</div>
+</header>
+
+<div class="container">
+  <nav>
+    <h2>Course Navigation</h2>
+    <ul>
+      <li><a href="#" onclick="showSection('home')" class="active" id="nav-home"><span class="icon">🏠</span>Home<span class="check" id="check-home">✓</span></a></li>
+      <li><a href="#" onclick="showSection('integers')"><span class="icon">➕</span>Integers & Operations<span class="check" id="check-integers">✓</span></a></li>
+      <li><a href="#" onclick="showSection('pemdas')"><span class="icon">📊</span>Order of Operations<span class="check" id="check-pemdas">✓</span></a></li>
+      <li><a href="#" onclick="showSection('variables')"><span class="icon">🔤</span>Variables & Expressions<span class="check" id="check-variables">✓</span></a></li>
+      <li><a href="#" onclick="showSection('equations')"><span class="icon">⚖️</span>Solving Equations<span class="check" id="check-equations">✓</span></a></li>
+      <li><a href="#" onclick="showSection('inequalities')"><span class="icon">≠</span>Inequalities<span class="check" id="check-inequalities">✓</span></a></li>
+      <li><a href="#" onclick="showSection('exponents')"><span class="icon">^</span>Exponents & Powers<span class="check" id="check-exponents">✓</span></a></li>
+      <li><a href="#" onclick="showSection('ratios')"><span class="icon">📐</span>Ratios & Proportions<span class="check" id="check-ratios">✓</span></a></li>
+      <li><a href="#" onclick="showSection('coordinate')"><span class="icon">📍</span>Coordinate Plane<span class="check" id="check-coordinate">✓</span></a></li>
+      <li><a href="#" onclick="showSection('square-roots')"><span class="icon">√</span>Square Roots<span class="check" id="check-square-roots">✓</span></a></li>
+      <li><a href="#" onclick="showSection('calculators')"><span class="icon">🧮</span>Practice Calculators<span class="check" id="check-calculators">✓</span></a></li>
+      <li><a href="#" onclick="showSection('quiz')"><span class="icon">📝</span>Final Quiz<span class="check" id="check-quiz">✓</span></a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HOME SECTION -->
+    <div class="section active" id="home">
+      <span class="badge badge-intro">START HERE</span>
+      <div class="section-title">Welcome to Pre-Algebra! 👋</div>
+      <div class="section-subtitle">Master the essential concepts that bridge arithmetic and algebra</div>
+      
+      <div class="card">
+        <p>Pre-Algebra is the foundation for all higher mathematics. This comprehensive course covers <strong>integers, order of operations (PEMDAS), variables, equations, inequalities, exponents, ratios, coordinate plane, and square roots</strong>.</p>
+        <p>Each section includes detailed explanations, step-by-step examples, interactive practice problems with instant feedback, and powerful calculators to check your work.</p>
+      </div>
+
+      <div class="home-grid">
+        <a class="home-card" onclick="showSection('integers')">
+          <div class="icon">➕</div>
+          <div class="title">Integers</div>
+          <div class="desc">Positive/negative numbers & operations</div>
+        </a>
+        <a class="home-card" onclick="showSection('pemdas')">
+          <div class="icon">📊</div>
+          <div class="title">PEMDAS</div>
+          <div class="desc">Order of operations mastery</div>
+        </a>
+        <a class="home-card" onclick="showSection('variables')">
+          <div class="icon">🔤</div>
+          <div class="title">Variables</div>
+          <div class="desc">Expressions & evaluation</div>
+        </a>
+        <a class="home-card" onclick="showSection('equations')">
+          <div class="icon">⚖️</div>
+          <div class="title">Equations</div>
+          <div class="desc">Solving for unknowns</div>
+        </a>
+        <a class="home-card" onclick="showSection('inequalities')">
+          <div class="icon">≠</div>
+          <div class="title">Inequalities</div>
+          <div class="desc">Greater than, less than</div>
+        </a>
+        <a class="home-card" onclick="showSection('exponents')">
+          <div class="icon">^</div>
+          <div class="title">Exponents</div>
+          <div class="desc">Powers & exponent rules</div>
+        </a>
+        <a class="home-card" onclick="showSection('ratios')">
+          <div class="icon">📐</div>
+          <div class="title">Ratios</div>
+          <div class="desc">Proportions & cross multiply</div>
+        </a>
+        <a class="home-card" onclick="showSection('coordinate')">
+          <div class="icon">📍</div>
+          <div class="title">Coordinate Plane</div>
+          <div class="desc">Plotting points & graphing</div>
+        </a>
+        <a class="home-card" onclick="showSection('square-roots')">
+          <div class="icon">√</div>
+          <div class="title">Square Roots</div>
+          <div class="desc">Perfect squares & simplifying</div>
+        </a>
+        <a class="home-card" onclick="showSection('calculators')">
+          <div class="icon">🧮</div>
+          <div class="title">Calculators</div>
+          <div class="desc">Interactive practice tools</div>
+        </a>
+        <a class="home-card" onclick="showSection('quiz')">
+          <div class="icon">📝</div>
+          <div class="title">Final Quiz</div>
+          <div class="desc">Test your knowledge</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- INTEGERS SECTION -->
+    <div class="section" id="integers">
+      <span class="badge badge-intro">SECTION 1</span>
+      <div class="section-title">➕ Integers & Operations</div>
+      <div class="section-subtitle">Master positive and negative whole numbers</div>
+
+      <div class="card">
+        <h3>What Are Integers?</h3>
+        <p>Integers are <strong>whole numbers</strong> that can be positive, negative, or zero. They do NOT include fractions or decimals.</p>
+        <div class="highlight-box">
+Integers: {..., -3, -2, -1, 0, 1, 2, 3, ...}
+Positive integers: 1, 2, 3, 4, ...
+Negative integers: -1, -2, -3, -4, ...
+Zero: 0 (neither positive nor negative)</div>
+      </div>
+
+      <div class="card">
+        <h3>Number Line & Absolute Value</h3>
+        <p>The <strong>number line</strong> helps visualize integers. Numbers to the right are greater; numbers to the left are smaller.</p>
+        <p><strong>Absolute value</strong> is the distance from zero (always positive):</p>
+        <div class="formula">|5| = 5     |-5| = 5     |0| = 0</div>
+      </div>
+
+      <div class="card">
+        <h3>Adding Integers</h3>
+        <div class="grid-2">
+          <div>
+            <p><strong>Same signs:</strong> Add and keep the sign</p>
+            <div class="example-box">
+              <div class="example-title">Example — Adding Same Signs</div>
+              <div class="step"><div class="step-num">1</div><div class="step-text">-8 + (-5) = <strong>-13</strong></div></div>
+              <div class="step"><div class="step-num">2</div><div class="step-text">12 + 7 = <strong>19</strong></div></div>
+            </div>
+          </div>
+          <div>
+            <p><strong>Different signs:</strong> Subtract and use sign of larger</p>
+            <div class="example-box">
+              <div class="example-title">Example — Adding Different Signs</div>
+              <div class="step"><div class="step-num">1</div><div class="step-text">-15 + 8 = <strong>-7</strong></div></div>
+              <div class="step"><div class="step-num">2</div><div class="step-text">20 + (-12) = <strong>8</strong></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Subtracting Integers</h3>
+        <p><strong>Key rule:</strong> Subtracting is the same as adding the opposite!</p>
+        <div class="formula">a - b = a + (-b)</div>
+        <div class="example-box">
+          <div class="example-title">Example — Subtracting Integers</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">9 - 15 = 9 + (-15) = <strong>-6</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">-4 - 7 = -4 + (-7) = <strong>-11</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">-10 - (-6) = -10 + 6 = <strong>-4</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Multiplying & Dividing Integers</h3>
+        <div class="tip-box">
+          💡 <strong>Rules for signs:</strong><br>
+          • Positive × Positive = Positive<br>
+          • Negative × Negative = Positive<br>
+          • Positive × Negative = Negative<br>
+          • Negative × Positive = Negative<br>
+          <em>(Same rules apply for division!)</em>
+        </div>
+        <div class="example-box">
+          <div class="example-title">Example — Multiply & Divide</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">(-6) × 4 = <strong>-24</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">(-9) × (-3) = <strong>27</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">-36 ÷ 9 = <strong>-4</strong></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">-48 ÷ (-6) = <strong>8</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q1</div>
+          <div class="quiz-question">Calculate: -12 + 8</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">-20</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q1')">-4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">20</button>
+          </div>
+          <div class="feedback" id="fb-Q1"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q1')">Show Solution</button>
+          <div class="solution" id="sol-Q1">Different signs: subtract 12 - 8 = 4, use sign of larger (12 is larger) → <strong>-4</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q2</div>
+          <div class="quiz-question">Calculate: (-7) × (-5)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">-35</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q2')">35</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">-12</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">12</button>
+          </div>
+          <div class="feedback" id="fb-Q2"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q2')">Show Solution</button>
+          <div class="solution" id="sol-Q2">Negative × Negative = Positive → 7 × 5 = <strong>35</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q3</div>
+          <div class="quiz-question">What is |-18|?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">-18</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q3')">18</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">0</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">36</button>
+          </div>
+          <div class="feedback" id="fb-Q3"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q3')">Show Solution</button>
+          <div class="solution" id="sol-Q3">Absolute value is distance from zero (always positive) → <strong>18</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="showSection('pemdas')">Next: Order of Operations →</button>
+      </div>
+    </div>
+
+    <!-- PEMDAS SECTION -->
+    <div class="section" id="pemdas">
+      <span class="badge badge-core">SECTION 2</span>
+      <div class="section-title">📊 Order of Operations (PEMDAS)</div>
+      <div class="section-subtitle">The critical rule for evaluating expressions correctly</div>
+
+      <div class="card">
+        <h3>What is PEMDAS?</h3>
+        <p>PEMDAS is the <strong>order of operations</strong> — the sequence you must follow to solve math problems correctly.</p>
+        <div class="highlight-box">
+P — Parentheses ( )
+E — Exponents (powers, roots)
+M — Multiplication  ┐
+D — Division        ┘ Left to right
+A — Addition        ┐
+S — Subtraction     ┘ Left to right</div>
+        <div class="warning-box">⚠️ <strong>Important:</strong> Multiplication/Division are EQUAL priority (go left to right). Addition/Subtraction are also EQUAL priority (go left to right).</div>
+      </div>
+
+      <div class="card">
+        <h3>Step-by-Step Examples</h3>
+        <div class="example-box">
+          <div class="example-title">Example 1 — Basic PEMDAS</div>
+          <p><strong>Problem: 3 + 5 × 2</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">No parentheses or exponents</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Multiply first: 5 × 2 = 10</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Add: 3 + 10 = <strong>13</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 2 — With Parentheses</div>
+          <p><strong>Problem: (8 - 3) × 2 + 4</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Parentheses first: (8 - 3) = 5</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Multiply: 5 × 2 = 10</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Add: 10 + 4 = <strong>14</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 3 — With Exponents</div>
+          <p><strong>Problem: 20 - 2³ + 6 ÷ 2</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Exponent: 2³ = 8</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Division: 6 ÷ 2 = 3</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Left to right: 20 - 8 + 3 = 12 + 3 = <strong>15</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 4 — Complex Expression</div>
+          <p><strong>Problem: 48 ÷ 4 × 2 + 5 × (6 - 4)</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Parentheses: (6 - 4) = 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Left to right M/D: 48 ÷ 4 = 12, then 12 × 2 = 24</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Multiply: 5 × 2 = 10</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Add: 24 + 10 = <strong>34</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Common Mistakes to Avoid</h3>
+        <div class="warning-box">
+          ❌ <strong>Wrong:</strong> 10 - 3 + 2 = 10 - 5 = 5<br>
+          ✅ <strong>Right:</strong> 10 - 3 + 2 = 7 + 2 = 9 (left to right!)
+        </div>
+        <div class="warning-box">
+          ❌ <strong>Wrong:</strong> 12 ÷ 2 × 3 = 12 ÷ 6 = 2<br>
+          ✅ <strong>Right:</strong> 12 ÷ 2 × 3 = 6 × 3 = 18 (left to right!)
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q4</div>
+          <div class="quiz-question">Calculate: 15 + 6 ÷ 3</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">7</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q4')">17</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">21</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">13</button>
+          </div>
+          <div class="feedback" id="fb-Q4"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q4')">Show Solution</button>
+          <div class="solution" id="sol-Q4">Division before addition: 6 ÷ 3 = 2, then 15 + 2 = <strong>17</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q5</div>
+          <div class="quiz-question">Calculate: 4 × (7 - 3) + 2²</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q5')">20</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">18</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">16</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">24</button>
+          </div>
+          <div class="feedback" id="fb-Q5"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q5')">Show Solution</button>
+          <div class="solution" id="sol-Q5">Parentheses: (7-3)=4. Exponent: 2²=4. Multiply: 4×4=16. Add: 16+4=<strong>20</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q6</div>
+          <div class="quiz-question">Calculate: 18 ÷ 3 × 2</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">9</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q6')">12</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">36</button>
+          </div>
+          <div class="feedback" id="fb-Q6"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q6')">Show Solution</button>
+          <div class="solution" id="sol-Q6">Left to right: 18 ÷ 3 = 6, then 6 × 2 = <strong>12</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('integers')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('variables')">Next: Variables →</button>
+      </div>
+    </div>
+
+    <!-- VARIABLES SECTION -->
+    <div class="section" id="variables">
+      <span class="badge badge-core">SECTION 3</span>
+      <div class="section-title">🔤 Variables & Expressions</div>
+      <div class="section-subtitle">Understanding algebraic language and evaluation</div>
+
+      <div class="card">
+        <h3>What is a Variable?</h3>
+        <p>A <strong>variable</strong> is a letter that represents an unknown number. Common variables: <code>x, y, n, a, b</code></p>
+        <div class="highlight-box">
+Variable: a letter representing a number
+Constant: a fixed number (3, -5, 12)
+Coefficient: number multiplying a variable (in 5x, 5 is the coefficient)
+Term: a number, variable, or product (3, x, 7y)
+Expression: combination of terms (3x + 7)</div>
+      </div>
+
+      <div class="card">
+        <h3>Writing Expressions</h3>
+        <p>Translate words into algebraic expressions:</p>
+        <div class="grid-2">
+          <div>
+            <p><strong>Addition:</strong></p>
+            <ul>
+              <li>"5 more than x" → <code>x + 5</code></li>
+              <li>"sum of y and 8" → <code>y + 8</code></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Subtraction:</strong></p>
+            <ul>
+              <li>"n decreased by 3" → <code>n - 3</code></li>
+              <li>"12 less than a" → <code>a - 12</code></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Multiplication:</strong></p>
+            <ul>
+              <li>"4 times x" → <code>4x</code></li>
+              <li>"product of 6 and y" → <code>6y</code></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Division:</strong></p>
+            <ul>
+              <li>"x divided by 5" → <code>x/5</code></li>
+              <li>"quotient of n and 3" → <code>n/3</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Evaluating Expressions</h3>
+        <p>To <strong>evaluate</strong> means to find the value by substituting numbers for variables.</p>
+        <div class="example-box">
+          <div class="example-title">Example 1 — Evaluate 3x + 7 when x = 4</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Replace x with 4: 3(4) + 7</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Multiply: 12 + 7</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Add: <strong>19</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 2 — Evaluate 5y² - 2y when y = 3</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Replace y with 3: 5(3)² - 2(3)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Exponent: 5(9) - 2(3)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Multiply: 45 - 6</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Subtract: <strong>39</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Combining Like Terms</h3>
+        <p><strong>Like terms</strong> have the same variable raised to the same power. You can only combine like terms!</p>
+        <div class="formula">3x + 5x = 8x     ✓<br>4y² - 2y² = 2y²     ✓<br>3x + 5y ≠ cannot combine     ✗</div>
+        <div class="example-box">
+          <div class="example-title">Example — Simplify 7x + 3 - 2x + 5</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Group like terms: (7x - 2x) + (3 + 5)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Combine: 5x + 8</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Answer: <strong>5x + 8</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q7</div>
+          <div class="quiz-question">Evaluate 2x - 5 when x = 8</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">21</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q7')">11</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">19</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">13</button>
+          </div>
+          <div class="feedback" id="fb-Q7"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q7')">Show Solution</button>
+          <div class="solution" id="sol-Q7">2(8) - 5 = 16 - 5 = <strong>11</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q8</div>
+          <div class="quiz-question">Simplify: 6a + 2a - 4a</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">12a</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q8')">4a</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">2a</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q8')">8a</button>
+          </div>
+          <div class="feedback" id="fb-Q8"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q8')">Show Solution</button>
+          <div class="solution" id="sol-Q8">Combine like terms: 6a + 2a - 4a = 8a - 4a = <strong>4a</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q9</div>
+          <div class="quiz-question">Write "5 less than n" as an expression</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">5 - n</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q9')">n - 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">n + 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q9')">5n</button>
+          </div>
+          <div class="feedback" id="fb-Q9"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q9')">Show Solution</button>
+          <div class="solution" id="sol-Q9">"5 less than n" means subtract 5 FROM n → <strong>n - 5</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('pemdas')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('equations')">Next: Equations →</button>
+      </div>
+    </div>
+
+    <!-- EQUATIONS SECTION -->
+    <div class="section" id="equations">
+      <span class="badge badge-core">SECTION 4</span>
+      <div class="section-title">⚖️ Solving Equations</div>
+      <div class="section-subtitle">Find the value of the unknown variable</div>
+
+      <div class="card">
+        <h3>What is an Equation?</h3>
+        <p>An <strong>equation</strong> is a mathematical statement that two expressions are equal, connected by an equals sign (=).</p>
+        <div class="highlight-box">
+Equation: x + 5 = 12
+Solution: the value that makes the equation true (x = 7)
+Goal: isolate the variable on one side</div>
+        <div class="tip-box">💡 <strong>Balance Rule:</strong> Whatever you do to one side, you MUST do to the other side!</div>
+      </div>
+
+      <div class="card">
+        <h3>One-Step Equations</h3>
+        <div class="example-box">
+          <div class="example-title">Example 1 — Addition Equation</div>
+          <p><strong>Solve: x + 7 = 15</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 7 from both sides</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">x + 7 - 7 = 15 - 7</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>x = 8</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 2 — Multiplication Equation</div>
+          <p><strong>Solve: 4x = 28</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Divide both sides by 4</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">4x ÷ 4 = 28 ÷ 4</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>x = 7</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Two-Step Equations</h3>
+        <p><strong>Strategy:</strong> Undo addition/subtraction first, then undo multiplication/division.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 3x + 5 = 20</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 5 from both sides: 3x = 15</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Divide both sides by 3: x = 5</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>x = 5</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example — Solve: (x/2) - 4 = 6</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Add 4 to both sides: x/2 = 10</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Multiply both sides by 2: x = 20</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>x = 20</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Variables on Both Sides</h3>
+        <p>Move all variable terms to one side, constants to the other.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve: 5x - 3 = 2x + 12</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 2x from both sides: 3x - 3 = 12</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Add 3 to both sides: 3x = 15</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Divide by 3: <strong>x = 5</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q10</div>
+          <div class="quiz-question">Solve: x - 9 = 14</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q10')">23</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">-5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q10')">21</button>
+          </div>
+          <div class="feedback" id="fb-Q10"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q10')">Show Solution</button>
+          <div class="solution" id="sol-Q10">Add 9 to both sides: x = 14 + 9 = <strong>23</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q11</div>
+          <div class="quiz-question">Solve: 2x + 7 = 19</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">13</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q11')">6</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q11')">12</button>
+          </div>
+          <div class="feedback" id="fb-Q11"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q11')">Show Solution</button>
+          <div class="solution" id="sol-Q11">Subtract 7: 2x = 12. Divide by 2: <strong>x = 6</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q12</div>
+          <div class="quiz-question">Solve: 4x + 5 = 2x + 17</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q12')">6</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">3</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">11</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q12')">4</button>
+          </div>
+          <div class="feedback" id="fb-Q12"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q12')">Show Solution</button>
+          <div class="solution" id="sol-Q12">Subtract 2x: 2x + 5 = 17. Subtract 5: 2x = 12. Divide by 2: <strong>x = 6</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('variables')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('inequalities')">Next: Inequalities →</button>
+      </div>
+    </div>
+
+    <!-- INEQUALITIES SECTION -->
+    <div class="section" id="inequalities">
+      <span class="badge badge-core">SECTION 5</span>
+      <div class="section-title">≠ Inequalities</div>
+      <div class="section-subtitle">Comparing quantities with greater than and less than</div>
+
+      <div class="card">
+        <h3>Inequality Symbols</h3>
+        <div class="grid-2">
+          <div class="formula">&lt; → less than</div>
+          <div class="formula">&gt; → greater than</div>
+          <div class="formula">≤ → less than or equal to</div>
+          <div class="formula">≥ → greater than or equal to</div>
+        </div>
+        <p><strong>Examples:</strong> x &gt; 5 means "x is greater than 5" (x could be 6, 7, 100, etc.)</p>
+      </div>
+
+      <div class="card">
+        <h3>Solving Inequalities</h3>
+        <p>Solve inequalities just like equations, with ONE critical exception:</p>
+        <div class="warning-box">⚠️ <strong>FLIP THE SIGN</strong> when you multiply or divide by a negative number!</div>
+        <div class="example-box">
+          <div class="example-title">Example 1 — Basic Inequality</div>
+          <p><strong>Solve: x + 4 &lt; 10</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Subtract 4 from both sides</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>x &lt; 6</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 2 — Two-Step Inequality</div>
+          <p><strong>Solve: 3x - 5 ≥ 10</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Add 5: 3x ≥ 15</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Divide by 3: <strong>x ≥ 5</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example 3 — Negative Coefficient (FLIP!)</div>
+          <p><strong>Solve: -2x &gt; 8</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Divide both sides by -2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">FLIP the sign: <strong>x &lt; -4</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Graphing Inequalities</h3>
+        <p>Show solutions on a number line:</p>
+        <ul>
+          <li><strong>Open circle (○):</strong> &lt; or &gt; (not equal)</li>
+          <li><strong>Closed circle (●):</strong> ≤ or ≥ (includes equal)</li>
+          <li><strong>Arrow:</strong> shows direction of all solutions</li>
+        </ul>
+        <div class="tip-box">💡 <strong>Example:</strong> x ≥ 3 → closed circle at 3, arrow pointing right →</div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q13</div>
+          <div class="quiz-question">Solve: x - 5 &gt; 12</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">x &gt; 7</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q13')">x &gt; 17</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">x &lt; 17</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q13')">x &gt; 60</button>
+          </div>
+          <div class="feedback" id="fb-Q13"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q13')">Show Solution</button>
+          <div class="solution" id="sol-Q13">Add 5 to both sides: <strong>x &gt; 17</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q14</div>
+          <div class="quiz-question">Solve: -3x ≤ 15</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">x ≤ -5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q14')">x ≥ -5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">x ≤ 5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q14')">x ≥ 5</button>
+          </div>
+          <div class="feedback" id="fb-Q14"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q14')">Show Solution</button>
+          <div class="solution" id="sol-Q14">Divide by -3 (FLIP SIGN): <strong>x ≥ -5</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q15</div>
+          <div class="quiz-question">Solve: 4x + 3 &lt; 19</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q15')">x &lt; 5.5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q15')">x &lt; 4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q15')">x &gt; 4</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q15')">x &lt; 16</button>
+          </div>
+          <div class="feedback" id="fb-Q15"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q15')">Show Solution</button>
+          <div class="solution" id="sol-Q15">Subtract 3: 4x &lt; 16. Divide by 4: <strong>x &lt; 4</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('equations')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('exponents')">Next: Exponents →</button>
+      </div>
+    </div>
+
+    <!-- EXPONENTS SECTION -->
+    <div class="section" id="exponents">
+      <span class="badge badge-advanced">SECTION 6</span>
+      <div class="section-title">^ Exponents & Powers</div>
+      <div class="section-subtitle">Understanding repeated multiplication</div>
+
+      <div class="card">
+        <h3>What Are Exponents?</h3>
+        <p>An <strong>exponent</strong> tells you how many times to multiply the base by itself.</p>
+        <div class="highlight-box">
+5³ → "5 to the third power" or "5 cubed"
+   → 5 × 5 × 5 = 125
+
+Base: the number being multiplied (5)
+Exponent: how many times (3)</div>
+        <div class="formula">a^n → a multiplied by itself n times</div>
+      </div>
+
+      <div class="card">
+        <h3>Common Powers</h3>
+        <div class="grid-2">
+          <div>
+            <p><strong>Powers of 2:</strong></p>
+            <ul>
+              <li>2¹ = 2</li>
+              <li>2² = 4</li>
+              <li>2³ = 8</li>
+              <li>2⁴ = 16</li>
+              <li>2⁵ = 32</li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Powers of 10:</strong></p>
+            <ul>
+              <li>10¹ = 10</li>
+              <li>10² = 100</li>
+              <li>10³ = 1,000</li>
+              <li>10⁴ = 10,000</li>
+              <li>10⁵ = 100,000</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exponent Rules</h3>
+        <div class="formula">Product Rule: a^m × a^n = a^(m+n)</div>
+        <div class="example-box">
+          <div class="example-title">Example — 3² × 3⁴ = 3⁶ = 729</div>
+        </div>
+
+        <div class="formula">Quotient Rule: a^m ÷ a^n = a^(m-n)</div>
+        <div class="example-box">
+          <div class="example-title">Example — 5⁵ ÷ 5² = 5³ = 125</div>
+        </div>
+
+        <div class="formula">Power Rule: (a^m)^n = a^(m×n)</div>
+        <div class="example-box">
+          <div class="example-title">Example — (2³)² = 2⁶ = 64</div>
+        </div>
+
+        <div class="formula">Zero Exponent: a⁰ = 1 (any number to power 0 = 1)</div>
+        <div class="formula">Negative Exponent: a^(-n) = 1/a^n</div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q16</div>
+          <div class="quiz-question">Calculate: 4³</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q16')">12</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q16')">64</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q16')">16</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q16')">81</button>
+          </div>
+          <div class="feedback" id="fb-Q16"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q16')">Show Solution</button>
+          <div class="solution" id="sol-Q16">4³ = 4 × 4 × 4 = 16 × 4 = <strong>64</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q17</div>
+          <div class="quiz-question">Simplify: 2³ × 2²</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q17')">2⁶</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q17')">2⁵</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q17')">4⁵</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q17')">2¹</button>
+          </div>
+          <div class="feedback" id="fb-Q17"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q17')">Show Solution</button>
+          <div class="solution" id="sol-Q17">Product rule: add exponents → 2³⁺² = <strong>2⁵</strong> = 32</div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q18</div>
+          <div class="quiz-question">What is 7⁰?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q18')">0</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q18')">1</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q18')">7</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q18')">49</button>
+          </div>
+          <div class="feedback" id="fb-Q18"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q18')">Show Solution</button>
+          <div class="solution" id="sol-Q18">Any number to the power of 0 equals <strong>1</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('inequalities')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('ratios')">Next: Ratios →</button>
+      </div>
+    </div>
+
+    <!-- RATIOS SECTION -->
+    <div class="section" id="ratios">
+      <span class="badge badge-advanced">SECTION 7</span>
+      <div class="section-title">📐 Ratios & Proportions</div>
+      <div class="section-subtitle">Comparing quantities and solving proportions</div>
+
+      <div class="card">
+        <h3>What is a Ratio?</h3>
+        <p>A <strong>ratio</strong> compares two quantities. It can be written three ways:</p>
+        <div class="formula">3 to 4     or     3:4     or     3/4</div>
+        <p><strong>Example:</strong> If there are 12 boys and 15 girls, the ratio of boys to girls is 12:15, which simplifies to 4:5.</p>
+      </div>
+
+      <div class="card">
+        <h3>Proportions</h3>
+        <p>A <strong>proportion</strong> states that two ratios are equal.</p>
+        <div class="formula">a/b = c/d</div>
+        <p><strong>Cross-multiplication:</strong> To solve proportions, multiply diagonally: a × d = b × c</p>
+        <div class="example-box">
+          <div class="example-title">Example — Solve for x: 3/5 = x/20</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Cross-multiply: 3 × 20 = 5 × x</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">60 = 5x</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Divide by 5: <strong>x = 12</strong></div></div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-title">Example — Word Problem</div>
+          <p><strong>If 4 apples cost $6, how much do 10 apples cost?</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Set up proportion: 4/6 = 10/x</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Cross-multiply: 4x = 60</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Divide by 4: <strong>x = $15</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Unit Rates</h3>
+        <p>A <strong>unit rate</strong> is a ratio where the second term is 1.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Find unit rate: $24 for 3 hours</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">$24 ÷ 3 hours = <strong>$8 per hour</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q19</div>
+          <div class="quiz-question">Solve for x: 2/3 = x/12</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q19')">6</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q19')">8</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q19')">18</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q19')">4</button>
+          </div>
+          <div class="feedback" id="fb-Q19"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q19')">Show Solution</button>
+          <div class="solution" id="sol-Q19">Cross-multiply: 2 × 12 = 3x → 24 = 3x → <strong>x = 8</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q20</div>
+          <div class="quiz-question">A car travels 180 miles in 3 hours. What is the unit rate (mph)?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q20')">50 mph</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q20')">60 mph</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q20')">90 mph</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q20')">540 mph</button>
+          </div>
+          <div class="feedback" id="fb-Q20"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q20')">Show Solution</button>
+          <div class="solution" id="sol-Q20">180 miles ÷ 3 hours = <strong>60 mph</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('exponents')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('coordinate')">Next: Coordinate Plane →</button>
+      </div>
+    </div>
+
+    <!-- COORDINATE PLANE SECTION -->
+    <div class="section" id="coordinate">
+      <span class="badge badge-advanced">SECTION 8</span>
+      <div class="section-title">📍 The Coordinate Plane</div>
+      <div class="section-subtitle">Plotting points and understanding graphs</div>
+
+      <div class="card">
+        <h3>Coordinate System Basics</h3>
+        <p>The <strong>coordinate plane</strong> is formed by two perpendicular number lines (axes).</p>
+        <div class="highlight-box">
+x-axis: horizontal (left-right)
+y-axis: vertical (up-down)
+Origin: (0, 0) where axes meet
+Ordered pair: (x, y) → x first, y second</div>
+      </div>
+
+      <div class="card">
+        <h3>Four Quadrants</h3>
+        <div class="grid-2">
+          <div class="formula">Quadrant I: (+, +)<br>x positive, y positive</div>
+          <div class="formula">Quadrant II: (-, +)<br>x negative, y positive</div>
+          <div class="formula">Quadrant III: (-, -)<br>x negative, y negative</div>
+          <div class="formula">Quadrant IV: (+, -)<br>x positive, y negative</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Plotting Points</h3>
+        <div class="example-box">
+          <div class="example-title">Example — Plot (3, -2)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Start at origin (0, 0)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Move 3 units RIGHT (positive x)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Move 2 units DOWN (negative y)</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Mark the point in <strong>Quadrant IV</strong></div></div>
+        </div>
+        <div class="tip-box">💡 <strong>Remember:</strong> Go RIGHT or LEFT first (x), then UP or DOWN (y)</div>
+      </div>
+
+      <div class="card">
+        <h3>Distance Formula</h3>
+        <p>Find the distance between two points on a horizontal or vertical line:</p>
+        <div class="formula">Horizontal: |x₂ - x₁|<br>Vertical: |y₂ - y₁|</div>
+        <div class="example-box">
+          <div class="example-title">Example — Distance from (2, 5) to (2, -3)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Same x-coordinate → vertical line</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">|5 - (-3)| = |5 + 3| = <strong>8 units</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q21</div>
+          <div class="quiz-question">In which quadrant is the point (-4, 6)?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q21')">Quadrant I</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q21')">Quadrant II</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q21')">Quadrant III</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q21')">Quadrant IV</button>
+          </div>
+          <div class="feedback" id="fb-Q21"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q21')">Show Solution</button>
+          <div class="solution" id="sol-Q21">x is negative, y is positive → <strong>Quadrant II</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q22</div>
+          <div class="quiz-question">What is the distance from (5, 2) to (5, 9)?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q22')">4 units</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q22')">7 units</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q22')">11 units</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q22')">14 units</button>
+          </div>
+          <div class="feedback" id="fb-Q22"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q22')">Show Solution</button>
+          <div class="solution" id="sol-Q22">Vertical line: |9 - 2| = <strong>7 units</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('ratios')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('square-roots')">Next: Square Roots →</button>
+      </div>
+    </div>
+
+    <!-- SQUARE ROOTS SECTION -->
+    <div class="section" id="square-roots">
+      <span class="badge badge-advanced">SECTION 9</span>
+      <div class="section-title">√ Square Roots</div>
+      <div class="section-subtitle">Understanding inverse operations of squaring</div>
+
+      <div class="card">
+        <h3>What is a Square Root?</h3>
+        <p>The <strong>square root</strong> of a number is a value that, when multiplied by itself, gives the original number.</p>
+        <div class="formula">√25 = 5 because 5 × 5 = 25<br>√64 = 8 because 8 × 8 = 64</div>
+        <p>The symbol √ is called a <strong>radical</strong>.</p>
+      </div>
+
+      <div class="card">
+        <h3>Perfect Squares</h3>
+        <p>Numbers that have exact square roots are called <strong>perfect squares</strong>.</p>
+        <div class="grid-2">
+          <div>
+            <ul>
+              <li>√1 = 1</li>
+              <li>√4 = 2</li>
+              <li>√9 = 3</li>
+              <li>√16 = 4</li>
+              <li>√25 = 5</li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li>√36 = 6</li>
+              <li>√49 = 7</li>
+              <li>√64 = 8</li>
+              <li>√81 = 9</li>
+              <li>√100 = 10</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-box">💡 <strong>Memorize these!</strong> Knowing perfect squares up to 144 makes math much faster.</div>
+      </div>
+
+      <div class="card">
+        <h3>Estimating Square Roots</h3>
+        <p>For numbers that aren't perfect squares, estimate between two perfect squares.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Estimate √50</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">√49 = 7 and √64 = 8</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">50 is between 49 and 64</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">So √50 is between <strong>7 and 8</strong> (closer to 7)</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Simplifying Square Roots</h3>
+        <p>Break down non-perfect squares into perfect square factors.</p>
+        <div class="example-box">
+          <div class="example-title">Example — Simplify √72</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">72 = 36 × 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">√72 = √(36 × 2) = √36 × √2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">√36 = 6, so answer is <strong>6√2</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q23</div>
+          <div class="quiz-question">What is √144?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q23')">11</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q23')">12</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q23')">13</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q23')">14</button>
+          </div>
+          <div class="feedback" id="fb-Q23"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q23')">Show Solution</button>
+          <div class="solution" id="sol-Q23">12 × 12 = 144, so √144 = <strong>12</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q24</div>
+          <div class="quiz-question">Between which two integers is √30?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q24')">4 and 5</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q24')">5 and 6</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q24')">6 and 7</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q24')">7 and 8</button>
+          </div>
+          <div class="feedback" id="fb-Q24"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q24')">Show Solution</button>
+          <div class="solution" id="sol-Q24">√25 = 5, √36 = 6. 30 is between 25 and 36 → <strong>between 5 and 6</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('coordinate')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('calculators')">Next: Calculators →</button>
+      </div>
+    </div>
+
+    <!-- CALCULATORS SECTION -->
+    <div class="section" id="calculators">
+      <span class="badge badge-core">TOOLS</span>
+      <div class="section-title">🧮 Interactive Practice Calculators</div>
+      <div class="section-subtitle">Check your work and explore concepts dynamically</div>
+
+      <div class="calc-tool">
+        <h3>Integer Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>First Number</label>
+            <input type="number" id="int1" value="5">
+          </div>
+          <div class="calc-group">
+            <label>Operation</label>
+            <select id="intOp">
+              <option>+</option>
+              <option>-</option>
+              <option>×</option>
+              <option>÷</option>
+            </select>
+          </div>
+          <div class="calc-group">
+            <label>Second Number</label>
+            <input type="number" id="int2" value="3">
+          </div>
+          <button class="calc-btn" onclick="calcIntegers()">Calculate</button>
+        </div>
+        <div class="calc-result" id="intResult">Result will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Equation Solver (One Variable)</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Coefficient</label>
+            <input type="number" id="eqCoef" value="3">
+          </div>
+          <div class="calc-group">
+            <label>Constant</label>
+            <input type="number" id="eqConst" value="5">
+          </div>
+          <div class="calc-group">
+            <label>Equals</label>
+            <input type="number" id="eqResult" value="20">
+          </div>
+          <button class="calc-btn" onclick="solveEquation()">Solve for x</button>
+        </div>
+        <div class="calc-result" id="eqSolve">Result will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Exponent Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Base</label>
+            <input type="number" id="expBase" value="2">
+          </div>
+          <div class="calc-group">
+            <label>Exponent</label>
+            <input type="number" id="expPower" value="5">
+          </div>
+          <button class="calc-btn" onclick="calcExponent()">Calculate</button>
+        </div>
+        <div class="calc-result" id="expResult">Result will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Proportion Solver</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>a</label>
+            <input type="number" id="propA" value="3">
+          </div>
+          <div class="calc-group">
+            <label>b</label>
+            <input type="number" id="propB" value="5">
+          </div>
+          <div class="calc-group">
+            <label>c</label>
+            <input type="number" id="propC" value="9">
+          </div>
+          <button class="calc-btn" onclick="solveProportion()">Solve for d</button>
+        </div>
+        <div class="calc-result" id="propResult">Result will appear here... (a/b = c/d)</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Square Root Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Number</label>
+            <input type="number" id="sqrtNum" value="144">
+          </div>
+          <button class="calc-btn" onclick="calcSqrt()">Calculate √</button>
+        </div>
+        <div class="calc-result" id="sqrtResult">Result will appear here...</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('square-roots')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('quiz')">Take Final Quiz →</button>
+      </div>
+    </div>
+
+    <!-- FINAL QUIZ SECTION -->
+    <div class="section" id="quiz">
+      <span class="badge badge-intro">FINAL ASSESSMENT</span>
+      <div class="section-title">📝 Pre-Algebra Final Quiz</div>
+      <div class="section-subtitle">Test your knowledge across all topics!</div>
+
+      <div class="card">
+        <p><strong>Instructions:</strong> Answer all questions. Instant feedback will be provided. Try without hints first!</p>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ1</div>
+        <div class="quiz-question">Calculate: -15 + 7</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'correct','FQ1')">-8</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">8</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">-22</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">22</button>
+        </div>
+        <div class="feedback" id="fb-FQ1"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ1')">Show Solution</button>
+        <div class="solution" id="sol-FQ1">Different signs: 15 - 7 = 8, use sign of larger (15) → <strong>-8</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ2</div>
+        <div class="quiz-question">Calculate: 12 + 3 × 4</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">60</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ2')">24</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">19</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">48</button>
+        </div>
+        <div class="feedback" id="fb-FQ2"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ2')">Show Solution</button>
+        <div class="solution" id="sol-FQ2">PEMDAS: multiply first 3 × 4 = 12, then 12 + 12 = <strong>24</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ3</div>
+        <div class="quiz-question">Evaluate 4x - 7 when x = 5</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">27</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ3')">13</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">12</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ3')">17</button>
+        </div>
+        <div class="feedback" id="fb-FQ3"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ3')">Show Solution</button>
+        <div class="solution" id="sol-FQ3">4(5) - 7 = 20 - 7 = <strong>13</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ4</div>
+        <div class="quiz-question">Solve: x + 12 = 30</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'correct','FQ4')">18</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ4')">42</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ4')">2.5</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ4')">360</button>
+        </div>
+        <div class="feedback" id="fb-FQ4"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ4')">Show Solution</button>
+        <div class="solution" id="sol-FQ4">Subtract 12 from both sides: <strong>x = 18</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ5</div>
+        <div class="quiz-question">Solve: -4x ≥ 16</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ5')">x ≥ -4</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ5')">x ≤ -4</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ5')">x ≥ 4</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ5')">x ≤ 4</button>
+        </div>
+        <div class="feedback" id="fb-FQ5"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ5')">Show Solution</button>
+        <div class="solution" id="sol-FQ5">Divide by -4, FLIP sign: <strong>x ≤ -4</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ6</div>
+        <div class="quiz-question">Calculate: 3⁴</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ6')">12</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ6')">64</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ6')">81</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ6')">243</button>
+        </div>
+        <div class="feedback" id="fb-FQ6"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ6')">Show Solution</button>
+        <div class="solution" id="sol-FQ6">3⁴ = 3 × 3 × 3 × 3 = 9 × 9 = <strong>81</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ7</div>
+        <div class="quiz-question">Solve proportion: 5/8 = x/24</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ7')">10</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ7')">15</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ7')">20</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ7')">3</button>
+        </div>
+        <div class="feedback" id="fb-FQ7"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ7')">Show Solution</button>
+        <div class="solution" id="sol-FQ7">Cross-multiply: 5 × 24 = 8x → 120 = 8x → <strong>x = 15</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ8</div>
+        <div class="quiz-question">In which quadrant is (-3, -7)?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">Quadrant I</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">Quadrant II</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ8')">Quadrant III</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">Quadrant IV</button>
+        </div>
+        <div class="feedback" id="fb-FQ8"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ8')">Show Solution</button>
+        <div class="solution" id="sol-FQ8">Both x and y are negative → <strong>Quadrant III</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ9</div>
+        <div class="quiz-question">What is √121?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ9')">10</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ9')">11</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ9')">12</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ9')">13</button>
+        </div>
+        <div class="feedback" id="fb-FQ9"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ9')">Show Solution</button>
+        <div class="solution" id="sol-FQ9">11 × 11 = 121, so √121 = <strong>11</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ10</div>
+        <div class="quiz-question">Simplify: 9x + 4 - 3x + 2</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ10')">9x + 6</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ10')">6x + 6</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ10')">12x + 6</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ10')">6x + 2</button>
+        </div>
+        <div class="feedback" id="fb-FQ10"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ10')">Show Solution</button>
+        <div class="solution" id="sol-FQ10">Combine like terms: (9x - 3x) + (4 + 2) = <strong>6x + 6</strong></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('calculators')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('home')">Return Home</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="scoreDisplay" style="display:none;">Score: <span id="score">0</span></div>
+
+<script>
+let completedSections = new Set();
+let quizScore = 0;
+
+function showSection(sectionId) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+  
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const navLink = document.querySelector(`nav a[onclick="showSection('${sectionId}')"]`);
+  if (navLink) navLink.classList.add('active');
+  
+  if (sectionId !== 'home' && sectionId !== 'calculators' && sectionId !== 'quiz') {
+    completedSections.add(sectionId);
+    const checkmark = document.getElementById(`check-${sectionId}`);
+    if (checkmark) checkmark.classList.add('show');
+    updateProgress();
+  }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  const total = 12;
+  const completed = completedSections.size;
+  const percentage = (completed / total) * 100;
+  document.getElementById('progressBar').style.width = percentage + '%';
+  document.getElementById('progressText').textContent = `${completed} of ${total} sections completed`;
+}
+
+function checkAnswer(button, result, questionId) {
+  const options = button.parentElement.querySelectorAll('.option');
+  options.forEach(opt => opt.disabled = true);
+  
+  const feedback = document.getElementById('fb-' + questionId);
+  
+  if (result === 'correct') {
+    button.classList.add('correct');
+    feedback.textContent = '✓ Correct! Well done!';
+    feedback.className = 'feedback correct show';
+    quizScore++;
+    updateScore();
+  } else {
+    button.classList.add('wrong');
+    options.forEach(opt => {
+      if (opt.getAttribute('onclick').includes('correct')) {
+        opt.classList.add('correct');
+      }
+    });
+    feedback.textContent = '✗ Incorrect. See the correct answer highlighted.';
+    feedback.className = 'feedback wrong show';
+  }
+}
+
+function toggleSolution(solutionId) {
+  const sol = document.getElementById(solutionId);
+  sol.classList.toggle('show');
+}
+
+function updateScore() {
+  document.getElementById('score').textContent = quizScore;
+  document.getElementById('scoreDisplay').style.display = 'block';
+}
+
+function calcIntegers() {
+  const num1 = parseFloat(document.getElementById('int1').value);
+  const num2 = parseFloat(document.getElementById('int2').value);
+  const op = document.getElementById('intOp').value;
+  let result;
+  
+  switch(op) {
+    case '+': result = num1 + num2; break;
+    case '-': result = num1 - num2; break;
+    case '×': result = num1 * num2; break;
+    case '÷': result = num2 !== 0 ? num1 / num2 : 'Cannot divide by zero'; break;
+  }
+  
+  document.getElementById('intResult').innerHTML = `<strong>${num1} ${op} ${num2} = ${result}</strong>`;
+}
+
+function solveEquation() {
+  const coef = parseFloat(document.getElementById('eqCoef').value);
+  const constant = parseFloat(document.getElementById('eqConst').value);
+  const equals = parseFloat(document.getElementById('eqResult').value);
+  
+  if (coef === 0) {
+    document.getElementById('eqSolve').innerHTML = 'Coefficient cannot be zero';
+    return;
+  }
+  
+  const x = (equals - constant) / coef;
+  document.getElementById('eqSolve').innerHTML = `<strong>${coef}x + ${constant} = ${equals}</strong><br>Solution: <strong>x = ${x.toFixed(2)}</strong>`;
+}
+
+function calcExponent() {
+  const base = parseFloat(document.getElementById('expBase').value);
+  const power = parseFloat(document.getElementById('expPower').value);
+  const result = Math.pow(base, power);
+  
+  document.getElementById('expResult').innerHTML = `<strong>${base}<sup>${power}</sup> = ${result}</strong>`;
+}
+
+function solveProportion() {
+  const a = parseFloat(document.getElementById('propA').value);
+  const b = parseFloat(document.getElementById('propB').value);
+  const c = parseFloat(document.getElementById('propC').value);
+  
+  if (b === 0) {
+    document.getElementById('propResult').innerHTML = 'b cannot be zero';
+    return;
+  }
+  
+  const d = (b * c) / a;
+  document.getElementById('propResult').innerHTML = `<strong>${a}/${b} = ${c}/${d.toFixed(2)}</strong><br>Solution: <strong>d = ${d.toFixed(2)}</strong>`;
+}
+
+function calcSqrt() {
+  const num = parseFloat(document.getElementById('sqrtNum').value);
+  
+  if (num < 0) {
+    document.getElementById('sqrtResult').innerHTML = 'Cannot calculate square root of negative number';
+    return;
+  }
+  
+  const result = Math.sqrt(num);
+  const isPerfect = Number.isInteger(result);
+  
+  document.getElementById('sqrtResult').innerHTML = `<strong>√${num} = ${result.toFixed(4)}</strong>${isPerfect ? ' (Perfect square!)' : ''}`;
+}
+</script> = 8x → <strong>x = 15</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ8</div>
+        <div class="quiz-question">What is √169?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">12</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ8')">13</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">14</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ8')">15</button>
+        </div>
+        <div class="feedback" id="fb-FQ8"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ8')">Show Solution</button>
+        <div class="solution" id="sol-FQ8">13 × 13 = 169, so √169 = <strong>13</strong></div>
+      </div>
+
+      <div id="quizSummary" style="display:none;background:var(--color-bg-secondary);border:2px solid var(--color-accent-success);border-radius:12px;padding:2rem;margin-top:2rem;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">🎉</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--color-accent-success);" id="summaryText"></div>
+        <div style="color:var(--color-text-secondary);margin-top:1rem;font-size:1rem;" id="summaryMsg"></div>
+        <button onclick="resetQuiz()" class="btn btn-primary" style="margin-top:1.5rem;">Try Again</button>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('calculators')">← Back</button>
+        <button class="btn btn-primary" style="background:var(--color-accent-success);" onclick="showFinalScore()">Submit Quiz</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="scoreDisplay">
+  Score: <span id="scoreNum">0</span> / <span id="scoreTotal">0</span>
+</div>
+
+<script>
+// Score tracking
+let score = 0;
+let answered = {};
+const visited = new Set(['home']);
+
+function checkAnswer(btn, result, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  
+  const options = btn.parentElement.querySelectorAll('.option');
+  options.forEach(b => b.disabled = true);
+  
+  const fb = document.getElementById('fb-' + qid);
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    score++;
+    fb.textContent = '✅ Correct! Excellent work!';
+    fb.className = 'feedback show correct';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Not quite right. Check the solution below.';
+    fb.className = 'feedback show wrong';
+    options.forEach(b => {
+      if (b.onclick.toString().includes("'correct'")) {
+        b.classList.add('correct');
+      }
+    });
+  }
+  updateScore();
+}
+
+function updateScore() {
+  const total = Object.keys(answered).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreTotal').textContent = total;
+}
+
+function toggleSolution(id) {
+  const sol = document.getElementById(id);
+  sol.classList.toggle('show');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) {
+    navEl.classList.add('active');
+  } else {
+    document.querySelectorAll('nav ul li a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(id)) {
+        a.classList.add('active');
+      }
+    });
+  }
+  
+  visited.add(id);
+  const checkEl = document.getElementById('check-' + id);
+  if (checkEl) checkEl.classList.add('show');
+  
+  const progress = (visited.size / 12) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.getElementById('progressText').textContent = visited.size + ' of 12 sections completed';
+  
+  window.scrollTo(0, 0);
+}
+
+// Calculator functions
+function calcIntegers() {
+  const a = parseFloat(document.getElementById('int1').value);
+  const b = parseFloat(document.getElementById('int2').value);
+  const op = document.getElementById('intOp').value;
+  let result;
+  if (op === '+') result = a + b;
+  else if (op === '-') result = a - b;
+  else if (op === '×') result = a * b;
+  else if (op === '÷') result = b !== 0 ? a / b : 'Error: Division by zero';
+  document.getElementById('intResult').innerHTML = `<strong>${a} ${op} ${b} = ${result}</strong>`;
+}
+
+function solveEquation() {
+  const coef = parseFloat(document.getElementById('eqCoef').value);
+  const constant = parseFloat(document.getElementById('eqConst').value);
+  const result = parseFloat(document.getElementById('eqResult').value);
+  if (coef === 0) {
+    document.getElementById('eqSolve').innerHTML = '<span style="color:var(--color-accent-error)">Error: Coefficient cannot be zero</span>';
+    return;
+  }
+  const x = (result - constant) / coef;
+  document.getElementById('eqSolve').innerHTML = `<strong>${coef}x + ${constant} = ${result}</strong><br>Solution: <strong style="color:var(--color-accent-success)">x = ${x.toFixed(2)}</strong>`;
+}
+
+function calcExponent() {
+  const base = parseFloat(document.getElementById('expBase').value);
+  const power = parseFloat(document.getElementById('expPower').value);
+  const result = Math.pow(base, power);
+  document.getElementById('expResult').innerHTML = `<strong>${base}^${power} = ${result}</strong>`;
+}
+
+function solveProportion() {
+  const a = parseFloat(document.getElementById('propA').value);
+  const b = parseFloat(document.getElementById('propB').value);
+  const c = parseFloat(document.getElementById('propC').value);
+  if (b === 0) {
+    document.getElementById('propResult').innerHTML = '<span style="color:var(--color-accent-error)">Error: b cannot be zero</span>';
+    return;
+  }
+  const d = (b * c) / a;
+  document.getElementById('propResult').innerHTML = `<strong>${a}/${b} = ${c}/${d.toFixed(2)}</strong><br>Solution: <strong style="color:var(--color-accent-success)">d = ${d.toFixed(2)}</strong>`;
+}
+
+function calcSqrt() {
+  const num = parseFloat(document.getElementById('sqrtNum').value);
+  if (num < 0) {
+    document.getElementById('sqrtResult').innerHTML = '<span style="color:var(--color-accent-error)">Error: Cannot take square root of negative number</span>';
+    return;
+  }
+  const result = Math.sqrt(num);
+  const isPerfect = Number.isInteger(result);
+  document.getElementById('sqrtResult').innerHTML = `<strong>√${num} = ${result.toFixed(4)}</strong>${isPerfect ? ' <span style="color:var(--color-accent-success)">(Perfect square!)</span>' : ''}`;
+}
+
+// Final quiz functions
+const finalQs = ['FQ1','FQ2','FQ3','FQ4','FQ5','FQ6','FQ7','FQ8'];
+
+function showFinalScore() {
+  const correctCount = finalQs.filter(q => {
+    const fb = document.getElementById('fb-' + q);
+    return fb && fb.classList.contains('correct');
+  }).length;
+  const total = finalQs.length;
+  const pct = Math.round((correctCount / total) * 100);
+  
+  const summary = document.getElementById('quizSummary');
+  const st = document.getElementById('summaryText');
+  const sm = document.getElementById('summaryMsg');
+  
+  st.textContent = correctCount + ' / ' + total + ' Correct (' + pct + '%)';
+  
+  if (pct >= 90) {
+    sm.textContent = '🌟 Outstanding! You have mastered Pre-Algebra fundamentals!';
+  } else if (pct >= 70) {
+    sm.textContent = '👍 Great job! Review any missed topics and you\'ll be ready for Algebra!';
+  } else if (pct >= 50) {
+    sm.textContent = '📚 Good effort! Go back through a few sections and practice more.';
+  } else {
+    sm.textContent = '💪 Keep practicing! Work through each section carefully — you\'ve got this!';
+  }
+  
+  summary.style.display = 'block';
+  summary.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+  finalQs.forEach(q => {
+    delete answered[q];
+    const card = document.getElementById('fb-' + q).closest('.quiz-card');
+    card.querySelectorAll('.option').forEach(b => {
+      b.disabled = false;
+      b.className = 'option';
+    });
+    document.getElementById('fb-' + q).className = 'feedback';
+    const sol = document.getElementById('sol-' + q);
+    if (sol) sol.classList.remove('show');
+  });
+  document.getElementById('quizSummary').style.display = 'none';
+  updateScore();
+}
+
+// Initialize
+showSection('home');
+</script>
+
+</body>
+</html>
+
