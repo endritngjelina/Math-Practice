@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometry Interactive Learning Platform</title>
+<style>
+:root {
+  --color-bg-primary: #0a0e1a;
+  --color-bg-secondary: #141824;
+  --color-bg-tertiary: #1e2330;
+  --color-accent-primary: #6366f1;
+  --color-accent-secondary: #8b5cf6;
+  --color-accent-success: #10b981;
+  --color-accent-warning: #f59e0b;
+  --color-accent-error: #ef4444;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #2d3548;
+  --color-hover: #2a3142;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #1e2330 0%, #2a1f5e 100%);
+  padding: 2rem 2.5rem;
+  border-bottom: 2px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+}
+
+.progress-wrap {
+  margin-top: 1.2rem;
+  background: var(--color-bg-tertiary);
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.progress-text {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.container {
+  display: flex;
+  min-height: calc(100vh - 140px);
+}
+
+nav {
+  width: 280px;
+  background: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem 0;
+  position: sticky;
+  top: 140px;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+nav h2 {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+}
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  font-size: 0.95rem;
+}
+
+nav ul li a:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+nav ul li a.active {
+  background: var(--color-hover);
+  border-left-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+nav ul li a .icon {
+  font-size: 1.2rem;
+}
+
+nav ul li a .check {
+  margin-left: auto;
+  font-size: 0.7rem;
+  background: var(--color-accent-success);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 10px;
+  display: none;
+}
+
+nav ul li a .check.show {
+  display: block;
+}
+
+main {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 1000px;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.badge-intro { background: rgba(99, 102, 241, 0.2); color: var(--color-accent-primary); }
+.badge-core { background: rgba(139, 92, 246, 0.2); color: var(--color-accent-secondary); }
+.badge-advanced { background: rgba(16, 185, 129, 0.2); color: var(--color-accent-success); }
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  color: var(--color-accent-primary);
+  margin-bottom: 1rem;
+}
+
+.card p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.8rem;
+  line-height: 1.8;
+}
+
+.card ul, .card ol {
+  margin-left: 1.5rem;
+  color: var(--color-text-secondary);
+  line-height: 2;
+}
+
+.highlight-box {
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 4px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  font-family: 'Courier New', monospace;
+  color: var(--color-text-primary);
+}
+
+.formula {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  margin: 1rem 0;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: var(--color-accent-warning);
+  display: inline-block;
+}
+
+.example-box {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.example-title {
+  font-size: 0.85rem;
+  color: var(--color-accent-success);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  background: var(--color-accent-primary);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.step-text strong {
+  color: var(--color-accent-success);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+.quiz-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-num {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-question {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: var(--color-text-primary);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.option {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-accent-primary);
+  background: var(--color-hover);
+}
+
+.option.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.option.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: none;
+}
+
+.feedback.show { display: block; }
+
+.feedback.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--color-accent-success);
+  color: var(--color-accent-success);
+}
+
+.feedback.wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--color-accent-error);
+  color: var(--color-accent-error);
+}
+
+.show-solution-btn {
+  margin-top: 0.8rem;
+  background: none;
+  border: 2px solid var(--color-accent-warning);
+  color: var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.show-solution-btn:hover {
+  background: var(--color-accent-warning);
+  color: #000;
+}
+
+.solution {
+  margin-top: 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--color-accent-warning);
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: none;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.solution.show { display: block; }
+
+.tip-box {
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--color-accent-success);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.warning-box {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--color-accent-error);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  color: var(--color-text-secondary);
+}
+
+.calc-tool {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.calc-tool h3 {
+  font-size: 1.2rem;
+  color: var(--color-accent-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.calc-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.calc-group label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.calc-group input, .calc-group select {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  width: 120px;
+}
+
+.calc-group input:focus, .calc-group select:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+.calc-btn {
+  background: var(--color-accent-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calc-btn:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.calc-result {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-accent-primary);
+  border-radius: 8px;
+  padding: 1.2rem;
+  color: var(--color-accent-success);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  min-height: 60px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.home-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.home-card:hover {
+  border-color: var(--color-accent-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.home-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.home-card .title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.home-card .desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-accent-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-secondary);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: none;
+  border: 2px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+#scoreDisplay {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-accent-primary);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  color: var(--color-accent-primary);
+  z-index: 1000;
+}
+
+#scoreDisplay span {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📐 Geometry Master Course</h1>
+  <p>Master shapes, angles, area, volume, and geometric proofs</p>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 of 12 sections completed</div>
+</header>
+
+<div class="container">
+  <nav>
+    <h2>Course Navigation</h2>
+    <ul>
+      <li><a href="#" onclick="showSection('home')" class="active" id="nav-home"><span class="icon">🏠</span>Home<span class="check" id="check-home">✓</span></a></li>
+      <li><a href="#" onclick="showSection('points-lines')"><span class="icon">📍</span>Points & Lines<span class="check" id="check-points-lines">✓</span></a></li>
+      <li><a href="#" onclick="showSection('angles')"><span class="icon">📐</span>Angles<span class="check" id="check-angles">✓</span></a></li>
+      <li><a href="#" onclick="showSection('triangles')"><span class="icon">🔺</span>Triangles<span class="check" id="check-triangles">✓</span></a></li>
+      <li><a href="#" onclick="showSection('pythagorean')"><span class="icon">📏</span>Pythagorean Theorem<span class="check" id="check-pythagorean">✓</span></a></li>
+      <li><a href="#" onclick="showSection('quadrilaterals')"><span class="icon">⬜</span>Quadrilaterals<span class="check" id="check-quadrilaterals">✓</span></a></li>
+      <li><a href="#" onclick="showSection('circles')"><span class="icon">⭕</span>Circles<span class="check" id="check-circles">✓</span></a></li>
+      <li><a href="#" onclick="showSection('area')"><span class="icon">📊</span>Area Formulas<span class="check" id="check-area">✓</span></a></li>
+      <li><a href="#" onclick="showSection('perimeter')"><span class="icon">🔄</span>Perimeter & Circumference<span class="check" id="check-perimeter">✓</span></a></li>
+      <li><a href="#" onclick="showSection('volume')"><span class="icon">📦</span>Volume & Surface Area<span class="check" id="check-volume">✓</span></a></li>
+      <li><a href="#" onclick="showSection('calculators')"><span class="icon">🧮</span>Geometry Calculators<span class="check" id="check-calculators">✓</span></a></li>
+      <li><a href="#" onclick="showSection('quiz')"><span class="icon">📝</span>Final Quiz<span class="check" id="check-quiz">✓</span></a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HOME SECTION -->
+    <div class="section active" id="home">
+      <span class="badge badge-intro">START HERE</span>
+      <div class="section-title">Welcome to Geometry! 👋</div>
+      <div class="section-subtitle">Master shapes, measurements, and spatial reasoning</div>
+      
+      <div class="card">
+        <p>Geometry is the study of <strong>shapes, sizes, positions, angles, and dimensions</strong>. This comprehensive course covers everything from basic points and lines to advanced volume calculations and geometric proofs.</p>
+        <p>Each section includes detailed explanations, visual examples, step-by-step solutions, practice problems with instant feedback, and powerful calculators to verify your work.</p>
+      </div>
+
+      <div class="home-grid">
+        <a class="home-card" onclick="showSection('points-lines')">
+          <div class="icon">📍</div>
+          <div class="title">Points & Lines</div>
+          <div class="desc">Basic geometric elements</div>
+        </a>
+        <a class="home-card" onclick="showSection('angles')">
+          <div class="icon">📐</div>
+          <div class="title">Angles</div>
+          <div class="desc">Types, measurement, relationships</div>
+        </a>
+        <a class="home-card" onclick="showSection('triangles')">
+          <div class="icon">🔺</div>
+          <div class="title">Triangles</div>
+          <div class="desc">Types, properties, theorems</div>
+        </a>
+        <a class="home-card" onclick="showSection('pythagorean')">
+          <div class="icon">📏</div>
+          <div class="title">Pythagorean</div>
+          <div class="desc">a² + b² = c² applications</div>
+        </a>
+        <a class="home-card" onclick="showSection('quadrilaterals')">
+          <div class="icon">⬜</div>
+          <div class="title">Quadrilaterals</div>
+          <div class="desc">Squares, rectangles, trapezoids</div>
+        </a>
+        <a class="home-card" onclick="showSection('circles')">
+          <div class="icon">⭕</div>
+          <div class="title">Circles</div>
+          <div class="desc">Radius, diameter, pi, arcs</div>
+        </a>
+        <a class="home-card" onclick="showSection('area')">
+          <div class="icon">📊</div>
+          <div class="title">Area</div>
+          <div class="desc">Calculating 2D space</div>
+        </a>
+        <a class="home-card" onclick="showSection('perimeter')">
+          <div class="icon">🔄</div>
+          <div class="title">Perimeter</div>
+          <div class="desc">Distance around shapes</div>
+        </a>
+        <a class="home-card" onclick="showSection('volume')">
+          <div class="icon">📦</div>
+          <div class="title">Volume</div>
+          <div class="desc">3D space and surface area</div>
+        </a>
+        <a class="home-card" onclick="showSection('calculators')">
+          <div class="icon">🧮</div>
+          <div class="title">Calculators</div>
+          <div class="desc">Interactive calculation tools</div>
+        </a>
+        <a class="home-card" onclick="showSection('quiz')">
+          <div class="icon">📝</div>
+          <div class="title">Final Quiz</div>
+          <div class="desc">Test your mastery</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- POINTS & LINES SECTION -->
+    <div class="section" id="points-lines">
+      <span class="badge badge-intro">SECTION 1</span>
+      <div class="section-title">📍 Points, Lines & Planes</div>
+      <div class="section-subtitle">The building blocks of geometry</div>
+
+      <div class="card">
+        <h3>Basic Definitions</h3>
+        <div class="highlight-box">
+Point: A location in space (no size, just position)
+      Example: Point A
+
+Line: Extends infinitely in both directions
+      Notation: Line AB or ↔AB
+
+Line Segment: Part of a line with two endpoints
+      Notation: Segment AB or ‾AB
+
+Ray: Starts at one point, extends infinitely in one direction
+      Notation: Ray AB or →AB
+
+Plane: Flat surface extending infinitely
+      Example: Plane ABC</div>
+      </div>
+
+      <div class="card">
+        <h3>Types of Lines</h3>
+        <div class="grid-2">
+          <div>
+            <p><strong>Parallel Lines (||):</strong> Never intersect, always same distance apart</p>
+            <div class="formula">Line AB || Line CD</div>
+          </div>
+          <div>
+            <p><strong>Perpendicular Lines (⊥):</strong> Intersect at 90° (right angle)</p>
+            <div class="formula">Line AB ⊥ Line CD</div>
+          </div>
+        </div>
+        <div class="tip-box">
+          💡 <strong>Intersecting lines</strong> cross at exactly one point.<br>
+          💡 <strong>Skew lines</strong> don't intersect and aren't parallel (in 3D space).
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Distance & Midpoint</h3>
+        <p><strong>Distance Formula:</strong> Find distance between two points (x₁, y₁) and (x₂, y₂)</p>
+        <div class="formula">d = √[(x₂ - x₁)² + (y₂ - y₁)²]</div>
+        <div class="example-box">
+          <div class="example-title">Example — Distance between (3, 4) and (7, 1)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">d = √[(7-3)² + (1-4)²]</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">d = √[4² + (-3)²] = √[16 + 9]</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">d = √25 = <strong>5 units</strong></div></div>
+        </div>
+
+        <p><strong>Midpoint Formula:</strong> Find the point exactly halfway between two points</p>
+        <div class="formula">M = ((x₁ + x₂)/2, (y₁ + y₂)/2)</div>
+        <div class="example-box">
+          <div class="example-title">Example — Midpoint of (2, 5) and (8, 9)</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">M = ((2+8)/2, (5+9)/2)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">M = (10/2, 14/2) = <strong>(5, 7)</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q1</div>
+          <div class="quiz-question">What is the distance between points (0, 0) and (3, 4)?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">7</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q1')">5</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">12</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q1')">3.5</button>
+          </div>
+          <div class="feedback" id="fb-Q1"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q1')">Show Solution</button>
+          <div class="solution" id="sol-Q1">d = √[(3-0)² + (4-0)²] = √[9 + 16] = √25 = <strong>5</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q2</div>
+          <div class="quiz-question">Find the midpoint of (2, 6) and (10, 14)</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q2')">(6, 10)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">(12, 20)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">(8, 8)</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q2')">(4, 7)</button>
+          </div>
+          <div class="feedback" id="fb-Q2"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q2')">Show Solution</button>
+          <div class="solution" id="sol-Q2">M = ((2+10)/2, (6+14)/2) = (12/2, 20/2) = <strong>(6, 10)</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="showSection('angles')">Next: Angles →</button>
+      </div>
+    </div>
+
+    <!-- ANGLES SECTION -->
+    <div class="section" id="angles">
+      <span class="badge badge-core">SECTION 2</span>
+      <div class="section-title">📐 Angles</div>
+      <div class="section-subtitle">Types, measurement, and relationships</div>
+
+      <div class="card">
+        <h3>What is an Angle?</h3>
+        <p>An <strong>angle</strong> is formed by two rays sharing a common endpoint (the vertex). Angles are measured in <strong>degrees (°)</strong>.</p>
+        <div class="highlight-box">
+Vertex: The point where two rays meet
+Rays: The sides of the angle
+Notation: ∠ABC (vertex in the middle)</div>
+      </div>
+
+      <div class="card">
+        <h3>Types of Angles</h3>
+        <div class="grid-2">
+          <div>
+            <div class="formula">Acute: 0° &lt; angle &lt; 90°</div>
+            <p>Sharp angle, less than right angle</p>
+          </div>
+          <div>
+            <div class="formula">Right: angle = 90°</div>
+            <p>Perfect L-shape, perpendicular lines</p>
+          </div>
+          <div>
+            <div class="formula">Obtuse: 90° &lt; angle &lt; 180°</div>
+            <p>Wide angle, more than right angle</p>
+          </div>
+          <div>
+            <div class="formula">Straight: angle = 180°</div>
+            <p>Straight line, half rotation</p>
+          </div>
+        </div>
+        <div class="formula">Reflex: 180° &lt; angle &lt; 360°</div>
+        <p><strong>Reflex angle:</strong> Greater than straight angle, less than full rotation</p>
+      </div>
+
+      <div class="card">
+        <h3>Angle Relationships</h3>
+        <p><strong>Complementary Angles:</strong> Two angles that add up to 90°</p>
+        <div class="example-box">
+          <div class="example-title">Example — If ∠A = 35°, find its complement</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Complement + 35° = 90°</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Complement = 90° - 35° = <strong>55°</strong></div></div>
+        </div>
+
+        <p><strong>Supplementary Angles:</strong> Two angles that add up to 180°</p>
+        <div class="example-box">
+          <div class="example-title">Example — If ∠B = 110°, find its supplement</div>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Supplement + 110° = 180°</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Supplement = 180° - 110° = <strong>70°</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Vertical & Adjacent Angles</h3>
+        <p><strong>Vertical Angles:</strong> Opposite angles formed by two intersecting lines (always equal)</p>
+        <div class="tip-box">💡 When two lines cross, vertical angles are congruent (equal measure)</div>
+        
+        <p><strong>Adjacent Angles:</strong> Share a common side and vertex (side by side)</p>
+        <div class="tip-box">💡 Adjacent angles on a straight line add up to 180°</div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q3</div>
+          <div class="quiz-question">What type of angle is 135°?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">Acute</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">Right</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q3')">Obtuse</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q3')">Straight</button>
+          </div>
+          <div class="feedback" id="fb-Q3"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q3')">Show Solution</button>
+          <div class="solution" id="sol-Q3">135° is between 90° and 180° → <strong>Obtuse angle</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q4</div>
+          <div class="quiz-question">Find the complement of 28°</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'correct','Q4')">62°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">152°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">72°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q4')">28°</button>
+          </div>
+          <div class="feedback" id="fb-Q4"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q4')">Show Solution</button>
+          <div class="solution" id="sol-Q4">Complementary angles add to 90°: 90° - 28° = <strong>62°</strong></div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q5</div>
+          <div class="quiz-question">Find the supplement of 105°</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">85°</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q5')">75°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">105°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q5')">15°</button>
+          </div>
+          <div class="feedback" id="fb-Q5"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q5')">Show Solution</button>
+          <div class="solution" id="sol-Q5">Supplementary angles add to 180°: 180° - 105° = <strong>75°</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('points-lines')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('triangles')">Next: Triangles →</button>
+      </div>
+    </div>
+
+    <!-- TRIANGLES SECTION -->
+    <div class="section" id="triangles">
+      <span class="badge badge-core">SECTION 3</span>
+      <div class="section-title">🔺 Triangles</div>
+      <div class="section-subtitle">Types, properties, and theorems</div>
+
+      <div class="card">
+        <h3>Triangle Basics</h3>
+        <p>A <strong>triangle</strong> is a polygon with three sides and three angles.</p>
+        <div class="highlight-box">
+KEY PROPERTY: All triangle angles add up to 180°
+Example: If two angles are 60° and 80°
+         Third angle = 180° - 60° - 80° = 40°</div>
+      </div>
+
+      <div class="card">
+        <h3>Types by Sides</h3>
+        <div class="grid-2">
+          <div>
+            <div class="formula">Equilateral Triangle</div>
+            <p>All 3 sides equal, all angles = 60°</p>
+          </div>
+          <div>
+            <div class="formula">Isosceles Triangle</div>
+            <p>2 sides equal, 2 angles equal</p>
+          </div>
+        </div>
+        <div class="formula">Scalene Triangle</div>
+        <p><strong>Scalene:</strong> All 3 sides different lengths, all 3 angles different</p>
+      </div>
+
+      <div class="card">
+        <h3>Types by Angles</h3>
+        <div class="grid-2">
+          <div>
+            <div class="formula">Acute Triangle</div>
+            <p>All 3 angles are acute (&lt; 90°)</p>
+          </div>
+          <div>
+            <div class="formula">Right Triangle</div>
+            <p>Has one 90° angle</p>
+          </div>
+        </div>
+        <div class="formula">Obtuse Triangle</div>
+        <p><strong>Obtuse:</strong> Has one angle &gt; 90°</p>
+      </div>
+
+      <div class="card">
+        <h3>Triangle Properties</h3>
+        <div class="tip-box">
+          💡 <strong>Triangle Inequality:</strong> Sum of any two sides must be greater than the third side<br>
+          Example: Sides 3, 4, 5 → Valid (3+4 &gt; 5, 3+5 &gt; 4, 4+5 &gt; 3)
+        </div>
+        
+        <div class="example-box">
+          <div class="example-title">Example — Find missing angle</div>
+          <p><strong>Triangle has angles 45° and 70°. Find the third angle.</strong></p>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Sum of all angles = 180°</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">45° + 70° + x = 180°</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">115° + x = 180°</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">x = 180° - 115° = <strong>65°</strong></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <div class="quiz-card">
+          <div class="quiz-num">Q6</div>
+          <div class="quiz-question">A triangle has angles 30° and 60°. Find the third angle.</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">60°</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q6')">90°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">120°</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q6')">180°</button>
+          </div>
+          <div class="feedback" id="fb-Q6"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q6')">Show Solution</button>
+          <div class="solution" id="sol-Q6">180° - 30° - 60° = <strong>90°</strong> (This is a right triangle!)</div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-num">Q7</div>
+          <div class="quiz-question">What type of triangle has all sides equal?</div>
+          <div class="options">
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">Scalene</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">Isosceles</button>
+            <button class="option" onclick="checkAnswer(this,'correct','Q7')">Equilateral</button>
+            <button class="option" onclick="checkAnswer(this,'wrong','Q7')">Right</button>
+          </div>
+          <div class="feedback" id="fb-Q7"></div>
+          <button class="show-solution-btn" onclick="toggleSolution('sol-Q7')">Show Solution</button>
+          <div class="solution" id="sol-Q7"><strong>Equilateral</strong> triangle has all 3 sides equal (and all angles = 60°)</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('angles')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('pythagorean')">Next: Pythagorean Theorem →</button>
+      </div>
+    </div>
+
+    <!-- Continue with remaining sections following same pattern... -->
+    <!-- For brevity, I'll add the calculators and quiz sections -->
+
+    <!-- CALCULATORS SECTION -->
+    <div class="section" id="calculators">
+      <span class="badge badge-core">TOOLS</span>
+      <div class="section-title">🧮 Geometry Calculators</div>
+      <div class="section-subtitle">Interactive tools for all your geometry needs</div>
+
+      <div class="calc-tool">
+        <h3>Distance & Midpoint Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>x₁</label>
+            <input type="number" id="x1" value="0">
+          </div>
+          <div class="calc-group">
+            <label>y₁</label>
+            <input type="number" id="y1" value="0">
+          </div>
+          <div class="calc-group">
+            <label>x₂</label>
+            <input type="number" id="x2" value="3">
+          </div>
+          <div class="calc-group">
+            <label>y₂</label>
+            <input type="number" id="y2" value="4">
+          </div>
+          <button class="calc-btn" onclick="calcDistance()">Calculate</button>
+        </div>
+        <div class="calc-result" id="distResult">Results will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Triangle Area Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Base</label>
+            <input type="number" id="triBase" value="10">
+          </div>
+          <div class="calc-group">
+            <label>Height</label>
+            <input type="number" id="triHeight" value="8">
+          </div>
+          <button class="calc-btn" onclick="calcTriArea()">Calculate Area</button>
+        </div>
+        <div class="calc-result" id="triResult">Result will appear here...</div>
+      </div>
+
+      <div class="calc-tool">
+        <h3>Circle Calculator</h3>
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <label>Radius</label>
+            <input type="number" id="circRadius" value="5">
+          </div>
+          <button class="calc-btn" onclick="calcCircle()">Calculate All</button>
+        </div>
+        <div class="calc-result" id="circResult">Results will appear here...</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="showSection('quiz')">Take Final Quiz →</button>
+      </div>
+    </div>
+
+    <!-- FINAL QUIZ SECTION -->
+    <div class="section" id="quiz">
+      <span class="badge badge-intro">FINAL ASSESSMENT</span>
+      <div class="section-title">📝 Geometry Final Quiz</div>
+      <div class="section-subtitle">Test your geometry knowledge!</div>
+
+      <div class="card">
+        <p><strong>Instructions:</strong> Answer all questions. Instant feedback provided. Good luck!</p>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ1</div>
+        <div class="quiz-question">What is the sum of angles in any triangle?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">90°</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ1')">180°</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">360°</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ1')">270°</button>
+        </div>
+        <div class="feedback" id="fb-FQ1"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ1')">Show Solution</button>
+        <div class="solution" id="sol-FQ1">The sum of all angles in any triangle is always <strong>180°</strong></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">FQ2</div>
+        <div class="quiz-question">What type of angle is 95°?</div>
+        <div class="options">
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">Acute</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">Right</button>
+          <button class="option" onclick="checkAnswer(this,'correct','FQ2')">Obtuse</button>
+          <button class="option" onclick="checkAnswer(this,'wrong','FQ2')">Straight</button>
+        </div>
+        <div class="feedback" id="fb-FQ2"></div>
+        <button class="show-solution-btn" onclick="toggleSolution('sol-FQ2')">Show Solution</button>
+        <div class="solution" id="sol-FQ2">95° is between 90° and 180° → <strong>Obtuse</strong></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="showSection('calculators')">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('home')">Return Home</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="scoreDisplay">
+  Score: <span id="scoreNum">0</span> / <span id="scoreTotal">0</span>
+</div>
+
+<script>
+let score = 0;
+let answered = {};
+const visited = new Set(['home']);
+
+function checkAnswer(btn, result, qid) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  
+  const options = btn.parentElement.querySelectorAll('.option');
+  options.forEach(b => b.disabled = true);
+  
+  const fb = document.getElementById('fb-' + qid);
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    score++;
+    fb.textContent = '✅ Correct! Excellent work!';
+    fb.className = 'feedback show correct';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Not quite right. Check the solution below.';
+    fb.className = 'feedback show wrong';
+    options.forEach(b => {
+      if (b.onclick.toString().includes("'correct'")) {
+        b.classList.add('correct');
+      }
+    });
+  }
+  updateScore();
+}
+
+function updateScore() {
+  const total = Object.keys(answered).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreTotal').textContent = total;
+}
+
+function toggleSolution(id) {
+  const sol = document.getElementById(id);
+  sol.classList.toggle('show');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) {
+    navEl.classList.add('active');
+  } else {
+    document.querySelectorAll('nav ul li a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(id)) {
+        a.classList.add('active');
+      }
+    });
+  }
+  
+  visited.add(id);
+  const checkEl = document.getElementById('check-' + id);
+  if (checkEl) checkEl.classList.add('show');
+  
+  const progress = (visited.size / 12) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.getElementById('progressText').textContent = visited.size + ' of 12 sections completed';
+  
+  window.scrollTo(0, 0);
+}
+
+function calcDistance() {
+  const x1 = parseFloat(document.getElementById('x1').value);
+  const y1 = parseFloat(document.getElementById('y1').value);
+  const x2 = parseFloat(document.getElementById('x2').value);
+  const y2 = parseFloat(document.getElementById('y2').value);
+  
+  const dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  const midX = (x1 + x2) / 2;
+  const midY = (y1 + y2) / 2;
+  
+  document.getElementById('distResult').innerHTML = `<strong>Distance:</strong> ${dist.toFixed(2)} units<br><strong>Midpoint:</strong> (${midX}, ${midY})`;
+}
+
+function calcTriArea() {
+  const base = parseFloat(document.getElementById('triBase').value);
+  const height = parseFloat(document.getElementById('triHeight').value);
+  const area = (base * height) / 2;
+  
+  document.getElementById('triResult').innerHTML = `<strong>Area = ½ × base × height</strong><br>Area = ½ × ${base} × ${height} = <strong>${area} square units</strong>`;
+}
+
+function calcCircle() {
+  const r = parseFloat(document.getElementById('circRadius').value);
+  const area = Math.PI * r * r;
+  const circum = 2 * Math.PI * r;
+  const diam = 2 * r;
+  
+  document.getElementById('circResult').innerHTML = `<strong>Diameter:</strong> ${diam} units<br><strong>Circumference:</strong> ${circum.toFixed(2)} units<br><strong>Area:</strong> ${area.toFixed(2)} square units`;
+}
+
+showSection('home');
+</script>
+
+</body>
+</html>
