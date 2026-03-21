@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalcLab — Master Pre-Calculus & Calculus 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #141828;
+    --surface2: #1c2235;
+    --border: #2a3050;
+    --text: #e8eaf6;
+    --muted: #7986cb;
+    --cyan: #00e5ff;
+    --yellow: #ffd740;
+    --pink: #ff6090;
+    --green: #69f0ae;
+    --orange: #ff9100;
+    --purple: #b388ff;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(13,15,26,0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--cyan);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--yellow); }
+  .nav-links {
+    display: flex; gap: 0.25rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .nav-links a:hover { color: var(--cyan); background: rgba(0,229,255,0.08); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridPan 20s linear infinite;
+  }
+  @keyframes gridPan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(50px); }
+  }
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(179,136,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(179,136,255,0.1);
+    border: 1px solid rgba(179,136,255,0.3);
+    color: var(--purple);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 {
+    color: var(--purple);
+    text-shadow: 0 0 40px rgba(179,136,255,0.4);
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--purple);
+    color: var(--bg);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(179,136,255,0.35); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+
+  .floating-eq {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 1rem;
+    opacity: 0.1;
+    animation: floatUp 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0%, 100% { transform: translateY(0) rotate(-2deg); opacity: 0.07; }
+    50% { transform: translateY(-20px) rotate(2deg); opacity: 0.15; }
+  }
+
+  .hero-stats {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 3rem;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat-num {
+    font-family: var(--mono);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--purple);
+  }
+  .hero-stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+
+  /* MODULES */
+  .modules-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    max-width: 520px;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    color: var(--text);
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+  .module-card.cyan::before { background: var(--cyan); }
+  .module-card.yellow::before { background: var(--yellow); }
+  .module-card.pink::before { background: var(--pink); }
+  .module-card.green::before { background: var(--green); }
+  .module-card.purple::before { background: var(--purple); }
+  .module-card.orange::before { background: var(--orange); }
+  .module-card:hover { transform: translateY(-4px); border-color: #3a4060; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .module-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+  .module-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .module-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
+  .module-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .module-card.cyan .module-tag { background: rgba(0,229,255,0.12); color: var(--cyan); }
+  .module-card.yellow .module-tag { background: rgba(255,215,64,0.12); color: var(--yellow); }
+  .module-card.pink .module-tag { background: rgba(255,96,144,0.12); color: var(--pink); }
+  .module-card.green .module-tag { background: rgba(105,240,174,0.12); color: var(--green); }
+  .module-card.purple .module-tag { background: rgba(179,136,255,0.12); color: var(--purple); }
+  .module-card.orange .module-tag { background: rgba(255,145,0,0.12); color: var(--orange); }
+
+  /* LESSON SECTIONS */
+  .lesson-section {
+    padding: 5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+  }
+  .lesson-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .lesson-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  /* EXPLANATION BOXES */
+  .explain-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .explain-box h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+  .explain-box.cyan { border-left: 3px solid var(--cyan); }
+  .explain-box.cyan h4 { color: var(--cyan); }
+  .explain-box.yellow { border-left: 3px solid var(--yellow); }
+  .explain-box.yellow h4 { color: var(--yellow); }
+  .explain-box.green { border-left: 3px solid var(--green); }
+  .explain-box.green h4 { color: var(--green); }
+  .explain-box.pink { border-left: 3px solid var(--pink); }
+  .explain-box.pink h4 { color: var(--pink); }
+  .explain-box.purple { border-left: 3px solid var(--purple); }
+  .explain-box.purple h4 { color: var(--purple); }
+  .explain-box.orange { border-left: 3px solid var(--orange); }
+  .explain-box.orange h4 { color: var(--orange); }
+  .explain-box p { color: #b0bcd8; line-height: 1.8; font-size: 0.96rem; font-weight: 300; }
+  .explain-box p + p { margin-top: 0.75rem; }
+
+  /* MATH DISPLAY */
+  .math-line {
+    font-family: var(--mono);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0;
+    font-size: 1.05rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .math-line .annotation {
+    color: var(--muted);
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 4px;
+    font-family: var(--sans);
+  }
+  .math-highlight { color: var(--cyan); font-weight: 700; }
+  .math-highlight.yellow { color: var(--yellow); }
+  .math-highlight.pink { color: var(--pink); }
+  .math-highlight.green { color: var(--green); }
+  .math-highlight.orange { color: var(--orange); }
+  .math-highlight.purple { color: var(--purple); }
+  .math-equals { color: var(--muted); }
+  .math-step {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin: 0.5rem 0;
+  }
+  .step-num {
+    min-width: 28px; height: 28px;
+    background: rgba(179,136,255,0.1);
+    border: 1px solid rgba(179,136,255,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--purple);
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+  .step-num.cyan { background: rgba(0,229,255,0.1); border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+  .step-num.yellow { background: rgba(255,215,64,0.1); border-color: rgba(255,215,64,0.3); color: var(--yellow); }
+  .step-num.green { background: rgba(105,240,174,0.1); border-color: rgba(105,240,174,0.3); color: var(--green); }
+  .step-num.pink { background: rgba(255,96,144,0.1); border-color: rgba(255,96,144,0.3); color: var(--pink); }
+  .step-content { flex: 1; }
+  .step-content p { color: #b0bcd8; font-size: 0.9rem; line-height: 1.7; font-weight: 300; }
+  .step-content .math-line { font-size: 0.95rem; }
+
+  /* INTERACTIVE PRACTICE */
+  .practice-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .practice-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .practice-header h3 { font-size: 1rem; font-weight: 700; }
+  .practice-score {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .practice-score span { color: var(--green); font-weight: 700; }
+  .problem-display {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    text-align: center;
+    min-height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5rem;
+  }
+  .problem-display .problem-text { color: var(--text); }
+  .problem-display .problem-hint { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); }
+  .answer-row {
+    display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+  }
+  .answer-input {
+    flex: 1; min-width: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus { border-color: var(--purple); }
+  .answer-input.correct { border-color: var(--green); background: rgba(105,240,174,0.05); }
+  .answer-input.wrong { border-color: var(--pink); background: rgba(255,96,144,0.05); }
+  .btn-check {
+    background: var(--purple);
+    color: var(--bg);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-check:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-next {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-next:hover { color: var(--text); border-color: #4a5070; }
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.25); color: var(--green); }
+  .feedback-box.wrong { background: rgba(255,96,144,0.08); border: 1px solid rgba(255,96,144,0.25); color: var(--pink); }
+  .feedback-box .solution { color: var(--text); margin-top: 0.5rem; font-family: var(--mono); }
+
+  /* RULES GRID */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .rule-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+  .rule-card:hover { border-color: #3a4060; transform: translateY(-2px); }
+  .rule-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.75rem;
+  }
+  .rule-formula {
+    font-family: var(--mono);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding: 10px;
+    background: var(--surface2);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .rule-example {
+    font-family: var(--mono);
+    font-size: 0.83rem;
+    color: var(--muted);
+  }
+  .rule-example span { color: var(--text); }
+
+  /* TABS */
+  .tab-bar {
+    display: flex; gap: 4px;
+    background: var(--surface2);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 8px 18px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* PROGRESS BAR */
+  .progress-bar-container {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 1rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--cyan));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* QUIZ */
+  .quiz-section {
+    padding: 5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+  }
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+  .quiz-counter {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .quiz-question {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 600px) { .quiz-options { grid-template-columns: 1fr; } }
+  .quiz-option {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quiz-option:hover { border-color: var(--purple); background: rgba(179,136,255,0.05); }
+  .quiz-option.correct { border-color: var(--green); background: rgba(105,240,174,0.1); color: var(--green); }
+  .quiz-option.wrong { border-color: var(--pink); background: rgba(255,96,144,0.1); color: var(--pink); }
+  .quiz-option.reveal { border-color: var(--green); background: rgba(105,240,174,0.08); color: var(--green); }
+  .quiz-feedback {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+    margin-bottom: 1.5rem;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.25); color: var(--green); }
+  .quiz-feedback.wrong { background: rgba(255,96,144,0.08); border: 1px solid rgba(255,96,144,0.25); color: var(--pink); }
+  .quiz-next-btn {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .quiz-next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(179,136,255,0.25); }
+
+  /* STEP-BY-STEP SOLVER */
+  .solver-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .solver-input-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .solver-input-row { grid-template-columns: 1fr; } }
+  .solver-field label {
+    display: block; font-size: 0.75rem; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .solver-field input, .solver-field select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .solver-field input:focus, .solver-field select:focus { border-color: var(--purple); }
+  .solver-field input::placeholder { color: #3a4060; }
+  .btn-solve {
+    background: linear-gradient(135deg, var(--purple), #7c4dff);
+    color: #fff;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+  .btn-solve:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(179,136,255,0.25); }
+  .solution-steps { margin-top: 1.5rem; display: none; }
+  .solution-steps.show { display: block; }
+  .solution-step {
+    display: flex; gap: 1rem; margin-bottom: 1rem;
+    animation: stepIn 0.4s ease forwards;
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  @keyframes stepIn { to { opacity: 1; transform: translateX(0); } }
+  .step-label {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--purple);
+    white-space: nowrap;
+    height: fit-content;
+    min-width: 70px;
+    text-align: center;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--text); }
+  .step-math {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    color: var(--yellow);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .step-note { font-size: 0.8rem; color: var(--muted); margin-top: 4px; font-weight: 300; }
+
+  /* UNIT CIRCLE */
+  .unit-circle-container {
+    display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start;
+    margin-top: 1.5rem;
+  }
+  .unit-circle-svg { flex-shrink: 0; }
+  .unit-circle-table { flex: 1; min-width: 260px; }
+  .trig-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 0.82rem;
+  }
+  .trig-table th {
+    background: var(--surface2);
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .trig-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: #b0bcd8;
+  }
+  .trig-table tr:last-child td { border-bottom: none; }
+  .trig-table tr:hover td { background: rgba(179,136,255,0.04); }
+  .trig-table .angle { color: var(--cyan); }
+  .trig-table .sin-val { color: var(--green); }
+  .trig-table .cos-val { color: var(--yellow); }
+  .trig-table .tan-val { color: var(--orange); }
+
+  /* GRAPH CANVAS */
+  .graph-container {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  canvas {
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .graph-controls {
+    display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  .graph-controls label {
+    font-size: 0.8rem; color: var(--muted); font-weight: 600;
+  }
+  .graph-controls input[type=range] {
+    accent-color: var(--purple);
+    width: 120px;
+  }
+  .graph-controls select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 10px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    outline: none;
+  }
+
+  /* FORMULA PILL */
+  .formula-pill {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--yellow);
+    margin: 3px 2px;
+  }
+
+  /* COMPARISON TABLE */
+  .comp-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 0.88rem; margin: 1rem 0;
+  }
+  .comp-table th {
+    background: var(--surface2); padding: 12px 16px;
+    text-align: left; font-weight: 700; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+  }
+  .comp-table th:first-child { border-radius: 8px 0 0 0; }
+  .comp-table th:last-child { border-radius: 0 8px 0 0; }
+  .comp-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-family: var(--mono); color: #b0bcd8; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: rgba(179,136,255,0.04); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  footer p { color: var(--muted); font-size: 0.85rem; font-weight: 300; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .lesson-section, .quiz-section, .modules-section { padding: 3rem 1rem; }
+    .quiz-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Calc<span>Lab</span></div>
+  <ul class="nav-links">
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#functions">Functions</a></li>
+    <li><a href="#trig">Trig</a></li>
+    <li><a href="#limits">Limits</a></li>
+    <li><a href="#derivatives">Derivatives</a></li>
+    <li><a href="#integrals">Integrals</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="floating-eq" style="top:15%;left:8%;animation-delay:0s">lim(x→0) sinx/x = 1</div>
+  <div class="floating-eq" style="top:70%;left:5%;animation-delay:2s">d/dx[xⁿ] = nxⁿ⁻¹</div>
+  <div class="floating-eq" style="top:20%;right:6%;animation-delay:1s">∫ x² dx = x³/3 + C</div>
+  <div class="floating-eq" style="top:75%;right:8%;animation-delay:3s">f'(x) = lim(h→0) [f(x+h)−f(x)]/h</div>
+  <div class="floating-eq" style="top:45%;left:3%;animation-delay:4s">sin²θ + cos²θ = 1</div>
+  <div class="floating-eq" style="top:40%;right:3%;animation-delay:5s">e^(iπ) + 1 = 0</div>
+
+  <div class="hero-content">
+    <div class="hero-badge">✦ Pre-Calculus &amp; Calculus 1</div>
+    <h1>
+      <div class="line1">Conquer the Math</div>
+      <div class="line2">That Changes Everything</div>
+    </h1>
+    <p>From functions and trig to limits, derivatives, and integrals — build real intuition, step by step, with interactive lessons and instant practice.</p>
+    <div class="hero-btns">
+      <a href="#modules" class="btn-primary">Start Learning →</a>
+      <a href="#quiz" class="btn-secondary">Take the Quiz</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">6</div>
+        <div class="hero-stat-label">Core Modules</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">60+</div>
+        <div class="hero-stat-label">Practice Problems</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">20</div>
+        <div class="hero-stat-label">Quiz Questions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules-section" id="modules">
+  <div class="section-label">// course map</div>
+  <h2 class="section-title">Choose Your Module</h2>
+  <p class="section-sub">Six core topics from pre-calc foundations through Calc 1. Master them in order, or jump to what you need.</p>
+  <div class="modules-grid">
+    <a href="#functions" class="module-card cyan">
+      <span class="module-icon">𝑓</span>
+      <h3>Functions &amp; Graphs</h3>
+      <p>Domain, range, composition, inverse functions, and transformations. The language of all of calculus.</p>
+      <span class="module-tag">PRE-CALC</span>
+    </a>
+    <a href="#trig" class="module-card yellow">
+      <span class="module-icon">△</span>
+      <h3>Trigonometry</h3>
+      <p>Unit circle, the six trig functions, identities, and graphs of sin, cos &amp; tan.</p>
+      <span class="module-tag">PRE-CALC</span>
+    </a>
+    <a href="#limits" class="module-card purple">
+      <span class="module-icon">→</span>
+      <h3>Limits</h3>
+      <p>The concept that makes calculus possible. One-sided limits, infinity, and limit laws.</p>
+      <span class="module-tag">CALC 1</span>
+    </a>
+    <a href="#derivatives" class="module-card green">
+      <span class="module-icon">d/dx</span>
+      <h3>Derivatives</h3>
+      <p>Power, product, quotient &amp; chain rules. The instantaneous rate of change of any function.</p>
+      <span class="module-tag">CALC 1</span>
+    </a>
+    <a href="#applications" class="module-card orange">
+      <span class="module-icon">⬆</span>
+      <h3>Derivative Applications</h3>
+      <p>Critical points, optimization, related rates, and the Mean Value Theorem.</p>
+      <span class="module-tag">CALC 1</span>
+    </a>
+    <a href="#integrals" class="module-card pink">
+      <span class="module-icon">∫</span>
+      <h3>Integrals</h3>
+      <p>Antiderivatives, the Fundamental Theorem of Calculus, and basic integration rules.</p>
+      <span class="module-tag">CALC 1</span>
+    </a>
+  </div>
+</section>
+
+<!-- ========================= FUNCTIONS ========================= -->
+<section class="lesson-section" id="functions">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 01</span>
+    <h2 class="section-title" style="margin:0">Functions &amp; Graphs</h2>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('fn','learn')">📖 Learn</button>
+    <button class="tab-btn" onclick="switchTab('fn','compose')">🔗 Composition</button>
+    <button class="tab-btn" onclick="switchTab('fn','practice')">✏️ Practice</button>
+  </div>
+
+  <!-- LEARN -->
+  <div id="fn-learn" class="tab-content active">
+    <div class="explain-box cyan">
+      <h4>What is a Function?</h4>
+      <p>A <strong>function</strong> f maps every input x to exactly one output f(x). Think of it as a machine: one input in, one output out — no input can produce two different outputs.</p>
+      <p><strong>Domain</strong> = all valid inputs x. &nbsp; <strong>Range</strong> = all possible outputs f(x).</p>
+    </div>
+
+    <div class="math-line">
+      f(x) = x² <span class="annotation">Domain: all real numbers (-∞, ∞) &nbsp;|&nbsp; Range: [0, ∞)</span>
+    </div>
+    <div class="math-line">
+      g(x) = √x &nbsp; <span class="annotation">Domain: [0, ∞)  — can't take √ of a negative</span>
+    </div>
+    <div class="math-line">
+      h(x) = 1/x &nbsp; <span class="annotation">Domain: all reals except x = 0</span>
+    </div>
+
+    <div class="explain-box yellow" style="margin-top:1.5rem">
+      <h4>Transformations</h4>
+      <p>Starting from a base function f(x), you can shift, flip, and stretch it:</p>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--cyan)">Vertical Shift</div>
+        <div class="rule-formula"><span class="math-highlight">f(x) + k</span></div>
+        <div class="rule-example">k > 0 → shift <span>up</span> &nbsp; k &lt; 0 → shift <span>down</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--yellow)">Horizontal Shift</div>
+        <div class="rule-formula"><span class="math-highlight yellow">f(x − h)</span></div>
+        <div class="rule-example">h > 0 → shift <span>right</span> &nbsp; h &lt; 0 → shift <span>left</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--green)">Reflection</div>
+        <div class="rule-formula"><span class="math-highlight green">−f(x)</span></div>
+        <div class="rule-example">Flips graph over the <span>x-axis</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--pink)">Vertical Stretch</div>
+        <div class="rule-formula"><span class="math-highlight pink">a · f(x)</span></div>
+        <div class="rule-example">|a| > 1 → stretch &nbsp; 0 &lt; |a| &lt; 1 → <span>compress</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--purple)">Inverse Function</div>
+        <div class="rule-formula"><span class="math-highlight purple">f⁻¹(x)</span></div>
+        <div class="rule-example">Swap x and y, then solve. Reflects over <span>y = x</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--orange)">Even vs Odd</div>
+        <div class="rule-formula"><span class="math-highlight orange">f(−x) = f(x) or −f(x)</span></div>
+        <div class="rule-example">Even: symmetric about <span>y-axis</span> &nbsp; Odd: rotational</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOSITION -->
+  <div id="fn-compose" class="tab-content">
+    <div class="explain-box purple">
+      <h4>Function Composition</h4>
+      <p><strong>(f ∘ g)(x) = f(g(x))</strong> — plug g(x) into f. You apply g first, then f to the result.</p>
+      <p>Important: (f ∘ g)(x) ≠ (g ∘ f)(x) in general. Order matters!</p>
+    </div>
+
+    <div style="margin:1.5rem 0">
+      <p style="color:#b0bcd8;font-size:0.9rem;margin-bottom:0.75rem">Given <strong>f(x) = x² + 1</strong> and <strong>g(x) = 2x − 3</strong>:</p>
+
+      <div class="math-step">
+        <span class="step-num cyan">1</span>
+        <div class="step-content">
+          <p>Find <strong>(f ∘ g)(x)</strong></p>
+          <div class="math-line">f(g(x)) = f(<span class="math-highlight yellow">2x−3</span>) = (<span class="math-highlight yellow">2x−3</span>)² + 1</div>
+          <div class="math-line">= 4x² − 12x + 9 + 1 = <span class="math-highlight green">4x² − 12x + 10</span></div>
+        </div>
+      </div>
+      <div class="math-step">
+        <span class="step-num yellow">2</span>
+        <div class="step-content">
+          <p>Find <strong>(g ∘ f)(x)</strong></p>
+          <div class="math-line">g(f(x)) = g(<span class="math-highlight cyan">x²+1</span>) = 2(<span class="math-highlight cyan">x²+1</span>) − 3</div>
+          <div class="math-line">= 2x² + 2 − 3 = <span class="math-highlight pink">2x² − 1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="explain-box green">
+      <h4>Evaluating Numerically</h4>
+      <p>Using the same f and g: (f ∘ g)(4) — first compute g(4) = 2(4)−3 = 5, then f(5) = 5²+1 = <strong>26</strong>.</p>
+    </div>
+  </div>
+
+  <!-- PRACTICE -->
+  <div id="fn-practice" class="tab-content">
+    <div class="practice-container">
+      <div class="practice-header">
+        <h3>🎯 Functions Practice</h3>
+        <div class="practice-score">Score: <span id="fn-score">0</span> / <span id="fn-total">0</span></div>
+      </div>
+      <div class="problem-display">
+        <div class="problem-text" id="fn-problem-text"></div>
+        <div class="problem-hint" id="fn-problem-hint"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="fn-answer" placeholder="Your answer..." onkeydown="if(event.key==='Enter')checkFn()">
+        <button class="btn-check" onclick="checkFn()">Check</button>
+        <button class="btn-next" onclick="nextFn()">Skip →</button>
+      </div>
+      <div class="feedback-box" id="fn-feedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= TRIG ========================= -->
+<section class="lesson-section" id="trig">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 02</span>
+    <h2 class="section-title" style="margin:0">Trigonometry</h2>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('trig','circle')">⭕ Unit Circle</button>
+    <button class="tab-btn" onclick="switchTab('trig','identities')">🔑 Identities</button>
+    <button class="tab-btn" onclick="switchTab('trig','practice')">✏️ Practice</button>
+  </div>
+
+  <div id="trig-circle" class="tab-content active">
+    <div class="explain-box yellow">
+      <h4>The Unit Circle</h4>
+      <p>A circle of radius 1 centered at the origin. For any angle θ, the point on the circle is <strong>(cos θ, sin θ)</strong>. This is how we extend trig beyond triangles to all real numbers.</p>
+    </div>
+
+    <div class="unit-circle-container">
+      <svg class="unit-circle-svg" width="280" height="280" viewBox="-1.4 -1.4 2.8 2.8">
+        <!-- grid lines -->
+        <line x1="-1.3" y1="0" x2="1.3" y2="0" stroke="#2a3050" stroke-width="0.02"/>
+        <line x1="0" y1="-1.3" x2="0" y2="1.3" stroke="#2a3050" stroke-width="0.02"/>
+        <!-- circle -->
+        <circle cx="0" cy="0" r="1" fill="none" stroke="#3a4060" stroke-width="0.03"/>
+        <!-- key angles -->
+        <line x1="0" y1="0" x2="0.866" y2="-0.5" stroke="rgba(179,136,255,0.5)" stroke-width="0.025"/>
+        <circle cx="0.866" cy="-0.5" r="0.045" fill="var(--purple)"/>
+        <text x="0.93" y="-0.52" fill="#b388ff" font-size="0.11" font-family="Space Mono">30°</text>
+
+        <line x1="0" y1="0" x2="0.707" y2="-0.707" stroke="rgba(0,229,255,0.5)" stroke-width="0.025"/>
+        <circle cx="0.707" cy="-0.707" r="0.045" fill="var(--cyan)"/>
+        <text x="0.75" y="-0.73" fill="#00e5ff" font-size="0.11" font-family="Space Mono">45°</text>
+
+        <line x1="0" y1="0" x2="0.5" y2="-0.866" stroke="rgba(105,240,174,0.5)" stroke-width="0.025"/>
+        <circle cx="0.5" cy="-0.866" r="0.045" fill="var(--green)"/>
+        <text x="0.52" y="-0.9" fill="#69f0ae" font-size="0.11" font-family="Space Mono">60°</text>
+
+        <line x1="0" y1="0" x2="0" y2="-1" stroke="rgba(255,215,64,0.5)" stroke-width="0.025"/>
+        <circle cx="0" cy="-1" r="0.045" fill="var(--yellow)"/>
+        <text x="0.06" y="-1.05" fill="#ffd740" font-size="0.11" font-family="Space Mono">90°</text>
+
+        <circle cx="1" cy="0" r="0.045" fill="var(--pink)"/>
+        <text x="1.05" y="0.04" fill="#ff6090" font-size="0.11" font-family="Space Mono">0°</text>
+        <circle cx="-1" cy="0" r="0.045" fill="var(--orange)"/>
+        <text x="-1.35" y="0.04" fill="#ff9100" font-size="0.11" font-family="Space Mono">180°</text>
+        <circle cx="0" cy="1" r="0.045" fill="var(--muted)"/>
+        <text x="0.06" y="1.15" fill="#7986cb" font-size="0.11" font-family="Space Mono">270°</text>
+
+        <!-- labels -->
+        <text x="1.1" y="0.15" fill="#3a4060" font-size="0.12" font-family="Space Mono">x</text>
+        <text x="0.04" y="-1.1" fill="#3a4060" font-size="0.12" font-family="Space Mono">y</text>
+      </svg>
+
+      <div class="unit-circle-table">
+        <table class="trig-table">
+          <thead>
+            <tr>
+              <th>Angle</th>
+              <th style="color:var(--green)">sin θ</th>
+              <th style="color:var(--yellow)">cos θ</th>
+              <th style="color:var(--orange)">tan θ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="angle">0° / 0</td><td class="sin-val">0</td><td class="cos-val">1</td><td class="tan-val">0</td></tr>
+            <tr><td class="angle">30° / π/6</td><td class="sin-val">1/2</td><td class="cos-val">√3/2</td><td class="tan-val">1/√3</td></tr>
+            <tr><td class="angle">45° / π/4</td><td class="sin-val">√2/2</td><td class="cos-val">√2/2</td><td class="tan-val">1</td></tr>
+            <tr><td class="angle">60° / π/3</td><td class="sin-val">√3/2</td><td class="cos-val">1/2</td><td class="tan-val">√3</td></tr>
+            <tr><td class="angle">90° / π/2</td><td class="sin-val">1</td><td class="cos-val">0</td><td class="tan-val">undef</td></tr>
+            <tr><td class="angle">180° / π</td><td class="sin-val">0</td><td class="cos-val">−1</td><td class="tan-val">0</td></tr>
+            <tr><td class="angle">270° / 3π/2</td><td class="sin-val">−1</td><td class="cos-val">0</td><td class="tan-val">undef</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="trig-identities" class="tab-content">
+    <div class="explain-box cyan">
+      <h4>Pythagorean Identity — The Big One</h4>
+      <p>From the unit circle, since any point is (cos θ, sin θ) and the radius is 1:</p>
+    </div>
+    <div class="math-line" style="text-align:center;font-size:1.3rem">
+      <span class="math-highlight green">sin²θ</span> + <span class="math-highlight yellow">cos²θ</span> = <span class="math-highlight">1</span>
+    </div>
+
+    <div style="margin-top:1.5rem">
+      <div class="rules-grid">
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--cyan)">Reciprocal</div>
+          <div class="rule-formula" style="font-size:0.85rem">
+            csc θ = 1/sin θ<br>sec θ = 1/cos θ<br>cot θ = 1/tan θ
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--yellow)">Quotient</div>
+          <div class="rule-formula">
+            <span class="math-highlight yellow">tan θ = sin θ / cos θ</span>
+          </div>
+          <div class="rule-example">cot θ = cos θ / <span>sin θ</span></div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--green)">Double Angle</div>
+          <div class="rule-formula" style="font-size:0.85rem">
+            sin 2θ = 2 sin θ cos θ<br>cos 2θ = cos²θ − sin²θ
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--pink)">Pythagorean Variants</div>
+          <div class="rule-formula" style="font-size:0.85rem">
+            1 + tan²θ = sec²θ<br>1 + cot²θ = csc²θ
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--purple)">Angle Addition</div>
+          <div class="rule-formula" style="font-size:0.82rem">
+            sin(A+B) = sinA cosB + cosA sinB
+          </div>
+          <div class="rule-example">cos(A+B) = cosA cosB − <span>sinA sinB</span></div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-name" style="color:var(--orange)">Even / Odd</div>
+          <div class="rule-formula" style="font-size:0.85rem">
+            cos(−θ) = cos θ (even)<br>sin(−θ) = −sin θ (odd)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="trig-practice" class="tab-content">
+    <div class="practice-container">
+      <div class="practice-header">
+        <h3>🎯 Trig Practice</h3>
+        <div class="practice-score">Score: <span id="trig-score">0</span> / <span id="trig-total">0</span></div>
+      </div>
+      <div class="problem-display">
+        <div class="problem-text" id="trig-problem-text"></div>
+        <div class="problem-hint" id="trig-problem-hint"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="trig-answer" placeholder="Your answer..." onkeydown="if(event.key==='Enter')checkTrig()">
+        <button class="btn-check" onclick="checkTrig()">Check</button>
+        <button class="btn-next" onclick="nextTrig()">Skip →</button>
+      </div>
+      <div class="feedback-box" id="trig-feedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= LIMITS ========================= -->
+<section class="lesson-section" id="limits">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 03</span>
+    <h2 class="section-title" style="margin:0">Limits</h2>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('lim','learn')">📖 Learn</button>
+    <button class="tab-btn" onclick="switchTab('lim','laws')">📐 Limit Laws</button>
+    <button class="tab-btn" onclick="switchTab('lim','practice')">✏️ Practice</button>
+  </div>
+
+  <div id="lim-learn" class="tab-content active">
+    <div class="explain-box purple">
+      <h4>What is a Limit?</h4>
+      <p>lim(x→a) f(x) = L means: as x gets closer and closer to a (but doesn't have to equal a), the value of f(x) gets closer and closer to L.</p>
+      <p>The key insight: what f(a) actually equals doesn't matter — only what it <em>approaches</em>.</p>
+    </div>
+
+    <div class="math-step">
+      <span class="step-num cyan">1</span>
+      <div class="step-content">
+        <p><strong>Direct Substitution</strong> — try plugging in x = a first</p>
+        <div class="math-line">lim(x→3) (x² + 2x) = 3² + 2(3) = 9 + 6 = <span class="math-highlight green">15</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <span class="step-num yellow">2</span>
+      <div class="step-content">
+        <p><strong>0/0 Form — Factor &amp; Cancel</strong></p>
+        <div class="math-line">lim(x→2) (x²−4)/(x−2) = lim (x+2)(x−2)/(x−2) = lim (x+2) = <span class="math-highlight green">4</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <span class="step-num pink">3</span>
+      <div class="step-content">
+        <p><strong>Limits at Infinity</strong> — highest degree wins</p>
+        <div class="math-line">lim(x→∞) (3x² + x)/(2x²) = lim 3/2 + 1/(2x) = <span class="math-highlight green">3/2</span></div>
+      </div>
+    </div>
+
+    <div class="explain-box orange" style="margin-top:1.5rem">
+      <h4>One-Sided Limits</h4>
+      <p>The limit exists only if both one-sided limits agree:<br>
+      lim(x→a⁻) f(x) = lim(x→a⁺) f(x) = L</p>
+      <p>If they differ, the limit Does Not Exist (DNE).</p>
+    </div>
+
+    <div class="explain-box cyan" style="margin-top:1rem">
+      <h4>The Most Important Trig Limit</h4>
+    </div>
+    <div class="math-line" style="text-align:center;font-size:1.25rem">
+      lim(x→0) <span class="math-highlight yellow">sin x</span> / <span class="math-highlight cyan">x</span> = <span class="math-highlight green">1</span>
+      <span class="annotation">This result is needed for all derivative rules involving trig functions</span>
+    </div>
+  </div>
+
+  <div id="lim-laws" class="tab-content">
+    <div class="explain-box green">
+      <h4>Limit Laws</h4>
+      <p>Assuming lim(x→a) f(x) = L and lim(x→a) g(x) = M:</p>
+    </div>
+    <table class="comp-table">
+      <thead>
+        <tr><th>Law</th><th>Formula</th><th>In Words</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sum</td><td>lim [f + g] = L + M</td><td>Split the limit across addition</td></tr>
+        <tr><td>Difference</td><td>lim [f − g] = L − M</td><td>Split the limit across subtraction</td></tr>
+        <tr><td>Constant</td><td>lim [c · f] = c · L</td><td>Pull constants out front</td></tr>
+        <tr><td>Product</td><td>lim [f · g] = L · M</td><td>Limits distribute over multiplication</td></tr>
+        <tr><td>Quotient</td><td>lim [f / g] = L / M, M≠0</td><td>Limits distribute over division</td></tr>
+        <tr><td>Power</td><td>lim [f]ⁿ = Lⁿ</td><td>Raise the limit to the power</td></tr>
+        <tr><td>Squeeze</td><td>g ≤ f ≤ h → lim f = L</td><td>Trap f between two functions</td></tr>
+      </tbody>
+    </table>
+    <div class="explain-box pink" style="margin-top:1.5rem">
+      <h4>L'Hôpital's Rule (0/0 or ∞/∞)</h4>
+      <p>If lim f/g gives 0/0 or ∞/∞, differentiate top and bottom separately:</p>
+    </div>
+    <div class="math-line" style="text-align:center">
+      lim(x→a) f(x)/g(x) = lim(x→a) <span class="math-highlight yellow">f'(x)</span>/<span class="math-highlight pink">g'(x)</span>
+    </div>
+  </div>
+
+  <div id="lim-practice" class="tab-content">
+    <div class="practice-container">
+      <div class="practice-header">
+        <h3>🎯 Limits Practice</h3>
+        <div class="practice-score">Score: <span id="lim-score">0</span> / <span id="lim-total">0</span></div>
+      </div>
+      <div class="problem-display">
+        <div class="problem-text" id="lim-problem-text"></div>
+        <div class="problem-hint" id="lim-problem-hint"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="lim-answer" placeholder="Your answer..." onkeydown="if(event.key==='Enter')checkLim()">
+        <button class="btn-check" onclick="checkLim()">Check</button>
+        <button class="btn-next" onclick="nextLim()">Skip →</button>
+      </div>
+      <div class="feedback-box" id="lim-feedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= DERIVATIVES ========================= -->
+<section class="lesson-section" id="derivatives">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 04</span>
+    <h2 class="section-title" style="margin:0">Derivatives</h2>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('deriv','rules')">📐 Diff. Rules</button>
+    <button class="tab-btn" onclick="switchTab('deriv','chain')">🔗 Chain Rule</button>
+    <button class="tab-btn" onclick="switchTab('deriv','solver')">🤖 Step Solver</button>
+    <button class="tab-btn" onclick="switchTab('deriv','practice')">✏️ Practice</button>
+  </div>
+
+  <div id="deriv-rules" class="tab-content active">
+    <div class="explain-box green">
+      <h4>The Derivative — Definition</h4>
+      <p>The derivative f'(x) gives the instantaneous rate of change (slope of the tangent line) at any point x. It is defined as:</p>
+    </div>
+    <div class="math-line" style="text-align:center;font-size:1.1rem">
+      f'(x) = lim(h→0) <span class="math-highlight yellow">[ f(x+h) − f(x) ]</span> / <span class="math-highlight cyan">h</span>
+    </div>
+
+    <div class="rules-grid" style="margin-top:1.5rem">
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--cyan)">Power Rule</div>
+        <div class="rule-formula"><span class="math-highlight">d/dx [xⁿ] = nxⁿ⁻¹</span></div>
+        <div class="rule-example">d/dx [x⁵] = <span>5x⁴</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--yellow)">Constant Rule</div>
+        <div class="rule-formula"><span class="math-highlight yellow">d/dx [c] = 0</span></div>
+        <div class="rule-example">d/dx [7] = <span>0</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--green)">Sum / Diff Rule</div>
+        <div class="rule-formula"><span class="math-highlight green">d/dx[f±g] = f'±g'</span></div>
+        <div class="rule-example">Differentiate term by <span>term</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--pink)">Product Rule</div>
+        <div class="rule-formula" style="font-size:0.88rem"><span class="math-highlight pink">d/dx[fg] = f'g + fg'</span></div>
+        <div class="rule-example">"First · d(second) + second · <span>d(first)</span>"</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--purple)">Quotient Rule</div>
+        <div class="rule-formula" style="font-size:0.85rem"><span class="math-highlight purple">d/dx[f/g] = (f'g−fg')/g²</span></div>
+        <div class="rule-example">"Low d(high) − high d(low), <span>over low²</span>"</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--orange)">Trig Derivatives</div>
+        <div class="rule-formula" style="font-size:0.82rem">
+          d/dx[sin x] = cos x<br>
+          d/dx[cos x] = −sin x<br>
+          d/dx[tan x] = sec²x
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--cyan)">Exponential</div>
+        <div class="rule-formula"><span class="math-highlight">d/dx[eˣ] = eˣ</span></div>
+        <div class="rule-example">d/dx[aˣ] = aˣ · <span>ln a</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--yellow)">Logarithm</div>
+        <div class="rule-formula"><span class="math-highlight yellow">d/dx[ln x] = 1/x</span></div>
+        <div class="rule-example">d/dx[logₐx] = <span>1/(x ln a)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="deriv-chain" class="tab-content">
+    <div class="explain-box cyan">
+      <h4>Chain Rule</h4>
+      <p>For a composite function y = f(g(x)), differentiate the outer function evaluated at the inner, times the derivative of the inner:</p>
+    </div>
+    <div class="math-line" style="text-align:center;font-size:1.15rem">
+      d/dx [ f(<span class="math-highlight yellow">g(x)</span>) ] = f'(<span class="math-highlight yellow">g(x)</span>) · <span class="math-highlight green">g'(x)</span>
+    </div>
+    <div style="margin-top:1.5rem">
+      <p style="color:#b0bcd8;margin-bottom:1rem;font-size:0.92rem">Example: Differentiate <strong>y = (3x² + 1)⁵</strong></p>
+      <div class="math-step">
+        <span class="step-num cyan">1</span>
+        <div class="step-content">
+          <p>Identify outer = (  )⁵ and inner = <strong>3x² + 1</strong></p>
+        </div>
+      </div>
+      <div class="math-step">
+        <span class="step-num yellow">2</span>
+        <div class="step-content">
+          <p>Derivative of outer: 5(  )⁴ — keep inner inside</p>
+          <div class="math-line">5(3x²+1)⁴</div>
+        </div>
+      </div>
+      <div class="math-step">
+        <span class="step-num green">3</span>
+        <div class="step-content">
+          <p>Multiply by derivative of inner: d/dx[3x²+1] = 6x</p>
+          <div class="math-line">dy/dx = <span class="math-highlight green">5(3x²+1)⁴ · 6x = 30x(3x²+1)⁴</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="explain-box yellow" style="margin-top:1.5rem">
+      <h4>Chain Rule + Trig</h4>
+      <p>d/dx [ sin(<span style="color:var(--cyan)">u</span>) ] = cos(<span style="color:var(--cyan)">u</span>) · <span style="color:var(--green)">u'</span></p>
+      <p>Example: d/dx [sin(x³)] = cos(x³) · 3x² = <strong>3x²cos(x³)</strong></p>
+    </div>
+  </div>
+
+  <!-- STEP SOLVER -->
+  <div id="deriv-solver" class="tab-content">
+    <div class="explain-box purple">
+      <h4>Step-by-Step Derivative Solver</h4>
+      <p>Enter a simple function and choose the rule. The solver walks you through each step.</p>
+    </div>
+    <div class="solver-section">
+      <div class="solver-input-row">
+        <div class="solver-field">
+          <label>Function Type</label>
+          <select id="deriv-type" onchange="updateDerivHint()">
+            <option value="power">Power: xⁿ</option>
+            <option value="product">Product: xⁿ · xᵐ style</option>
+            <option value="chain">Chain: (axⁿ + b)ᵐ</option>
+            <option value="trig">Trig: sin/cos/tan of ax</option>
+            <option value="exp">Exponential: eˣ or eᵃˣ</option>
+          </select>
+        </div>
+        <div class="solver-field">
+          <label>Expression</label>
+          <input type="text" id="deriv-expr" placeholder="e.g. x^4 or (2x+1)^3">
+        </div>
+      </div>
+      <p id="deriv-hint-text" style="color:var(--muted);font-size:0.82rem;margin-bottom:0.75rem">Enter a power function like x^5 and click Solve.</p>
+      <button class="btn-solve" onclick="solveDerivative()">Solve Step by Step →</button>
+      <div class="solution-steps" id="deriv-steps"></div>
+    </div>
+  </div>
+
+  <div id="deriv-practice" class="tab-content">
+    <div class="practice-container">
+      <div class="practice-header">
+        <h3>🎯 Derivative Practice</h3>
+        <div class="practice-score">Score: <span id="deriv-score">0</span> / <span id="deriv-total">0</span></div>
+      </div>
+      <div class="problem-display">
+        <div class="problem-text" id="deriv-problem-text"></div>
+        <div class="problem-hint" id="deriv-problem-hint"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="deriv-answer" placeholder="f'(x) = ..." onkeydown="if(event.key==='Enter')checkDeriv()">
+        <button class="btn-check" onclick="checkDeriv()">Check</button>
+        <button class="btn-next" onclick="nextDeriv()">Skip →</button>
+      </div>
+      <div class="feedback-box" id="deriv-feedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= APPLICATIONS ========================= -->
+<section class="lesson-section" id="applications">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 05</span>
+    <h2 class="section-title" style="margin:0">Derivative Applications</h2>
+  </div>
+
+  <div class="explain-box orange">
+    <h4>Critical Points &amp; Extrema</h4>
+    <p>A critical point occurs where f'(x) = 0 or f'(x) is undefined. These are candidates for local maxima, minima, or saddle points.</p>
+    <p><strong>First Derivative Test:</strong> if f' changes from + to − → local max. From − to + → local min.</p>
+    <p><strong>Second Derivative Test:</strong> if f''(c) &lt; 0 → local max. f''(c) > 0 → local min. f''(c) = 0 → inconclusive.</p>
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <p style="color:#b0bcd8;font-size:0.9rem;margin-bottom:0.75rem">Example: Find the local extrema of <strong>f(x) = x³ − 3x² − 9x + 5</strong></p>
+    <div class="math-step">
+      <span class="step-num cyan">1</span>
+      <div class="step-content">
+        <p>Find f'(x) and set equal to zero</p>
+        <div class="math-line">f'(x) = 3x² − 6x − 9 = 3(x² − 2x − 3) = 3(x−3)(x+1)</div>
+        <div class="math-line">Critical points: <span class="math-highlight yellow">x = 3</span> and <span class="math-highlight yellow">x = −1</span></div>
+      </div>
+    </div>
+    <div class="math-step">
+      <span class="step-num yellow">2</span>
+      <div class="step-content">
+        <p>Second derivative test: f''(x) = 6x − 6</p>
+        <div class="math-line">f''(3) = 12 > 0 → <span class="math-highlight green">Local minimum at x = 3</span></div>
+        <div class="math-line">f''(−1) = −12 &lt; 0 → <span class="math-highlight pink">Local maximum at x = −1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain-box green" style="margin-top:2rem">
+    <h4>Concavity &amp; Inflection Points</h4>
+    <p>f''(x) > 0 → concave up (cup shape). f''(x) &lt; 0 → concave down (hill shape). An inflection point is where concavity changes (f'' changes sign).</p>
+  </div>
+
+  <div class="explain-box pink" style="margin-top:1rem">
+    <h4>Mean Value Theorem</h4>
+    <p>If f is continuous on [a,b] and differentiable on (a,b), then there exists at least one c in (a,b) such that:</p>
+  </div>
+  <div class="math-line" style="text-align:center;font-size:1.1rem">
+    f'(c) = <span class="math-highlight yellow">[ f(b) − f(a) ]</span> / <span class="math-highlight cyan">( b − a )</span>
+  </div>
+
+  <div class="practice-container">
+    <div class="practice-header">
+      <h3>🎯 Applications Practice</h3>
+      <div class="practice-score">Score: <span id="app-score">0</span> / <span id="app-total">0</span></div>
+    </div>
+    <div class="problem-display">
+      <div class="problem-text" id="app-problem-text"></div>
+      <div class="problem-hint" id="app-problem-hint"></div>
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="app-answer" placeholder="Your answer..." onkeydown="if(event.key==='Enter')checkApp()">
+      <button class="btn-check" onclick="checkApp()">Check</button>
+      <button class="btn-next" onclick="nextApp()">Skip →</button>
+    </div>
+    <div class="feedback-box" id="app-feedback"></div>
+  </div>
+</section>
+
+<!-- ========================= INTEGRALS ========================= -->
+<section class="lesson-section" id="integrals">
+  <div class="lesson-header">
+    <span class="lesson-num">// MODULE 06</span>
+    <h2 class="section-title" style="margin:0">Integrals</h2>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('int','learn')">📖 Learn</button>
+    <button class="tab-btn" onclick="switchTab('int','ftc')">🏛️ FTC</button>
+    <button class="tab-btn" onclick="switchTab('int','practice')">✏️ Practice</button>
+  </div>
+
+  <div id="int-learn" class="tab-content active">
+    <div class="explain-box pink">
+      <h4>The Antiderivative (Indefinite Integral)</h4>
+      <p>Integration is the reverse of differentiation. The indefinite integral of f(x) gives all functions whose derivative is f(x). The constant C represents any constant (which disappears when you differentiate).</p>
+    </div>
+
+    <div class="math-line" style="text-align:center;font-size:1.15rem">
+      ∫ f(x) dx = F(x) + C &nbsp; where &nbsp; <span class="math-highlight green">F'(x) = f(x)</span>
+    </div>
+
+    <div class="rules-grid" style="margin-top:1.5rem">
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--cyan)">Power Rule</div>
+        <div class="rule-formula"><span class="math-highlight">∫ xⁿ dx = xⁿ⁺¹/(n+1) + C</span></div>
+        <div class="rule-example">∫ x³ dx = <span>x⁴/4 + C</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--yellow)">Constant</div>
+        <div class="rule-formula"><span class="math-highlight yellow">∫ k dx = kx + C</span></div>
+        <div class="rule-example">∫ 5 dx = <span>5x + C</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--green)">Sum/Diff</div>
+        <div class="rule-formula"><span class="math-highlight green">∫[f±g] dx = ∫f dx ± ∫g dx</span></div>
+        <div class="rule-example">Integrate <span>term by term</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--pink)">Trig Integrals</div>
+        <div class="rule-formula" style="font-size:0.82rem">
+          ∫ sin x dx = −cos x + C<br>
+          ∫ cos x dx = sin x + C
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--purple)">Exponential</div>
+        <div class="rule-formula"><span class="math-highlight purple">∫ eˣ dx = eˣ + C</span></div>
+        <div class="rule-example">∫ e²ˣ dx = <span>½e²ˣ + C</span></div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-name" style="color:var(--orange)">Reciprocal</div>
+        <div class="rule-formula"><span class="math-highlight orange">∫ 1/x dx = ln|x| + C</span></div>
+        <div class="rule-example">Note the absolute <span>value bars</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="int-ftc" class="tab-content">
+    <div class="explain-box cyan">
+      <h4>Fundamental Theorem of Calculus — Part 1</h4>
+      <p>If F(x) = ∫ₐˣ f(t) dt, then F'(x) = f(x). In other words, differentiating a definite integral with a variable upper bound just gives back the integrand.</p>
+    </div>
+
+    <div class="explain-box yellow" style="margin-top:1rem">
+      <h4>Fundamental Theorem of Calculus — Part 2</h4>
+      <p>If F is any antiderivative of f, then the definite integral from a to b equals:</p>
+    </div>
+    <div class="math-line" style="text-align:center;font-size:1.2rem">
+      ∫ₐᵇ f(x) dx = <span class="math-highlight green">F(b) − F(a)</span>
+    </div>
+
+    <div style="margin-top:1.5rem">
+      <p style="color:#b0bcd8;font-size:0.9rem;margin-bottom:0.75rem">Example: Evaluate <strong>∫₁³ (3x² + 2) dx</strong></p>
+      <div class="math-step">
+        <span class="step-num cyan">1</span>
+        <div class="step-content">
+          <p>Find the antiderivative</p>
+          <div class="math-line">F(x) = x³ + 2x (+ C, but constants cancel)</div>
+        </div>
+      </div>
+      <div class="math-step">
+        <span class="step-num yellow">2</span>
+        <div class="step-content">
+          <p>Evaluate F(3) − F(1)</p>
+          <div class="math-line">F(3) = 27 + 6 = 33</div>
+          <div class="math-line">F(1) = 1 + 2 = 3</div>
+          <div class="math-line">∫₁³ (3x²+2) dx = 33 − 3 = <span class="math-highlight green">30</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="int-practice" class="tab-content">
+    <div class="practice-container">
+      <div class="practice-header">
+        <h3>🎯 Integral Practice</h3>
+        <div class="practice-score">Score: <span id="int-score">0</span> / <span id="int-total">0</span></div>
+      </div>
+      <div class="problem-display">
+        <div class="problem-text" id="int-problem-text"></div>
+        <div class="problem-hint" id="int-problem-hint"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="int-answer" placeholder="Your answer (include + C if indefinite)" onkeydown="if(event.key==='Enter')checkInt()">
+        <button class="btn-check" onclick="checkInt()">Check</button>
+        <button class="btn-next" onclick="nextInt()">Skip →</button>
+      </div>
+      <div class="feedback-box" id="int-feedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= QUIZ ========================= -->
+<section class="quiz-section" id="quiz">
+  <div class="section-label">// final test</div>
+  <h2 class="section-title">Master Quiz</h2>
+  <p class="section-sub">20 questions spanning all 6 modules. Test your full understanding.</p>
+
+  <div class="quiz-card">
+    <div class="quiz-counter">
+      <span id="quiz-counter">Question 1 / 20</span>
+      <span id="quiz-score-display">Score: 0</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="quiz-progress"></div>
+    </div>
+    <div class="quiz-question" id="quiz-question" style="margin-top:1.5rem"></div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuiz()">Next Question →</button>
+  </div>
+</section>
+
+<footer>
+  <p>CalcLab — Pre-Calculus &amp; Calculus 1 Interactive Textbook &nbsp;·&nbsp; Keep going. You've got this. 🚀</p>
+</footer>
+
+<!-- ========================= JAVASCRIPT ========================= -->
+<script>
+// ============== TAB SYSTEM ==============
+function switchTab(module, tab) {
+  const allContents = document.querySelectorAll(`[id^="${module}-"]`);
+  allContents.forEach(el => {
+    if(el.classList.contains('tab-content')) el.classList.remove('active');
+  });
+  const allBtns = [];
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    if(btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${module}'`)) {
+      allBtns.push(btn);
+      btn.classList.remove('active');
+    }
+  });
+  const target = document.getElementById(`${module}-${tab}`);
+  if(target) target.classList.add('active');
+  allBtns.forEach(btn => {
+    if(btn.getAttribute('onclick').includes(`'${tab}'`)) btn.classList.add('active');
+  });
+}
+
+// ============== NORMALIZE ANSWERS ==============
+function norm(s) {
+  return s.trim().toLowerCase()
+    .replace(/\s+/g,'')
+    .replace(/\*\*/g,'^')
+    .replace(/×/g,'*')
+    .replace(/−/g,'-');
+}
+
+// ============== FUNCTIONS PRACTICE ==============
+const fnProblems = [
+  { q:'If f(x) = 2x + 3, find f(5)', hint:'Plug x = 5 into the formula', ans:'13', exp:'f(5) = 2(5)+3 = 10+3 = 13' },
+  { q:'What is the domain of f(x) = √(x − 4)?', hint:'You need x − 4 ≥ 0', ans:'[4,inf)', exp:'x−4 ≥ 0 means x ≥ 4, so domain is [4, ∞)' },
+  { q:'If f(x)=x² and g(x)=x+1, find (f∘g)(3)', hint:'First find g(3), then plug into f', ans:'16', exp:'g(3)=4, then f(4)=16' },
+  { q:'What is the inverse of f(x) = 3x − 6?', hint:'Swap x and y, then solve for y', ans:'(x+6)/3', exp:'y=3x−6 → x=3y−6 → y=(x+6)/3' },
+  { q:'Is f(x) = x³ even, odd, or neither?', hint:'Check f(−x). Does it equal f(x) or −f(x)?', ans:'odd', exp:'f(−x)=(−x)³=−x³=−f(x), so it is odd' },
+  { q:'What is the range of f(x) = x² + 2?', hint:'x² ≥ 0 always, so the minimum output is...', ans:'[2,inf)', exp:'x² ≥ 0, so x²+2 ≥ 2. Range = [2, ∞)' },
+  { q:'If f(x) = 4x and g(x) = x/4, is g the inverse of f?', hint:'Check if f(g(x)) = x', ans:'yes', exp:'f(g(x)) = f(x/4) = 4(x/4) = x ✓. Yes, g = f⁻¹' },
+  { q:'What transformation does f(x) = (x−3)² represent vs x²?', hint:'Look at (x − h) inside the function', ans:'shift right 3', exp:'Replacing x with (x−h) shifts right by h. Here h=3, so shift right 3.' },
+  { q:'Find the x-intercepts of f(x) = x² − 5x + 6', hint:'Factor the quadratic and set equal to zero', ans:'2and3', exp:'(x−2)(x−3)=0, so x=2 or x=3' },
+  { q:'If f(x)=2x+1 and g(x)=x², find (g∘f)(2)', hint:'Compute f(2) first, then apply g', ans:'25', exp:'f(2)=5, g(5)=25' },
+];
+let fnIdx=0, fnCorrect=0, fnAttempted=0;
+function showFn(){
+  const p=fnProblems[fnIdx%fnProblems.length];
+  document.getElementById('fn-problem-text').textContent=p.q;
+  document.getElementById('fn-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('fn-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  const fb=document.getElementById('fn-feedback');
+  fb.classList.remove('show','correct','wrong');
+}
+function checkFn(){
+  const p=fnProblems[fnIdx%fnProblems.length];
+  const inp=document.getElementById('fn-answer');
+  const ans=norm(inp.value);
+  const correct=norm(p.ans);
+  const fb=document.getElementById('fn-feedback');
+  fnAttempted++;
+  document.getElementById('fn-total').textContent=fnAttempted;
+  if(ans===correct||ans.replace(/[^a-z0-9]/g,'')===correct.replace(/[^a-z0-9]/g,'')){
+    fnCorrect++;
+    document.getElementById('fn-score').textContent=fnCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextFn(){ fnIdx++; showFn(); }
+showFn();
+
+// ============== TRIG PRACTICE ==============
+const trigProblems = [
+  { q:'What is sin(30°)?', hint:'Use the unit circle table', ans:'1/2', exp:'sin(30°) = 1/2. Point on unit circle at 30° is (√3/2, 1/2).' },
+  { q:'What is cos(60°)?', hint:'Look at the x-coordinate at 60°', ans:'1/2', exp:'cos(60°) = 1/2.' },
+  { q:'What is tan(45°)?', hint:'tan = sin/cos', ans:'1', exp:'tan(45°) = sin(45°)/cos(45°) = (√2/2)/(√2/2) = 1' },
+  { q:'What is sin(90°)?', hint:'At 90° the point is at the top of the circle', ans:'1', exp:'sin(90°) = 1. The point is (0,1).' },
+  { q:'What is cos(180°)?', hint:'At 180° the point is at (−1, 0)', ans:'-1', exp:'cos(180°) = −1.' },
+  { q:'If sin²θ = 0.36, what is cos²θ?', hint:'Use the Pythagorean identity', ans:'0.64', exp:'sin²θ + cos²θ = 1 → cos²θ = 1 − 0.36 = 0.64' },
+  { q:'Simplify: sin θ / cos θ', hint:'This equals one of the six trig functions', ans:'tan', exp:'sin θ / cos θ = tan θ by the quotient identity.' },
+  { q:'What is sin(0°)?', hint:'At angle 0, the point is (1, 0)', ans:'0', exp:'sin(0°) = 0. The y-coordinate at (1,0) is 0.' },
+  { q:'What is cos(90°)?', hint:'The x-coordinate at 90° on the unit circle', ans:'0', exp:'cos(90°) = 0. The point is (0,1), so x = 0.' },
+  { q:'What is tan(0°)?', hint:'tan = sin/cos = 0/1', ans:'0', exp:'tan(0°) = sin(0°)/cos(0°) = 0/1 = 0.' },
+];
+let trigIdx=0, trigCorrect=0, trigAttempted=0;
+function showTrig(){
+  const p=trigProblems[trigIdx%trigProblems.length];
+  document.getElementById('trig-problem-text').textContent=p.q;
+  document.getElementById('trig-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('trig-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  document.getElementById('trig-feedback').classList.remove('show','correct','wrong');
+}
+function checkTrig(){
+  const p=trigProblems[trigIdx%trigProblems.length];
+  const inp=document.getElementById('trig-answer');
+  const ans=norm(inp.value);
+  const correct=norm(p.ans);
+  const fb=document.getElementById('trig-feedback');
+  trigAttempted++;
+  document.getElementById('trig-total').textContent=trigAttempted;
+  if(ans===correct){
+    trigCorrect++;
+    document.getElementById('trig-score').textContent=trigCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextTrig(){ trigIdx++; showTrig(); }
+showTrig();
+
+// ============== LIMITS PRACTICE ==============
+const limProblems = [
+  { q:'Find: lim(x→3) (x² − 9)/(x − 3)', hint:'Factor the numerator as a difference of squares', ans:'6', exp:'(x²−9)/(x−3) = (x+3)(x−3)/(x−3) = x+3. As x→3: 3+3 = 6.' },
+  { q:'Find: lim(x→2) (3x + 1)', hint:'Direct substitution works here', ans:'7', exp:'Plug in x=2: 3(2)+1 = 7.' },
+  { q:'Find: lim(x→∞) 5/x', hint:'What happens to a constant divided by x as x grows?', ans:'0', exp:'As x→∞, 5/x → 0.' },
+  { q:'Find: lim(x→0) sin(x)/x', hint:'This is the famous trig limit', ans:'1', exp:'lim(x→0) sin(x)/x = 1 by the special trig limit.' },
+  { q:'Find: lim(x→∞) (2x² + x)/(x²)', hint:'Divide numerator and denominator by x²', ans:'2', exp:'(2x²+x)/x² = 2 + 1/x → 2 + 0 = 2.' },
+  { q:'Find: lim(x→4) (x² − 16)/(x − 4)', hint:'Factor x²−16', ans:'8', exp:'x²−16 = (x+4)(x−4). Cancel (x−4): lim = x+4 = 8.' },
+  { q:'Is lim(x→0) 1/x defined?', hint:'Check left and right limits', ans:'no', exp:'From left: −∞. From right: +∞. Limits differ, so the limit DNE (does not exist).' },
+  { q:'Find: lim(x→1) (x³ − 1)/(x − 1)', hint:'Factor x³−1 = (x−1)(x²+x+1)', ans:'3', exp:'Cancel (x−1): lim = x²+x+1 at x=1 = 1+1+1 = 3.' },
+  { q:'Find: lim(x→∞) (3x+2)/(x−1)', hint:'Divide top and bottom by x', ans:'3', exp:'(3+2/x)/(1−1/x) → 3/1 = 3.' },
+  { q:'Find: lim(x→2) x² + 3x − 5', hint:'Substitute directly', ans:'5', exp:'4 + 6 − 5 = 5.' },
+];
+let limIdx=0, limCorrect=0, limAttempted=0;
+function showLim(){
+  const p=limProblems[limIdx%limProblems.length];
+  document.getElementById('lim-problem-text').textContent=p.q;
+  document.getElementById('lim-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('lim-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  document.getElementById('lim-feedback').classList.remove('show','correct','wrong');
+}
+function checkLim(){
+  const p=limProblems[limIdx%limProblems.length];
+  const inp=document.getElementById('lim-answer');
+  const ans=norm(inp.value);
+  const correct=norm(p.ans);
+  const fb=document.getElementById('lim-feedback');
+  limAttempted++;
+  document.getElementById('lim-total').textContent=limAttempted;
+  if(ans===correct){
+    limCorrect++;
+    document.getElementById('lim-score').textContent=limCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextLim(){ limIdx++; showLim(); }
+showLim();
+
+// ============== DERIVATIVE PRACTICE ==============
+const derivProblems = [
+  { q:"Find f'(x) if f(x) = x⁵", hint:'Power Rule: bring down the exponent, subtract 1', ans:'5x^4', exp:'d/dx[x⁵] = 5x⁴' },
+  { q:"Find f'(x) if f(x) = 3x² + 2x − 7", hint:'Differentiate each term separately', ans:'6x+2', exp:'d/dx[3x²] = 6x, d/dx[2x] = 2, d/dx[−7] = 0. Total: 6x+2.' },
+  { q:"Find f'(x) if f(x) = eˣ", hint:"The exponential is its own derivative", ans:'e^x', exp:'d/dx[eˣ] = eˣ. eˣ is unchanged by differentiation.' },
+  { q:"Find f'(x) if f(x) = ln x", hint:'Classic log derivative', ans:'1/x', exp:'d/dx[ln x] = 1/x.' },
+  { q:"Find f'(x) if f(x) = sin x", hint:'Memorize the six trig derivatives', ans:'cosx', exp:'d/dx[sin x] = cos x.' },
+  { q:"Find f'(x) if f(x) = cos x", hint:'Think about the sign change', ans:'-sinx', exp:'d/dx[cos x] = −sin x.' },
+  { q:"Find f'(x) if f(x) = x³ · eˣ", hint:'Product Rule: f\'g + fg\'', ans:'3x^2*e^x+x^3*e^x', exp:'f\'=3x², g\'=eˣ. Answer: 3x²eˣ + x³eˣ.' },
+  { q:"Find f'(x) if f(x) = (2x + 1)⁴", hint:'Chain Rule: outer × derivative of inner', ans:'8(2x+1)^3', exp:'4(2x+1)³ · 2 = 8(2x+1)³.' },
+  { q:"Find f'(x) if f(x) = x⁻²", hint:'Power Rule works with negative exponents', ans:'-2x^-3', exp:'d/dx[x⁻²] = −2x⁻³ = −2/x³.' },
+  { q:"Find f'(x) if f(x) = 7 (a constant)", hint:'Constants have zero rate of change', ans:'0', exp:'d/dx[7] = 0.' },
+];
+let derivIdx=0, derivCorrect=0, derivAttempted=0;
+function showDeriv(){
+  const p=derivProblems[derivIdx%derivProblems.length];
+  document.getElementById('deriv-problem-text').textContent=p.q;
+  document.getElementById('deriv-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('deriv-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  document.getElementById('deriv-feedback').classList.remove('show','correct','wrong');
+}
+function checkDeriv(){
+  const p=derivProblems[derivIdx%derivProblems.length];
+  const inp=document.getElementById('deriv-answer');
+  const ans=norm(inp.value).replace(/\s/g,'');
+  const correct=norm(p.ans).replace(/\s/g,'');
+  const fb=document.getElementById('deriv-feedback');
+  derivAttempted++;
+  document.getElementById('deriv-total').textContent=derivAttempted;
+  if(ans===correct){
+    derivCorrect++;
+    document.getElementById('deriv-score').textContent=derivCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextDeriv(){ derivIdx++; showDeriv(); }
+showDeriv();
+
+// ============== DERIVATIVE STEP SOLVER ==============
+function updateDerivHint(){
+  const t = document.getElementById('deriv-type').value;
+  const hints = {
+    power: 'Enter like: x^5 or 3x^2',
+    product: 'Enter like: x^3 (product rule shown conceptually)',
+    chain: 'Enter like: (2x+1)^4',
+    trig: 'Enter like: sin(3x) or cos(2x)',
+    exp: 'Enter like: e^(2x)',
+  };
+  document.getElementById('deriv-hint-text').textContent = hints[t] || '';
+}
+
+function solveDerivative() {
+  const type = document.getElementById('deriv-type').value;
+  const expr = document.getElementById('deriv-expr').value.trim();
+  const stepsEl = document.getElementById('deriv-steps');
+  stepsEl.innerHTML='';
+  stepsEl.classList.add('show');
+
+  let steps = [];
+
+  if(type === 'power') {
+    const match = expr.match(/^(-?\d*)\*?x\^(-?\d+\.?\d*)$/i) || expr.match(/^x\^(-?\d+\.?\d*)$/i);
+    if(match) {
+      const n = parseFloat(match[match.length-1]);
+      const coef = match[1] && match.length===3 ? parseFloat(match[1]) : 1;
+      const newCoef = coef * n;
+      const newExp = n - 1;
+      steps = [
+        { label:'IDENTIFY', title:'Recognize the Power Rule', math:`f(x) = ${expr}`, note:'d/dx[xⁿ] = nxⁿ⁻¹' },
+        { label:'STEP 1', title:'Bring the exponent down as coefficient', math:`Exponent: n = ${n}, Coefficient: ${coef}`, note:'Multiply: ' + coef + ' × ' + n + ' = ' + newCoef },
+        { label:'STEP 2', title:'Reduce the exponent by 1', math:`New exponent: ${n} − 1 = ${newExp}`, note:'' },
+        { label:'RESULT', title:"f'(x) =", math:`${newCoef}x^${newExp}`, note:'Done! ✅' },
+      ];
+    } else {
+      steps = [{ label:'NOTE', title:'Could not parse', math:expr, note:'Try format: x^3 or 2x^5' }];
+    }
+  } else if(type === 'chain') {
+    steps = [
+      { label:'IDENTIFY', title:'Outer function: (...)ⁿ, Inner: what is inside', math:expr, note:'Chain Rule: d/dx[f(g(x))] = f\'(g(x)) · g\'(x)' },
+      { label:'STEP 1', title:'Differentiate outer function, keep inner intact', math:'n · (inner)ⁿ⁻¹', note:'Do NOT change what is inside yet' },
+      { label:'STEP 2', title:'Multiply by derivative of inner function', math:"· g'(x)", note:'This is the "chain" part' },
+      { label:'EXAMPLE', title:'(2x+1)⁴ → 4(2x+1)³ · 2 = 8(2x+1)³', math:'8(2x+1)³', note:'Always simplify the leading constant ✅' },
+    ];
+  } else if(type === 'product') {
+    steps = [
+      { label:'IDENTIFY', title:'Product Rule: two functions multiplied', math:'f(x) · g(x)', note:'d/dx[fg] = f\'g + fg\'' },
+      { label:'STEP 1', title:'Label the two factors as f and g', math:`f = first factor, g = second factor`, note:'' },
+      { label:'STEP 2', title:'Find f\' and g\' separately', math:`Differentiate each factor using power rule`, note:'' },
+      { label:'STEP 3', title:"Apply: f'g + fg'", math:"f'·g + f·g'", note:'Add the two products together. Simplify if possible ✅' },
+    ];
+  } else if(type === 'trig') {
+    steps = [
+      { label:'IDENTIFY', title:'Trig derivative rule', math:expr, note:'d/dx[sin(u)] = cos(u)·u\' and d/dx[cos(u)] = −sin(u)·u\'' },
+      { label:'STEP 1', title:'Identify the inner function u', math:'u = argument of sin/cos/tan', note:'' },
+      { label:'STEP 2', title:"Find u'", math:"Differentiate u using power/constant rules", note:'' },
+      { label:'STEP 3', title:'Apply chain rule', math:"cos(u) · u'  or  −sin(u) · u'", note:"Example: d/dx[sin(3x)] = cos(3x)·3 = 3cos(3x) ✅" },
+    ];
+  } else if(type === 'exp') {
+    steps = [
+      { label:'IDENTIFY', title:'Exponential rule', math:expr, note:"d/dx[e^u] = e^u · u'" },
+      { label:'STEP 1', title:'Identify u in the exponent', math:'u = exponent expression', note:'' },
+      { label:'STEP 2', title:"Differentiate u to get u'", math:"Apply power/constant rules to exponent", note:'' },
+      { label:'RESULT', title:"d/dx[e^u] = e^u · u'", math:"Example: d/dx[e^(2x)] = e^(2x)·2 = 2e^(2x) ✅", note:'' },
+    ];
+  }
+
+  steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'solution-step';
+    div.style.animationDelay = (i * 0.15) + 's';
+    div.innerHTML = `
+      <div class="step-label">${s.label}</div>
+      <div class="step-body">
+        <div class="step-title">${s.title}</div>
+        <div class="step-math">${s.math}</div>
+        ${s.note ? `<div class="step-note">${s.note}</div>` : ''}
+      </div>`;
+    stepsEl.appendChild(div);
+  });
+}
+
+// ============== APPLICATIONS PRACTICE ==============
+const appProblems = [
+  { q:"Find the critical points of f(x) = x² − 4x + 3", hint:"Set f'(x) = 0 and solve", ans:'2', exp:"f'(x) = 2x−4 = 0 → x = 2. One critical point at x=2." },
+  { q:"f(x) = x³ − 3x. Is x=1 a local max or min?", hint:"Use the second derivative test", ans:'min', exp:"f'(x)=3x²−3=0 at x=1. f''(x)=6x. f''(1)=6>0 → local minimum." },
+  { q:"Where is f(x) = x³ − 6x² + 9x increasing?", hint:"Find where f'(x) > 0", ans:'(0,1)and(3,inf)', exp:"f'(x)=3x²−12x+9=3(x−1)(x−3). Positive for x<1 and x>3. Wait: (−∞,1) and (3,∞)." },
+  { q:"What does f''(x) < 0 tell you about the graph?", hint:"Think about the shape — cup or hill?", ans:'concavedown', exp:"f''(x)<0 means the function is concave down (shaped like an upside-down cup / hill)." },
+  { q:"Find the absolute max of f(x)=−x²+4x on [0,4]", hint:"Find the vertex (critical point), check endpoints too", ans:'4', exp:"f'(x)=−2x+4=0 → x=2. f(2)=−4+8=4. Endpoints: f(0)=0, f(4)=0. Max = 4." },
+  { q:"If f(1)=3 and f(5)=7, what does the MVT guarantee?", hint:"MVT: there's a c where f'(c) equals the average rate of change", ans:'1', exp:"Average rate of change = (7−3)/(5−1) = 4/4 = 1. MVT guarantees f'(c)=1 for some c in (1,5)." },
+  { q:"Where does f(x) = x³ − 3x have an inflection point?", hint:"Set f''(x) = 0", ans:'0', exp:"f'(x)=3x²−3, f''(x)=6x=0 → x=0. Concavity changes at x=0." },
+  { q:"What is the slope of the tangent to f(x)=x² at x=3?", hint:"Compute f'(3)", ans:'6', exp:"f'(x)=2x. At x=3: f'(3)=6. The tangent line has slope 6." },
+];
+let appIdx=0, appCorrect=0, appAttempted=0;
+function showApp(){
+  const p=appProblems[appIdx%appProblems.length];
+  document.getElementById('app-problem-text').textContent=p.q;
+  document.getElementById('app-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('app-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  document.getElementById('app-feedback').classList.remove('show','correct','wrong');
+}
+function checkApp(){
+  const p=appProblems[appIdx%appProblems.length];
+  const inp=document.getElementById('app-answer');
+  const ans=norm(inp.value).replace(/\s/g,'');
+  const correct=norm(p.ans).replace(/\s/g,'');
+  const fb=document.getElementById('app-feedback');
+  appAttempted++;
+  document.getElementById('app-total').textContent=appAttempted;
+  if(ans===correct){
+    appCorrect++;
+    document.getElementById('app-score').textContent=appCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextApp(){ appIdx++; showApp(); }
+showApp();
+
+// ============== INTEGRAL PRACTICE ==============
+const intProblems = [
+  { q:'Find: ∫ x⁴ dx', hint:'Power Rule: increase exponent by 1, divide by new exponent', ans:'x^5/5+c', exp:'∫x⁴dx = x⁵/5 + C' },
+  { q:'Find: ∫ 6 dx', hint:'A constant integrates to that constant times x', ans:'6x+c', exp:'∫6dx = 6x + C' },
+  { q:'Find: ∫ (3x² + 2x) dx', hint:'Integrate term by term using power rule', ans:'x^3+x^2+c', exp:'∫3x²dx + ∫2xdx = x³ + x² + C' },
+  { q:'Find: ∫ cos x dx', hint:'Which function has derivative cos x?', ans:'sinx+c', exp:'∫cos x dx = sin x + C' },
+  { q:'Find: ∫ sin x dx', hint:'Derivative of −cos x is sin x', ans:'-cosx+c', exp:'∫sin x dx = −cos x + C' },
+  { q:'Find: ∫ eˣ dx', hint:'eˣ is its own antiderivative', ans:'e^x+c', exp:'∫eˣdx = eˣ + C' },
+  { q:'Find: ∫ 1/x dx', hint:'This special case gives a logarithm', ans:'ln|x|+c', exp:'∫(1/x)dx = ln|x| + C' },
+  { q:'Evaluate: ∫₀² 2x dx', hint:'Find antiderivative, then apply FTC: F(2) − F(0)', ans:'4', exp:'F(x)=x². F(2)−F(0)=4−0=4.' },
+  { q:'Evaluate: ∫₁³ x² dx', hint:'Antiderivative is x³/3, then F(3)−F(1)', ans:'26/3', exp:'F(x)=x³/3. F(3)−F(1) = 27/3 − 1/3 = 26/3.' },
+  { q:'Find: ∫ x⁻¹ dx', hint:'This is the same as ∫ 1/x dx', ans:'ln|x|+c', exp:'x⁻¹ = 1/x, so ∫x⁻¹dx = ln|x| + C.' },
+];
+let intIdx=0, intCorrect=0, intAttempted=0;
+function showInt(){
+  const p=intProblems[intIdx%intProblems.length];
+  document.getElementById('int-problem-text').textContent=p.q;
+  document.getElementById('int-problem-hint').textContent='Hint: '+p.hint;
+  const inp=document.getElementById('int-answer');
+  inp.value=''; inp.classList.remove('correct','wrong');
+  document.getElementById('int-feedback').classList.remove('show','correct','wrong');
+}
+function checkInt(){
+  const p=intProblems[intIdx%intProblems.length];
+  const inp=document.getElementById('int-answer');
+  const ans=norm(inp.value).replace(/\s/g,'').replace(/\+c$/,'').replace(/\+C$/,'');
+  const correct=norm(p.ans).replace(/\s/g,'').replace(/\+c$/,'').replace(/\+C$/,'');
+  const fb=document.getElementById('int-feedback');
+  intAttempted++;
+  document.getElementById('int-total').textContent=intAttempted;
+  if(ans===correct){
+    intCorrect++;
+    document.getElementById('int-score').textContent=intCorrect;
+    inp.classList.add('correct');
+    fb.className='feedback-box show correct';
+    fb.innerHTML='✅ Correct! '+p.exp;
+  } else {
+    inp.classList.add('wrong');
+    fb.className='feedback-box show wrong';
+    fb.innerHTML=`❌ Not quite. Answer: <span class="solution">${p.ans}</span><br>${p.exp}`;
+  }
+}
+function nextInt(){ intIdx++; showInt(); }
+showInt();
+
+// ============== QUIZ ==============
+const quizData = [
+  { q:'What is the domain of f(x) = √(x − 2)?', opts:['All real numbers','x ≥ 2','x > 2','x ≤ 2'], ans:1, exp:'You need x−2 ≥ 0, so x ≥ 2. Domain is [2, ∞).' },
+  { q:'If f(x) = x² and g(x) = x+3, find (f∘g)(2)', opts:['7','25','10','13'], ans:1, exp:'g(2)=5, then f(5)=25.' },
+  { q:'What is sin(45°)?', opts:['√3/2','1/2','1','√2/2'], ans:3, exp:'sin(45°) = √2/2 ≈ 0.707.' },
+  { q:'What is the Pythagorean trig identity?', opts:['sin²θ + cos²θ = 0','sin²θ − cos²θ = 1','sin²θ + cos²θ = 1','tan²θ + 1 = 0'], ans:2, exp:'The most fundamental identity: sin²θ + cos²θ = 1.' },
+  { q:'What does lim(x→a) f(x) = L mean?', opts:['f(a) = L','f gets close to L as x gets close to a','f equals L everywhere','The function is continuous'], ans:1, exp:'The limit describes what f(x) approaches as x approaches a — f(a) might not even be defined.' },
+  { q:'Find: lim(x→3) (x²−9)/(x−3)', opts:['0','3','6','DNE'], ans:2, exp:'Factor: (x+3)(x−3)/(x−3) = x+3. At x=3: 6.' },
+  { q:'What is d/dx[x⁷]?', opts:['x⁸/8','7x⁶','7x⁸','6x⁷'], ans:1, exp:'Power Rule: bring down 7, subtract 1 from exponent. 7x⁶.' },
+  { q:'What is d/dx[sin x]?', opts:['cos x','−cos x','−sin x','tan x'], ans:0, exp:'d/dx[sin x] = cos x. Memorize the six trig derivatives.' },
+  { q:'The chain rule for d/dx[f(g(x))] is:', opts:["f'(x)·g'(x)","f'(g(x))·g'(x)","f(g'(x))",'f(g(x))·f\'(g(x))'], ans:1, exp:"Chain Rule: differentiate outer at inner, times derivative of inner: f'(g(x))·g'(x)." },
+  { q:"Find f'(x) for f(x) = (3x+1)⁵ using chain rule", opts:['5(3x+1)⁴','15(3x+1)⁴','5(3x+1)⁵','(3x+1)⁴'], ans:1, exp:"5(3x+1)⁴ · 3 = 15(3x+1)⁴." },
+  { q:'What is ∫ x³ dx?', opts:['3x²','x⁴','x⁴/4 + C','4x⁴'], ans:2, exp:'Power Rule of integration: increase exponent by 1, divide by new exponent. x⁴/4 + C.' },
+  { q:'The Fundamental Theorem of Calculus (Part 2) says:', opts:['Every function has a derivative','∫ₐᵇ f dx = F(b)−F(a)','Derivatives and limits are the same','∫ f dx = f(x)'], ans:1, exp:'FTC Part 2: ∫ₐᵇ f(x)dx = F(b)−F(a), where F is any antiderivative of f.' },
+  { q:'Evaluate ∫₀¹ 2x dx', opts:['1','2','4','0'], ans:0, exp:'F(x)=x². F(1)−F(0) = 1−0 = 1.' },
+  { q:'At a local maximum, the second derivative f\'\'(c) is:', opts:['Positive','Negative','Zero','Undefined'], ans:1, exp:"Second Derivative Test: f''(c) < 0 (negative) → local maximum." },
+  { q:'What does f\'\'(x) > 0 tell you about f(x)?', opts:['Decreasing','Concave down','Concave up','Has a maximum'], ans:2, exp:"f''(x) > 0 means the function is concave up (shaped like a cup/bowl)." },
+  { q:'What is lim(x→∞) (5x²+3)/(x²)?', opts:['5','0','∞','3'], ans:0, exp:'Divide top and bottom by x²: (5 + 3/x²)/1 → 5/1 = 5.' },
+  { q:'What is ∫ eˣ dx?', opts:['eˣ/x + C','xeˣ + C','eˣ + C','e(x+1) + C'], ans:2, exp:'eˣ is its own antiderivative: ∫eˣdx = eˣ + C.' },
+  { q:'What is d/dx[ln x]?', opts:['1/x','ln(x)/x','x','1/ln(x)'], ans:0, exp:'d/dx[ln x] = 1/x.' },
+  { q:'The Mean Value Theorem guarantees a point c where:', opts:["f'(c) = 0","f'(c) equals the average rate of change on [a,b]","f(c) is maximum","f''(c) = 0"], ans:1, exp:'MVT: there is a c in (a,b) where f\'(c) = [f(b)−f(a)]/(b−a), the average rate of change.' },
+  { q:'Which is NOT a valid reason why a limit might not exist?', opts:['Left and right limits differ','Oscillation near the point','Function approaches ∞','The function is continuous'], ans:3, exp:'Continuity actually helps limits exist! The other three are valid reasons a limit DNE.' },
+];
+
+let quizIdx=0, quizCorrect=0, quizAnswered=false;
+function renderQuiz(){
+  if(quizIdx>=quizData.length){
+    const pct = Math.round(quizCorrect/quizData.length*100);
+    const emoji = pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+    document.getElementById('quiz-question').innerHTML=`${emoji} Quiz Complete!<br><span style="color:var(--purple)">You scored ${quizCorrect} out of ${quizData.length} (${pct}%)</span>`;
+    document.getElementById('quiz-options').innerHTML='';
+    document.getElementById('quiz-feedback').classList.remove('show');
+    document.getElementById('quiz-next-btn').style.display='none';
+    document.getElementById('quiz-counter').textContent=`Final Score: ${quizCorrect}/${quizData.length}`;
+    document.getElementById('quiz-score-display').textContent=`${pct}%`;
+    document.getElementById('quiz-progress').style.width='100%';
+    return;
+  }
+  const q=quizData[quizIdx];
+  quizAnswered=false;
+  document.getElementById('quiz-question').textContent=`Q${quizIdx+1}. ${q.q}`;
+  document.getElementById('quiz-counter').textContent=`Question ${quizIdx+1} / ${quizData.length}`;
+  document.getElementById('quiz-score-display').textContent=`Score: ${quizCorrect}`;
+  document.getElementById('quiz-progress').style.width=((quizIdx+1)/quizData.length*100)+'%';
+  document.getElementById('quiz-next-btn').style.display='none';
+  document.getElementById('quiz-feedback').classList.remove('show','correct','wrong');
+
+  const optsEl=document.getElementById('quiz-options');
+  optsEl.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-option';
+    btn.textContent=opt;
+    btn.onclick=()=>selectQuizOpt(i);
+    optsEl.appendChild(btn);
+  });
+}
+function selectQuizOpt(idx){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizData[quizIdx];
+  const opts=document.querySelectorAll('.quiz-option');
+  opts[idx].classList.add('selected',idx===q.ans?'correct':'wrong');
+  opts[q.ans].classList.add('reveal','correct');
+  const fb=document.getElementById('quiz-feedback');
+  if(idx===q.ans){
+    quizCorrect++;
+    document.getElementById('quiz-score-display').textContent=`Score: ${quizCorrect}`;
+    fb.className='quiz-feedback show correct';
+    fb.innerHTML='✅ Correct! '+q.exp;
+  } else {
+    fb.className='quiz-feedback show wrong';
+    fb.innerHTML=`❌ Not quite. The answer is <strong>${q.opts[q.ans]}</strong>. ${q.exp}`;
+  }
+  document.getElementById('quiz-next-btn').style.display='block';
+}
+function nextQuiz(){ quizIdx++; renderQuiz(); }
+renderQuiz();
+</script>
+</body>
+</html>
